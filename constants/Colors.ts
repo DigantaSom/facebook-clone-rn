@@ -7,7 +7,7 @@ export default {
     background: '#fff',
     tint: tintColorLight,
     tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight,
+    tabIconSelected: tintColorLight
   },
   dark: {
     text: '#fff',
@@ -15,5 +15,7 @@ export default {
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
+    cardBackground: '#222'
   },
+  facebookPrimary: '#1877F2'
 };

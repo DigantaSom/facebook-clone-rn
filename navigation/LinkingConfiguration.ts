@@ -12,19 +12,43 @@ export default {
     screens: {
       Root: {
         screens: {
-          TabOne: {
+          Facebook: {
             screens: {
-              TabOneScreen: 'one',
-            },
+              Home: {
+                screens: {
+                  HomeScreen: 'home'
+                }
+              },
+              Videos: {
+                screens: {
+                  VideosScreen: 'videos'
+                }
+              },
+              Groups: {
+                screens: {
+                  GroupsScreen: 'groups'
+                }
+              },
+              Notifications: {
+                screens: {
+                  NotificationScreen: 'notifications'
+                }
+              },
+              More: {
+                screens: {
+                  MoreScreen: 'more'
+                }
+              }
+            }
           },
-          TabTwo: {
+          Search: {
             screens: {
-              TabTwoScreen: 'two',
-            },
-          },
-        },
+              SearchScreen: 'search'
+            }
+          }
+        }
       },
-      NotFound: '*',
-    },
-  },
+      NotFound: '*'
+    }
+  }
 };

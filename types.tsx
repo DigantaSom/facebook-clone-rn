@@ -8,15 +8,29 @@ export type RootStackParamList = {
   NotFound: undefined;
 };
 
-export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+export type FacebookStackParamList = {
+  Facebook: undefined;
+  Search: undefined;
+  Messenger: undefined;
 };
 
-export type TabOneParamList = {
-  TabOneScreen: undefined;
+export type TopTabParamList = {
+  Home: undefined;
+  Videos: undefined;
+  Groups: undefined;
+  Notifications: undefined;
+  More: undefined;
 };
 
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
+export type HomeStackParamList = {
+  Home: undefined;
+};
+export type GroupsStackParamList = {
+  Groups: undefined;
+};
+export type NotificationsStackParamList = {
+  Notifications: undefined;
+};
+export type MoreScreenStackParamList = {
+  More: undefined;
 };
