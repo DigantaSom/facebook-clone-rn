@@ -17,5 +17,7 @@ export default {
     tabIconSelected: tintColorDark,
     cardBackground: '#222'
   },
-  facebookPrimary: '#1877F2'
+  facebookPrimary: '#1877F2',
+  danger: '#DF4759',
+  success: '#42BA96'
 };

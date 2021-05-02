@@ -24,7 +24,7 @@ import {
 import HomeScreen from '../screens/HomeScreen';
 import VideosScreen from '../screens/VideosScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
-import MoreScreen from '../screens/MoreScreen';
+import MoreScreen from '../screens/more/MoreScreen';
 import GroupsScreen from '../screens/GroupsScreen';
 
 const TopTab = createMaterialTopTabNavigator<TopTabParamList>();
