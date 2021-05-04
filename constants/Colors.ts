@@ -7,7 +7,7 @@ export default {
     background: '#fff',
     tint: tintColorLight,
     tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight
+    tabIconSelected: tintColorLight,
   },
   dark: {
     text: '#fff',
@@ -15,9 +15,13 @@ export default {
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
-    cardBackground: '#222'
+    cardBackground: '#222',
+    dividerColor: '#ccc',
   },
-  facebookPrimary: '#1877F2',
   danger: '#DF4759',
-  success: '#42BA96'
+  success: '#42BA96',
+  facebookPrimary: '#1877F2',
+  facebookSecondary: '#008ad3',
+  grayButton: '#444',
+  grayText: '#BBB',
 };

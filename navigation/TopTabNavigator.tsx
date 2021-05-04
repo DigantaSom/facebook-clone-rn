@@ -17,15 +17,15 @@ import {
   TopTabParamList,
   HomeStackParamList,
   NotificationsStackParamList,
-  MoreScreenStackParamList,
-  GroupsStackParamList
+  GroupsStackParamList,
+  MenuStackParamList
 } from '../types';
 
 import HomeScreen from '../screens/HomeScreen';
 import VideosScreen from '../screens/VideosScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
-import MoreScreen from '../screens/more/MoreScreen';
 import GroupsScreen from '../screens/GroupsScreen';
+import MenuScreen from '../screens/menu/MenuScreen';
 
 const TopTab = createMaterialTopTabNavigator<TopTabParamList>();
 
@@ -38,7 +38,16 @@ export default function TopTabNavigator() {
       tabBarOptions={{
         activeTintColor: Colors[colorScheme].tint,
         showIcon: true,
-        showLabel: false
+        showLabel: false,
+        indicatorStyle: {
+          backgroundColor: Colors.facebookPrimary,
+          height: 3.5,
+          elevation: 3.5
+        },
+        tabStyle: {
+          borderBottomWidth: 1,
+          borderBottomColor: Colors.dark.tabIconDefault
+        }
       }}>
       <TopTab.Screen
         name='Home'
@@ -107,8 +116,8 @@ export default function TopTabNavigator() {
         }}
       />
       <TopTab.Screen
-        name='More'
-        component={MoreScreenStackNavigator}
+        name='Menu'
+        component={MenuStackNavigator}
         options={{
           tabBarIcon: ({ color, focused }) =>
             focused ? (
@@ -146,12 +155,12 @@ const NotificationsStackNavigator = () => {
   );
 };
 
-const MoreScreenStack = createStackNavigator<MoreScreenStackParamList>();
-const MoreScreenStackNavigator = () => {
+const MenuStack = createStackNavigator<MenuStackParamList>();
+const MenuStackNavigator = () => {
   return (
-    <MoreScreenStack.Navigator screenOptions={{ headerShown: false }}>
-      <MoreScreenStack.Screen name='More' component={MoreScreen} />
-    </MoreScreenStack.Navigator>
+    <MenuStack.Navigator screenOptions={{ headerShown: false }}>
+      <MenuStack.Screen name='Menu' component={MenuScreen} />
+    </MenuStack.Navigator>
   );
 };
 

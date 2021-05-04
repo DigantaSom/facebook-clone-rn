@@ -1,21 +1,32 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ColorSchemeName } from 'react-native';
+import {
+  ColorSchemeName,
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
-import { AuthStackParamList, FacebookStackParamList, RootStackParamList } from '../types';
+import { RootStackParamList, AuthStackParamList, RootNavProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUserSession } from '../redux/user/user.actions';
+import { RootState } from '../redux/store';
 
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
-import SearchScreen from '../screens/SearchScreen';
-// import NotFoundScreen from '../screens/NotFoundScreen';
 
 import TopTabNavigator from './TopTabNavigator';
-import { RootState } from '../redux/store';
+import SearchScreen from '../screens/SearchScreen';
+import ProfileScreen from '../screens/menu/ProfileScreen';
+// import NotFoundScreen from '../screens/NotFoundScreen';
+
+import SearchBar from '../components/UI/SearchBar';
+import CreatePost from '../screens/CreatePost';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const dispatch = useDispatch();
@@ -30,7 +41,8 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {currentUser ? <RootNavigator /> : <AuthNavigator />}
+      {/* TODO: remove negation */}
+      {!currentUser ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }
@@ -38,8 +50,68 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName='Root' screenOptions={{ headerShown: false }}>
-      <Stack.Screen name='Root' component={FacebookNavigator} />
+    <Stack.Navigator initialRouteName='Root'>
+      <Stack.Screen
+        name='Root'
+        component={TopTabNavigator}
+        options={({ navigation }: RootNavProps<'Root'>) => ({
+          headerTitle: 'facebook',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 30,
+          },
+          headerRight: () => (
+            <View style={styles.headerRightButtons}>
+              <Ionicons
+                name='md-search'
+                size={24}
+                color='black'
+                style={styles.button}
+                onPress={() => navigation.navigate('Search')}
+              />
+              <FontAwesome5
+                name='facebook-messenger'
+                size={24}
+                color='black'
+                style={styles.button}
+              />
+            </View>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name='Search'
+        component={SearchScreen}
+        options={{
+          headerTitleContainerStyle: {
+            left: 55,
+          },
+          headerTitle: () => <SearchBar />,
+        }}
+      />
+      <Stack.Screen
+        name='Profile'
+        component={ProfileScreen}
+        options={({ navigation }: RootNavProps<'Profile'>) => ({
+          headerTitleContainerStyle: {
+            left: 55,
+          },
+          headerTitle: () => (
+            <TouchableOpacity
+              activeOpacity={0.4}
+              onPress={() => navigation.navigate('Search')}>
+              <SearchBar searchBarDisabled />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name='CreatePost'
+        component={CreatePost}
+        options={{
+          headerTitle: 'Create Post',
+        }}
+      />
       {/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}
@@ -49,27 +121,6 @@ const RootNavigator = () => {
   );
 };
 
-const FacebookStack = createStackNavigator<FacebookStackParamList>();
-const FacebookNavigator = () => (
-  <FacebookStack.Navigator initialRouteName='Facebook'>
-    <FacebookStack.Screen
-      name='Facebook'
-      component={TopTabNavigator}
-      options={{
-        headerTitle: 'facebook',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontSize: 30
-        }
-      }}
-    />
-    <FacebookStack.Screen
-      name='Search'
-      component={SearchScreen} // TODO: later, SearchStack
-    />
-  </FacebookStack.Navigator>
-);
-
 const AuthStack = createStackNavigator<AuthStackParamList>();
 const AuthNavigator = () => (
   <AuthStack.Navigator screenOptions={{ headerShown: false }}>
@@ -77,3 +128,18 @@ const AuthNavigator = () => (
     <AuthStack.Screen name='Register' component={RegisterScreen} />
   </AuthStack.Navigator>
 );
+
+const styles = StyleSheet.create({
+  headerRightButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: 90,
+    marginRight: 10,
+  },
+  button: {
+    padding: 5,
+    borderRadius: 20,
+    backgroundColor: '#ddd',
+  },
+});

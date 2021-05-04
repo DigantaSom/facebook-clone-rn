@@ -12,40 +12,32 @@ export default {
     screens: {
       Root: {
         screens: {
-          Facebook: {
+          Home: {
             screens: {
-              Home: {
-                screens: {
-                  HomeScreen: 'home'
-                }
-              },
-              Videos: {
-                screens: {
-                  VideosScreen: 'videos'
-                }
-              },
-              Groups: {
-                screens: {
-                  GroupsScreen: 'groups'
-                }
-              },
-              Notifications: {
-                screens: {
-                  NotificationScreen: 'notifications'
-                }
-              },
-              More: {
-                screens: {
-                  MoreScreen: 'more'
-                }
-              }
+              HomeScreen: 'home'
             }
           },
-          Search: {
+          VideosScreen: 'videos',
+          Groups: {
             screens: {
-              SearchScreen: 'search'
+              GroupsScreen: 'groups'
+            }
+          },
+          Notifications: {
+            screens: {
+              NotificationsScreen: 'notifications'
+            }
+          },
+          Menu: {
+            screens: {
+              MenuScreen: 'menu'
             }
           }
+        }
+      },
+      Search: {
+        screens: {
+          SearchScreen: 'search'
         }
       }
       // NotFound: '*'
