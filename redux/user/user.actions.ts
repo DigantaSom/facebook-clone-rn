@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 import {
   CheckUserSessionDispatchType,
@@ -15,20 +15,29 @@ import {
   SignOutDispatchType,
   SIGN_OUT_START,
   SIGN_OUT_SUCCESS,
-  SIGN_OUT_FAILURE
+  SIGN_OUT_FAILURE,
+  IUser,
+  UpdateProfilePictureDispatchType,
+  BlobType,
+  UPDATE_PROFILE_PIC_START,
+  UPDATE_PROFILE_PIC_FAILURE,
+  UPDATE_PROFILE_PIC_SUCCESS,
 } from './user.types';
 
+import firebase from '../../firebase/firebase.utils';
 import {
   auth,
+  firestore,
+  storage,
   createUserProfileDocument,
-  getCurrentUser
+  getCurrentUser,
 } from '../../firebase/firebase.utils';
 
 export const checkUserSession = () => async (
-  dispatch: Dispatch<CheckUserSessionDispatchType>
+  dispatch: Dispatch<CheckUserSessionDispatchType>,
 ) => {
   dispatch({
-    type: CHECK_USER_SESSION
+    type: CHECK_USER_SESSION,
   });
   try {
     const authUser = await getCurrentUser();
@@ -36,7 +45,7 @@ export const checkUserSession = () => async (
     if (!authUser) {
       dispatch({
         type: EMAIL_SIGN_IN_FAILURE,
-        payload: '' // Not logged in
+        payload: '', // Not logged in
       });
       return;
     }
@@ -48,13 +57,13 @@ export const checkUserSession = () => async (
       type: EMAIL_SIGN_IN_SUCCESS,
       payload: {
         id: userSnapshot?.id,
-        ...userSnapshot?.data()
-      }
+        ...userSnapshot?.data(),
+      },
     });
   } catch (err) {
     dispatch({
       type: EMAIL_SIGN_IN_FAILURE,
-      payload: err.message
+      payload: err.message,
     });
   }
 };
@@ -62,7 +71,7 @@ export const checkUserSession = () => async (
 export const signUp = ({
   email,
   password,
-  displayName
+  displayName,
 }: {
   email: string;
   password: string;
@@ -70,7 +79,7 @@ export const signUp = ({
 }) => async (dispatch: Dispatch<SignUpDispatchType>) => {
   try {
     dispatch({
-      type: SIGN_UP_START
+      type: SIGN_UP_START,
     });
 
     const { user } = await auth.createUserWithEmailAndPassword(email, password);
@@ -82,13 +91,13 @@ export const signUp = ({
       type: SIGN_UP_SUCCESS,
       payload: {
         id: userSnapshot!.id,
-        ...userSnapshot!.data()
-      }
+        ...userSnapshot!.data(),
+      },
     });
   } catch (err) {
     dispatch({
       type: SIGN_UP_FAILURE,
-      payload: err.message
+      payload: err.message,
     });
     Alert.alert('Error signing up!', err.message, [{ text: 'Got it' }]);
   }
@@ -96,14 +105,14 @@ export const signUp = ({
 
 export const emailSignIn = ({
   email,
-  password
+  password,
 }: {
   email: string;
   password: string;
 }) => async (dispatch: Dispatch<EmailSignInDispatchType>) => {
   try {
     dispatch({
-      type: EMAIL_SIGN_IN_START
+      type: EMAIL_SIGN_IN_START,
     });
 
     const { user } = await auth.signInWithEmailAndPassword(email, password);
@@ -115,13 +124,13 @@ export const emailSignIn = ({
       type: EMAIL_SIGN_IN_SUCCESS,
       payload: {
         id: userSnapshot?.id,
-        ...userSnapshot?.data()
-      }
+        ...userSnapshot?.data(),
+      },
     });
   } catch (err) {
     dispatch({
       type: EMAIL_SIGN_IN_FAILURE,
-      payload: err.message
+      payload: err.message,
     });
     Alert.alert('Error signing in!', err.message, [{ text: 'Got it' }]);
   }
@@ -130,17 +139,113 @@ export const emailSignIn = ({
 export const signOut = () => async (dispatch: Dispatch<SignOutDispatchType>) => {
   try {
     dispatch({
-      type: SIGN_OUT_START
+      type: SIGN_OUT_START,
     });
     await auth.signOut();
     dispatch({
-      type: SIGN_OUT_SUCCESS
+      type: SIGN_OUT_SUCCESS,
     });
   } catch (err) {
     dispatch({
       type: SIGN_OUT_FAILURE,
-      payload: err.message
+      payload: err.message,
     });
     Alert.alert('Error signing out!', err.message, [{ text: 'Got it' }]);
   }
+};
+
+export const updateProfilePic = (
+  currentUser: IUser,
+  imageUri: string,
+  caption: string,
+) => async (dispatch: Dispatch<UpdateProfilePictureDispatchType>) => {
+  // const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
+  const uploadUri = Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
+
+  const blob: BlobType = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+      resolve(xhr.response);
+    };
+    xhr.onerror = () => {
+      reject(new TypeError('Network request failed'));
+    };
+    xhr.responseType = 'blob';
+    xhr.open('GET', uploadUri, true);
+    xhr.send(null);
+  });
+
+  const ref = storage
+    .ref(`profile_pics/${currentUser.displayName}`)
+    .child(new Date().toISOString());
+
+  const snapshot = ref.put(blob);
+
+  snapshot.on(
+    firebase.storage.TaskEvent.STATE_CHANGED,
+    () => {
+      dispatch({
+        type: UPDATE_PROFILE_PIC_START,
+      });
+    },
+    err => {
+      dispatch({
+        type: UPDATE_PROFILE_PIC_FAILURE,
+        payload: err.message,
+      });
+      Alert.alert('Error uploading profile pic', err.message, [{ text: 'Okay' }]);
+      console.log('Error uploading profile pic:', err);
+      // blob.close();
+      return;
+    },
+    () => {
+      // success function
+      snapshot.snapshot.ref.getDownloadURL().then(async url => {
+        const userRef = firestore.doc(`users/${currentUser.id}`);
+        const profilePicsAlbum_Ref = firestore
+          .collection('albums')
+          .doc(currentUser.id)
+          .collection('profile_pics')
+          .doc();
+
+        const newProfilePicObj = {
+          imageUri: url,
+          caption,
+          // createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        };
+
+        try {
+          const batch = firestore.batch();
+
+          batch.update(userRef, {
+            profilePic: newProfilePicObj,
+          });
+          batch.set(profilePicsAlbum_Ref, newProfilePicObj);
+
+          await batch.commit();
+
+          console.log('UPLOAD SUCCESS');
+          dispatch({
+            type: UPDATE_PROFILE_PIC_SUCCESS,
+            payload: newProfilePicObj,
+          });
+          Alert.alert(
+            'Profile Picture updated!',
+            'Your new Profile Picture is set successfully.',
+            [{ text: 'Noice!' }],
+          );
+        } catch (err) {
+          dispatch({
+            type: UPDATE_PROFILE_PIC_FAILURE,
+            payload: err.message,
+          });
+          Alert.alert('Error uploading profile pic', err.message, [{ text: 'Okay' }]);
+          console.log('Error uploading profile pic:', err);
+        }
+
+        return url;
+      });
+    },
+  );
 };

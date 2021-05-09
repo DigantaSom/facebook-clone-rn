@@ -17,16 +17,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkUserSession } from '../redux/user/user.actions';
 import { RootState } from '../redux/store';
 
+import SearchBar from '../components/UI/SearchBar';
+
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 
 import TopTabNavigator from './TopTabNavigator';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/menu/ProfileScreen';
-// import NotFoundScreen from '../screens/NotFoundScreen';
-
-import SearchBar from '../components/UI/SearchBar';
 import CreatePost from '../screens/CreatePost';
+import PhotoScreen from '../screens/PhotoScreen';
+import UploadProfilePicScreen from '../screens/menu/UploadProfilePicScreen';
+// import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const dispatch = useDispatch();
@@ -41,8 +43,8 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* TODO: remove negation */}
-      {!currentUser ? <RootNavigator /> : <AuthNavigator />}
+      {/* TODO: */}
+      {currentUser ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }
@@ -112,6 +114,15 @@ const RootNavigator = () => {
           headerTitle: 'Create Post',
         }}
       />
+      <Stack.Screen
+        name='Photo'
+        component={PhotoScreen}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: () => null,
+        }}
+      />
+      <Stack.Screen name='UploadProfilePic' component={UploadProfilePicScreen} />
       {/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}

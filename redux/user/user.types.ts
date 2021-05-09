@@ -1,3 +1,5 @@
+import firebase from 'firebase';
+
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';
 
 export const SIGN_UP_START = 'SIGN_UP_START';
@@ -12,16 +14,31 @@ export const SIGN_OUT_START = 'SIGN_OUT_START';
 export const SIGN_OUT_SUCCESS = 'SIGN_OUT_SUCCESS';
 export const SIGN_OUT_FAILURE = 'SIGN_OUT_FAILURE';
 
+export const UPDATE_PROFILE_PIC_START = 'UPDATE_PROFILE_PIC_START';
+export const UPDATE_PROFILE_PIC_SUCCESS = 'UPDATE_PROFILE_PIC_SUCCESS';
+export const UPDATE_PROFILE_PIC_FAILURE = 'UPDATE_PROFILE_PIC_FAILURE';
+
+type createdAtType = {
+  seconds: number;
+  nanoseconds: number;
+};
+
+type profilePicType = {
+  imageUri: string;
+  caption?: string;
+  createdAt: firebase.firestore.FieldValue;
+};
+
 export interface IUser {
   id?: string;
   displayName?: string;
   email?: string;
-  photoUrl?: string;
-  createdAt?: {
-    seconds: number;
-    nanoseconds: number;
-  };
+  profilePic?: profilePicType;
+  // createdAt?: createdAtType;
+  createdAt?: firebase.firestore.FieldValue;
 }
+
+export type BlobType = Blob | Uint8Array | ArrayBuffer;
 
 // Sign up
 
@@ -90,10 +107,31 @@ export interface ISignOutFailure {
 
 export type SignOutDispatchType = ISignOutStart | ISignOutSuccess | ISignOutFailure;
 
+// Add or Update profile picture
+export interface IUpdateProfilePicStart {
+  type: typeof UPDATE_PROFILE_PIC_START;
+}
+
+export interface IUpdateProfilePicSuccess {
+  type: typeof UPDATE_PROFILE_PIC_SUCCESS;
+  payload: profilePicType;
+}
+
+export interface IUpdateProfilePicFailure {
+  type: typeof UPDATE_PROFILE_PIC_FAILURE;
+  payload: string; // error message
+}
+
+export type UpdateProfilePictureDispatchType =
+  | IUpdateProfilePicStart
+  | IUpdateProfilePicSuccess
+  | IUpdateProfilePicFailure;
+
 // User Action Type
 
 export type UserActionType =
   | ICheckUserSession
   | SignUpDispatchType
   | EmailSignInDispatchType
-  | SignOutDispatchType;
+  | SignOutDispatchType
+  | UpdateProfilePictureDispatchType;

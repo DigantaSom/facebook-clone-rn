@@ -1,17 +1,41 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
+
 import { View } from '../Themed';
 
 import Layout from '../../constants/Layout';
-import Colors from '../../constants/Colors';
+import { RootState } from '../../redux/store';
 
-const ProfileHeader = () => {
+type ProfileHeaderProps = {
+  handleShowPicOptions: () => void;
+  handleIsProfilePicPressed: () => void;
+  handleIsCoverPicPressed: () => void;
+};
+
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  handleShowPicOptions,
+  handleIsProfilePicPressed,
+  handleIsCoverPicPressed,
+}) => {
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+
+  const onProfilePicPress = () => {
+    handleShowPicOptions();
+    handleIsProfilePicPressed();
+  };
+
+  const onCoverPicPress = () => {
+    handleShowPicOptions();
+    handleIsCoverPicPressed();
+  };
+
   return (
     <View style={styles.header}>
       <TouchableOpacity
         style={styles.picsContainer}
         activeOpacity={0.4}
-        onPress={() => {}}>
+        onPress={onCoverPicPress}>
         <Image
           source={require('../../assets/images/cover-pic-placeholder.jpg')}
           style={styles.coverPic}
@@ -19,11 +43,18 @@ const ProfileHeader = () => {
         <TouchableOpacity
           style={styles.profilePicContainer}
           activeOpacity={0.4}
-          onPress={() => console.log('profile pic')}>
-          <Image
-            source={require('../../assets/images/no-dp.jpg')}
-            style={styles.profilePic}
-          />
+          onPress={onProfilePicPress}>
+          {currentUser && currentUser.profilePic ? (
+            <Image
+              source={{ uri: currentUser.profilePic.imageUri }}
+              style={styles.profilePic}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/images/no-dp.jpg')}
+              style={styles.profilePic}
+            />
+          )}
         </TouchableOpacity>
       </TouchableOpacity>
     </View>
@@ -35,6 +66,7 @@ export default ProfileHeader;
 const styles = StyleSheet.create({
   header: {
     marginBottom: Layout.window.width / 4,
+    flex: 1,
     // backgroundColor: Colors.dark.cardBackground,
   },
   picsContainer: {

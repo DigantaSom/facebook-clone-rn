@@ -10,24 +10,29 @@ import {
   SIGN_OUT_START,
   SIGN_OUT_SUCCESS,
   SIGN_OUT_FAILURE,
-  CHECK_USER_SESSION
+  CHECK_USER_SESSION,
+  UPDATE_PROFILE_PIC_START,
+  UPDATE_PROFILE_PIC_SUCCESS,
+  UPDATE_PROFILE_PIC_FAILURE,
 } from './user.types';
 
 interface IDefaultState {
   currentUser: IUser | null;
   loading: boolean;
+  uploading: boolean;
   error: string;
 }
 
 const defaultState: IDefaultState = {
   currentUser: null,
   loading: false,
-  error: ''
+  uploading: false,
+  error: '',
 };
 
 const userReducer = (
   state: IDefaultState = defaultState,
-  action: UserActionType
+  action: UserActionType,
 ): IDefaultState => {
   switch (action.type) {
     case CHECK_USER_SESSION:
@@ -36,7 +41,7 @@ const userReducer = (
     case SIGN_OUT_START:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case SIGN_UP_SUCCESS:
@@ -45,15 +50,25 @@ const userReducer = (
         ...state,
         currentUser: action.payload,
         loading: false,
-        error: ''
+        error: '',
       };
 
     case SIGN_OUT_SUCCESS:
+      return defaultState;
+
+    case UPDATE_PROFILE_PIC_START:
       return {
         ...state,
-        currentUser: null,
         loading: false,
-        error: ''
+        uploading: true,
+      };
+
+    case UPDATE_PROFILE_PIC_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        uploading: false,
+        currentUser: { ...state.currentUser, profilePic: action.payload },
       };
 
     case SIGN_UP_FAILURE:
@@ -62,14 +77,22 @@ const userReducer = (
         ...state,
         currentUser: null,
         loading: false,
-        error: action.payload
+        error: action.payload,
       };
 
     case SIGN_OUT_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.payload,
+      };
+
+    case UPDATE_PROFILE_PIC_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        uploading: false,
+        error: action.payload,
       };
 
     default:

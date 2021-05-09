@@ -18,7 +18,7 @@ import {
   HomeStackParamList,
   NotificationsStackParamList,
   GroupsStackParamList,
-  MenuStackParamList
+  MenuStackParamList,
 } from '../types';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -42,12 +42,12 @@ export default function TopTabNavigator() {
         indicatorStyle: {
           backgroundColor: Colors.facebookPrimary,
           height: 3.5,
-          elevation: 3.5
+          elevation: 3.5,
         },
         tabStyle: {
           borderBottomWidth: 1,
-          borderBottomColor: Colors.dark.tabIconDefault
-        }
+          borderBottomColor: Colors.dark.tabIconDefault,
+        },
       }}>
       <TopTab.Screen
         name='Home'
@@ -58,7 +58,7 @@ export default function TopTabNavigator() {
               <TabBarIcon name='md-home' color={Colors.facebookPrimary} />
             ) : (
               <TabBarIcon name='md-home-outline' color={color} />
-            )
+            ),
         }}
       />
       <TopTab.Screen
@@ -70,7 +70,7 @@ export default function TopTabNavigator() {
               <TabBarIcon name='ios-videocam' size={26} color={Colors.facebookPrimary} />
             ) : (
               <TabBarIcon name='ios-videocam-outline' size={26} color={color} />
-            )
+            ),
         }}
       />
       <TopTab.Screen
@@ -90,7 +90,7 @@ export default function TopTabNavigator() {
                 size={24}
                 color={color}
               />
-            )
+            ),
         }}
       />
       <TopTab.Screen
@@ -112,7 +112,7 @@ export default function TopTabNavigator() {
                 color={color}
                 style={{ marginBottom: -3 }}
               />
-            )
+            ),
         }}
       />
       <TopTab.Screen
@@ -124,7 +124,7 @@ export default function TopTabNavigator() {
               <TabBarIcon name='menu' size={28} color={Colors.facebookPrimary} />
             ) : (
               <TabBarIcon name='md-menu-outline' size={28} color={color} />
-            )
+            ),
         }}
       />
     </TopTab.Navigator>

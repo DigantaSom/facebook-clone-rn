@@ -1,9 +1,10 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
 import { MenuNavProps } from '../../types';
+import { RootState } from '../../redux/store';
 import { signOut } from '../../redux/user/user.actions';
 
 import { Text, View } from '../../components/Themed';
@@ -11,8 +12,12 @@ import MenuScreenCard from '../../components/menu/MenuScreenCard';
 
 import MenuScreenData from '../../utils/menu-screen.data';
 import Colors from '../../constants/Colors';
+import DPcontainer from '../../components/UI/DPcontainer';
 
-const MenuScreen = ({ navigation }: MenuNavProps<'Menu'>) => {
+type MenuScreenProps = MenuNavProps<'Menu'>;
+
+const MenuScreen: React.FC<MenuScreenProps> = ({ navigation }) => {
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const dispatch = useDispatch();
 
   const handleSignOut = () => dispatch(signOut());
@@ -25,14 +30,15 @@ const MenuScreen = ({ navigation }: MenuNavProps<'Menu'>) => {
             activeOpacity={0.4}
             onPress={() => navigation.navigate('Profile')}>
             <View style={styles.header}>
-              <View style={styles.headerDpContainer}>
-                <Image
-                  source={require('../../assets/images/no-dp.jpg')}
-                  style={styles.headerDp}
-                />
-              </View>
+              {currentUser && currentUser.profilePic ? (
+                <DPcontainer imageUri={currentUser.profilePic.imageUri} />
+              ) : (
+                <DPcontainer />
+              )}
               <View style={styles.headerInfo}>
-                <Text style={styles.headerUsername}>Diganta Som</Text>
+                {currentUser && (
+                  <Text style={styles.headerUsername}>{currentUser.displayName}</Text>
+                )}
                 <Text style={styles.headerSubtitle}>See your profile</Text>
               </View>
             </View>

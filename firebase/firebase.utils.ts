@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBIXyRtbJ2S_kLflLICH5_Lnqcl_AAkAgo',
@@ -8,7 +9,7 @@ const firebaseConfig = {
   projectId: 'facebook-clone-74af5',
   storageBucket: 'facebook-clone-74af5.appspot.com',
   messagingSenderId: '927630363004',
-  appId: '1:927630363004:web:4a028805328c0a98803cf9'
+  appId: '1:927630363004:web:4a028805328c0a98803cf9',
 };
 
 let app;
@@ -21,7 +22,7 @@ if (firebase.apps.length === 0) {
 
 export const createUserProfileDocument = async (
   authUser: firebase.User | null,
-  displayName?: string
+  displayName?: string,
 ) => {
   if (!authUser) {
     return;
@@ -37,7 +38,7 @@ export const createUserProfileDocument = async (
       await userRef.set({
         displayName,
         email: authUser.email,
-        createdAt
+        createdAt,
       });
     } catch (err) {
       console.error('Error while creating user:', err);
@@ -58,12 +59,12 @@ export const getCurrentUser = (): Promise<firebase.User | null> => {
 
 export const auth = firebase.auth();
 export const firestore = app.firestore();
-// export const storage = firebase.storage();
+export const storage = firebase.storage();
 
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
-  prompt: 'select_account'
+  prompt: 'select_account',
 });
 
 export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);

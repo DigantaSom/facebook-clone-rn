@@ -3,7 +3,10 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
+
+import { IUser } from './redux/user/user.types';
 
 // Navigation
 
@@ -13,9 +16,12 @@ export type RootStackParamList = {
   NotFound: undefined;
   Profile: undefined;
   CreatePost: undefined;
+  UploadProfilePic: { currentUser: IUser };
+  Photo: { imageUri: string };
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
   navigation: StackNavigationProp<RootStackParamList, T>;
+  route: RouteProp<RootStackParamList, T>;
 };
 
 export type AuthStackParamList = {
@@ -59,6 +65,8 @@ export type MenuStackParamList = {
   Menu: undefined;
   Profile: undefined;
   CreatePost: undefined;
+  UploadProfilePic: { currentUser: IUser };
+  Photo: { imageUri: string };
 };
 export type MenuNavProps<T extends keyof MenuStackParamList> = {
   navigation: StackNavigationProp<MenuStackParamList, T>;

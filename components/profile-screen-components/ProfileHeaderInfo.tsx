@@ -7,10 +7,16 @@ import { Text, View } from '../Themed';
 import Colors from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 
-const ProfileHeaderInfo = () => {
+import { IUser } from '../../redux/user/user.types';
+
+type ProfileHeaderInfoProps = {
+  currentUser: IUser | null;
+};
+
+const ProfileHeaderInfo: React.FC<ProfileHeaderInfoProps> = ({ currentUser }) => {
   return (
     <View style={styles.headerBottom}>
-      <Text style={styles.displayName}>Diganta Som</Text>
+      <Text style={styles.displayName}>{currentUser?.displayName}</Text>
       <Text style={styles.bio}>Here's an amazing bio! Noice toit smort.</Text>
       <View style={styles.headerOptions}>
         <TouchableOpacity style={styles.addStoryButton} activeOpacity={0.8}>

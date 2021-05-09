@@ -10,8 +10,6 @@ import useColorScheme from './hooks/useColorScheme';
 
 import Navigation from './navigation';
 
-// import Alerts from './components/alerts/Alerts';
-
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -24,7 +22,6 @@ export default function App() {
         <SafeAreaProvider>
           <Navigation colorScheme={colorScheme} />
           <StatusBar />
-          {/* <Alerts /> */}
         </SafeAreaProvider>
       </Provider>
     );
