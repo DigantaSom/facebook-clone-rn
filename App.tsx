@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import { Provider } from 'react-redux';
 import store from './redux/store';
@@ -19,10 +20,12 @@ export default function App() {
   } else {
     return (
       <Provider store={store}>
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
+        <PaperProvider>
+          <SafeAreaProvider>
+            <Navigation colorScheme={colorScheme} />
+            <StatusBar />
+          </SafeAreaProvider>
+        </PaperProvider>
       </Provider>
     );
   }

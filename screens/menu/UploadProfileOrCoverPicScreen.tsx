@@ -1,60 +1,56 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  StyleSheet,
-  Platform,
-  Button,
-  Image,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Platform, Button, Image, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { RootNavProps } from '../../types';
 
-import { View, Text } from '../../components/Themed';
+import { View } from '../../components/Themed';
 import Spinner from '../../components/UI/Spinner';
+import HeaderSaveButton from '../../components/UI/HeaderSaveButton';
 
-import { updateProfilePic } from '../../redux/user/user.actions';
 import { RootState } from '../../redux/store';
+import { updateProfilePic } from '../../redux/user/user.actions';
+import { uploadCoverPic } from '../../redux/profile/profile.actions';
 
 import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
 
-type UploadProfilePicScreenProps = RootNavProps<'UploadProfilePic'>;
+type UploadProfileOrCoverPicScreenProps = RootNavProps<'UploadProfileOrCoverPic'>;
 
-const UploadProfilePicScreen: React.FC<UploadProfilePicScreenProps> = ({
+const UploadProfileOrCoverPicScreen: React.FC<UploadProfileOrCoverPicScreenProps> = ({
   navigation,
   route,
 }) => {
   const [image, setImage] = useState('');
   const [caption, setCaption] = useState('');
 
-  const currentUser = route.params.currentUser;
+  const { currentUser, isCoverPic } = route.params;
 
   const dispatch = useDispatch();
   const { uploading, error } = useSelector((state: RootState) => state.user);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Upload a Profile Picture',
+      headerTitle: `Upload a ${isCoverPic ? 'Cover' : 'Profile'} Picture`,
       headerTitleStyle: {
         fontSize: 15,
         marginLeft: -15,
       },
       headerRight: () =>
         !image ? null : (
-          <TouchableOpacity
-            style={styles.headerRightContainer}
-            activeOpacity={0.8}
-            onPress={() => {
-              dispatch(updateProfilePic(currentUser, image, caption));
-              if (!uploading && !error) {
-                navigation.navigate('Profile');
+          <HeaderSaveButton
+            onSavePress={() => {
+              if (isCoverPic) {
+                dispatch(uploadCoverPic(currentUser, image, caption));
+              } else {
+                dispatch(updateProfilePic(currentUser, image, caption));
               }
-            }}>
-            <Text ellipsizeMode='clip'>Save</Text>
-          </TouchableOpacity>
+              if (!uploading && !error) {
+                navigation.navigate('Profile', { userId: currentUser.id as string });
+              }
+            }}
+          />
         ),
     });
   }, [image, caption, uploading, error]);
@@ -111,7 +107,7 @@ const UploadProfilePicScreen: React.FC<UploadProfilePicScreenProps> = ({
   );
 };
 
-export default UploadProfilePicScreen;
+export default UploadProfileOrCoverPicScreen;
 
 const styles = StyleSheet.create({
   headerRightContainer: {

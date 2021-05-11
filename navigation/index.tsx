@@ -27,7 +27,8 @@ import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/menu/ProfileScreen';
 import CreatePost from '../screens/CreatePost';
 import PhotoScreen from '../screens/PhotoScreen';
-import UploadProfilePicScreen from '../screens/menu/UploadProfilePicScreen';
+import UploadProfileOrCoverPicScreen from '../screens/menu/UploadProfileOrCoverPicScreen';
+import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -122,7 +123,14 @@ const RootNavigator = () => {
           headerTitle: () => null,
         }}
       />
-      <Stack.Screen name='UploadProfilePic' component={UploadProfilePicScreen} />
+      <Stack.Screen
+        name='UploadProfileOrCoverPic'
+        component={UploadProfileOrCoverPicScreen}
+      />
+      <Stack.Screen
+        name='AddOrEditProfileAbout'
+        component={AddOrEditProfileAboutScreen}
+      />
       {/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}

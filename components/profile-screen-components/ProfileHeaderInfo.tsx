@@ -10,23 +10,29 @@ import Layout from '../../constants/Layout';
 import { IUser } from '../../redux/user/user.types';
 
 type ProfileHeaderInfoProps = {
-  currentUser: IUser | null;
+  userDisplayName: string;
+  isMyProfile: boolean;
 };
 
-const ProfileHeaderInfo: React.FC<ProfileHeaderInfoProps> = ({ currentUser }) => {
+const ProfileHeaderInfo: React.FC<ProfileHeaderInfoProps> = ({
+  userDisplayName,
+  isMyProfile,
+}) => {
   return (
     <View style={styles.headerBottom}>
-      <Text style={styles.displayName}>{currentUser?.displayName}</Text>
+      <Text style={styles.displayName}>{userDisplayName}</Text>
       <Text style={styles.bio}>Here's an amazing bio! Noice toit smort.</Text>
-      <View style={styles.headerOptions}>
-        <TouchableOpacity style={styles.addStoryButton} activeOpacity={0.8}>
-          <Entypo name='circle-with-plus' size={20} color='white' />
-          <Text style={styles.addStoryText}>Add to Story</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.profileSettings_button}>
-          <Feather name='more-horizontal' size={20} color='white' />
-        </TouchableOpacity>
-      </View>
+      {!isMyProfile ? null : (
+        <View style={styles.headerOptions}>
+          <TouchableOpacity style={styles.addStoryButton} activeOpacity={0.8}>
+            <Entypo name='circle-with-plus' size={20} color='white' />
+            <Text style={styles.addStoryText}>Add to Story</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.profileSettings_button}>
+            <Feather name='more-horizontal' size={20} color='white' />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

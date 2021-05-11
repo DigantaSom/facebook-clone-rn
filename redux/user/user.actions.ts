@@ -18,11 +18,11 @@ import {
   SIGN_OUT_FAILURE,
   IUser,
   UpdateProfilePictureDispatchType,
-  BlobType,
   UPDATE_PROFILE_PIC_START,
   UPDATE_PROFILE_PIC_FAILURE,
   UPDATE_PROFILE_PIC_SUCCESS,
 } from './user.types';
+import { BlobType } from '../../types';
 
 import firebase from '../../firebase/firebase.utils';
 import {
@@ -94,6 +94,19 @@ export const signUp = ({
         ...userSnapshot!.data(),
       },
     });
+
+    try {
+      const profileRef = firestore.collection('profiles').doc(userSnapshot!.id);
+
+      profileRef.set({
+        userId: userSnapshot!.id,
+        displayName,
+        joined: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (err) {
+      console.log('Error while taking profile picture to profile collection:', err);
+      // TODO: dispatch some profile action and make an Alert.
+    }
   } catch (err) {
     dispatch({
       type: SIGN_UP_FAILURE,
@@ -207,11 +220,11 @@ export const updateProfilePic = (
           .doc(currentUser.id)
           .collection('profile_pics')
           .doc();
+        const profileRef = firestore.doc(`profiles/${currentUser.id}`);
 
         const newProfilePicObj = {
           imageUri: url,
           caption,
-          // createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         };
 
@@ -222,10 +235,12 @@ export const updateProfilePic = (
             profilePic: newProfilePicObj,
           });
           batch.set(profilePicsAlbum_Ref, newProfilePicObj);
+          batch.update(profileRef, {
+            profilePic: newProfilePicObj,
+          });
 
           await batch.commit();
 
-          console.log('UPLOAD SUCCESS');
           dispatch({
             type: UPDATE_PROFILE_PIC_SUCCESS,
             payload: newProfilePicObj,

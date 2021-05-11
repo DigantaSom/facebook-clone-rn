@@ -9,7 +9,7 @@ import {
   Keyboard,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -35,7 +35,7 @@ const LoginScreen = ({ navigation }: AuthNavProps<'Login'>) => {
         'Email is required',
         'Please provide a valid email address',
         [{ text: 'Okay' }],
-        { cancelable: true }
+        { cancelable: true },
       );
       return;
     }
@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }: AuthNavProps<'Login'>) => {
         'Invalid Email format',
         'Please provide a valid email address',
         [{ text: 'Okay' }],
-        { cancelable: true }
+        { cancelable: true },
       );
     }
     if (password.trim() === '') {
@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }: AuthNavProps<'Login'>) => {
         'Password is required',
         'Please provide a password',
         [{ text: 'Okay' }],
-        { cancelable: true }
+        { cancelable: true },
       );
       return;
     }
@@ -93,7 +93,7 @@ const LoginScreen = ({ navigation }: AuthNavProps<'Login'>) => {
               onChangeText={text => setPassword(text)}
               style={styles.input}
             />
-            <View style={styles.buttonsContainer}>
+            <View style={styles.buttonContainer}>
               <Button title='Login' onPress={handleSignIn} />
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
@@ -112,34 +112,34 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   logoContainer: {
     width: 150,
-    height: 150
+    height: 150,
   },
   logo: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 24
+    fontSize: 24,
   },
   loginForm: {
     marginTop: 25,
-    width: '70%'
+    width: '70%',
   },
   input: {
     color: 'white',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'white'
+    borderBottomColor: 'white',
   },
-  buttonsContainer: {
-    marginVertical: 25
+  buttonContainer: {
+    marginVertical: 25,
   },
   signUpText: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });

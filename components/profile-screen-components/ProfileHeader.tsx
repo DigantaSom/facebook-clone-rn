@@ -1,25 +1,27 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
-
 import { View } from '../Themed';
 
+import { ProfileAndCoverPicType } from '../../types';
+
 import Layout from '../../constants/Layout';
-import { RootState } from '../../redux/store';
+import Colors from '../../constants/Colors';
 
 type ProfileHeaderProps = {
   handleShowPicOptions: () => void;
   handleIsProfilePicPressed: () => void;
   handleIsCoverPicPressed: () => void;
+  profilePic: ProfileAndCoverPicType | undefined;
+  coverPic: ProfileAndCoverPicType | undefined;
 };
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   handleShowPicOptions,
   handleIsProfilePicPressed,
   handleIsCoverPicPressed,
+  profilePic,
+  coverPic,
 }) => {
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
-
   const onProfilePicPress = () => {
     handleShowPicOptions();
     handleIsProfilePicPressed();
@@ -36,19 +38,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         style={styles.picsContainer}
         activeOpacity={0.4}
         onPress={onCoverPicPress}>
-        <Image
-          source={require('../../assets/images/cover-pic-placeholder.jpg')}
-          style={styles.coverPic}
-        />
+        {coverPic ? (
+          <Image source={{ uri: coverPic.imageUri }} style={styles.coverPicStyle} />
+        ) : (
+          <View style={[styles.coverPicStyle, styles.noCoverPicStyle]} />
+        )}
         <TouchableOpacity
           style={styles.profilePicContainer}
           activeOpacity={0.4}
           onPress={onProfilePicPress}>
-          {currentUser && currentUser.profilePic ? (
-            <Image
-              source={{ uri: currentUser.profilePic.imageUri }}
-              style={styles.profilePic}
-            />
+          {profilePic ? (
+            <Image source={{ uri: profilePic.imageUri }} style={styles.profilePic} />
           ) : (
             <Image
               source={require('../../assets/images/no-dp.jpg')}
@@ -78,11 +78,14 @@ const styles = StyleSheet.create({
     // overflow: 'hidden',
     position: 'relative',
   },
-  coverPic: {
+  coverPicStyle: {
     width: '100%',
     height: '100%',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
+  },
+  noCoverPicStyle: {
+    backgroundColor: Colors.defaultBackground,
   },
   profilePicContainer: {
     width: Layout.window.width / 2,

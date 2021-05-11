@@ -18,7 +18,7 @@ import { IUser } from '../../redux/user/user.types';
 
 type ProfilePicBottomDrawer = {
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
-  currentUser: IUser | null;
+  currentUser: IUser;
 };
 
 const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
@@ -27,7 +27,7 @@ const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
 }) => {
   const onSelectProfilePictureHandler = () => {
     if (currentUser) {
-      navigation.navigate('UploadProfilePic', { currentUser });
+      navigation.navigate('UploadProfileOrCoverPic', { currentUser, isCoverPic: false });
     }
   };
 

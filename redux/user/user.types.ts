@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from '../../firebase/firebase.utils';
+import { ProfileAndCoverPicType } from '../../types';
 
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';
 
@@ -17,31 +18,15 @@ export const SIGN_OUT_FAILURE = 'SIGN_OUT_FAILURE';
 export const UPDATE_PROFILE_PIC_START = 'UPDATE_PROFILE_PIC_START';
 export const UPDATE_PROFILE_PIC_SUCCESS = 'UPDATE_PROFILE_PIC_SUCCESS';
 export const UPDATE_PROFILE_PIC_FAILURE = 'UPDATE_PROFILE_PIC_FAILURE';
-
-type createdAtType = {
-  seconds: number;
-  nanoseconds: number;
-};
-
-type profilePicType = {
-  imageUri: string;
-  caption?: string;
-  createdAt: firebase.firestore.FieldValue;
-};
-
 export interface IUser {
   id?: string;
   displayName?: string;
   email?: string;
-  profilePic?: profilePicType;
-  // createdAt?: createdAtType;
+  profilePic?: ProfileAndCoverPicType;
   createdAt?: firebase.firestore.FieldValue;
 }
 
-export type BlobType = Blob | Uint8Array | ArrayBuffer;
-
 // Sign up
-
 export interface ISignUpStart {
   type: typeof SIGN_UP_START;
 }
@@ -114,7 +99,7 @@ export interface IUpdateProfilePicStart {
 
 export interface IUpdateProfilePicSuccess {
   type: typeof UPDATE_PROFILE_PIC_SUCCESS;
-  payload: profilePicType;
+  payload: ProfileAndCoverPicType;
 }
 
 export interface IUpdateProfilePicFailure {

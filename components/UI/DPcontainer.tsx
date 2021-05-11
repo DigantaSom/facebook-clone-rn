@@ -9,11 +9,10 @@ interface DPcontainerProps {
 const DPcontainer: React.FC<DPcontainerProps> = ({ imageUri }) => {
   return (
     <View style={styles.dpContainer}>
-      {imageUri ? (
-        <Image source={{ uri: imageUri }} style={styles.dp} />
-      ) : (
-        <Image source={require('../../assets/images/no-dp.jpg')} style={styles.dp} />
-      )}
+      <Image
+        source={imageUri ? { uri: imageUri } : require('../../assets/images/no-dp.jpg')}
+        style={styles.dp}
+      />
     </View>
   );
 };

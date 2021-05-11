@@ -6,7 +6,10 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import firebase from './firebase/firebase.utils';
+
 import { IUser } from './redux/user/user.types';
+import { ProfileAboutType } from './redux/profile/profile.types';
 
 // Navigation
 
@@ -14,10 +17,14 @@ export type RootStackParamList = {
   Root: undefined;
   Search: undefined;
   NotFound: undefined;
-  Profile: undefined;
+  Profile: { userId: string };
   CreatePost: undefined;
-  UploadProfilePic: { currentUser: IUser };
+  UploadProfileOrCoverPic: {
+    currentUser: IUser;
+    isCoverPic: boolean;
+  };
   Photo: { imageUri: string };
+  AddOrEditProfileAbout: undefined;
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
   navigation: StackNavigationProp<RootStackParamList, T>;
@@ -63,11 +70,30 @@ export type NotificationsStackParamList = {
 
 export type MenuStackParamList = {
   Menu: undefined;
-  Profile: undefined;
+  Profile: { userId: string };
   CreatePost: undefined;
-  UploadProfilePic: { currentUser: IUser };
+  UploadProfileOrCoverPic: {
+    currentUser: IUser;
+    isCoverPic: boolean;
+  };
   Photo: { imageUri: string };
+  AddOrEditProfileAbout: {
+    isEdit: boolean;
+    currentUser: IUser;
+    profileAbout: ProfileAboutType;
+  };
 };
 export type MenuNavProps<T extends keyof MenuStackParamList> = {
   navigation: StackNavigationProp<MenuStackParamList, T>;
+  route: RouteProp<MenuStackParamList, T>;
+};
+
+// Photo
+
+export type BlobType = Blob | Uint8Array | ArrayBuffer;
+
+export type ProfileAndCoverPicType = {
+  imageUri: string;
+  caption?: string;
+  createdAt: firebase.firestore.FieldValue;
 };

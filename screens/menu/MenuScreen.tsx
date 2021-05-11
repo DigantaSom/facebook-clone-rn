@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
+import { TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
@@ -9,10 +9,10 @@ import { signOut } from '../../redux/user/user.actions';
 
 import { Text, View } from '../../components/Themed';
 import MenuScreenCard from '../../components/menu/MenuScreenCard';
+import DPcontainer from '../../components/UI/DPcontainer';
 
 import MenuScreenData from '../../utils/menu-screen.data';
 import Colors from '../../constants/Colors';
-import DPcontainer from '../../components/UI/DPcontainer';
 
 type MenuScreenProps = MenuNavProps<'Menu'>;
 
@@ -20,7 +20,12 @@ const MenuScreen: React.FC<MenuScreenProps> = ({ navigation }) => {
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const dispatch = useDispatch();
 
-  const handleSignOut = () => dispatch(signOut());
+  const handleSignOut = () => {
+    Alert.alert('Logout Confirmation', 'Are you sure that you want to log out?', [
+      { text: 'Yes', onPress: () => dispatch(signOut()) },
+      { text: 'No' },
+    ]);
+  };
 
   return (
     <View style={styles.container}>
@@ -28,17 +33,13 @@ const MenuScreen: React.FC<MenuScreenProps> = ({ navigation }) => {
         ListHeaderComponent={
           <TouchableOpacity
             activeOpacity={0.4}
-            onPress={() => navigation.navigate('Profile')}>
+            onPress={() =>
+              navigation.navigate('Profile', { userId: currentUser!.id as string })
+            }>
             <View style={styles.header}>
-              {currentUser && currentUser.profilePic ? (
-                <DPcontainer imageUri={currentUser.profilePic.imageUri} />
-              ) : (
-                <DPcontainer />
-              )}
+              <DPcontainer imageUri={currentUser?.profilePic?.imageUri} />
               <View style={styles.headerInfo}>
-                {currentUser && (
-                  <Text style={styles.headerUsername}>{currentUser.displayName}</Text>
-                )}
+                <Text style={styles.headerUsername}>{currentUser?.displayName}</Text>
                 <Text style={styles.headerSubtitle}>See your profile</Text>
               </View>
             </View>
