@@ -124,15 +124,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: Colors.dark.tabIconDefault,
     height: 50,
   },
   actionItem: {
-    // flex: 0.3,
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1 / 3,
+    justifyContent: 'center',
   },
   actionText: {
     fontSize: 12,
