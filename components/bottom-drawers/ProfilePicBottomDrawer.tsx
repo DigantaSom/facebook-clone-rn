@@ -9,7 +9,7 @@ import {
 } from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { MenuStackParamList } from '../../types';
+import { MenuStackParamList, ProfileAndCoverPicType } from '../../types';
 
 import DrawerOption from './DrawerOption';
 import Colors from '../../constants/Colors';
@@ -19,11 +19,13 @@ import { IUser } from '../../redux/user/user.types';
 type ProfilePicBottomDrawer = {
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser: IUser;
+  profilePic?: ProfileAndCoverPicType;
 };
 
 const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
   navigation,
   currentUser,
+  profilePic,
 }) => {
   const onSelectProfilePictureHandler = () => {
     if (currentUser) {
@@ -32,8 +34,8 @@ const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
   };
 
   const onViewProfilePictureHandler = () => {
-    if (currentUser && currentUser.profilePic) {
-      navigation.navigate('Photo', { imageUri: currentUser.profilePic.imageUri });
+    if (profilePic) {
+      navigation.navigate('Photo', { photo: profilePic });
     }
   };
 

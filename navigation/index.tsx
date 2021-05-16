@@ -34,7 +34,6 @@ import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutSc
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
-  // console.log('currentUser:', currentUser);
 
   useEffect(() => {
     dispatch(checkUserSession());
@@ -44,7 +43,6 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* TODO: */}
       {currentUser ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );

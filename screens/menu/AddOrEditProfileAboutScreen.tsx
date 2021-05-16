@@ -20,9 +20,10 @@ import { addOrEditProfileAbout } from '../../redux/profile/profile.actions';
 
 import { Text } from '../../components/Themed';
 import HeaderSaveButton from '../../components/UI/HeaderSaveButton';
+import Spinner from '../../components/UI/Spinner';
 
-import Colors from '../../constants/Colors';
 import { RootState } from '../../redux/store';
+import Colors from '../../constants/Colors';
 
 type AddOrEditProfileAboutScreenProps = MenuNavProps<'AddOrEditProfileAbout'>;
 
@@ -45,13 +46,23 @@ const AddOrEditProfileAboutScreen: React.FC<AddOrEditProfileAboutScreenProps> = 
 
   useEffect(() => {
     // prepopulate livesInLocation
-    if (profileLoading || !profileAbout || !profileAbout.location?.livesIn) {
+    if (
+      profileLoading ||
+      !profileAbout ||
+      !profileAbout.location ||
+      !profileAbout.location.livesIn
+    ) {
       setLivesInLocation('');
     } else {
       setLivesInLocation(profileAbout.location.livesIn);
     }
     // prepopulate fromLocation
-    if (profileLoading || !profileAbout || !profileAbout.location?.from) {
+    if (
+      profileLoading ||
+      !profileAbout ||
+      !profileAbout.location ||
+      !profileAbout.location.from
+    ) {
       setFromLocation('');
     } else {
       setFromLocation(profileAbout.location.from);
@@ -65,9 +76,10 @@ const AddOrEditProfileAboutScreen: React.FC<AddOrEditProfileAboutScreenProps> = 
   }, [
     profileLoading,
     profileAbout,
-    profileAbout.location?.livesIn,
-    profileAbout.location?.from,
-    profileAbout.relationshipStatus,
+    profileAbout?.location,
+    profileAbout?.location?.livesIn,
+    profileAbout?.location?.from,
+    profileAbout?.relationshipStatus,
   ]);
 
   useLayoutEffect(() => {
@@ -115,6 +127,10 @@ const AddOrEditProfileAboutScreen: React.FC<AddOrEditProfileAboutScreenProps> = 
     profileLoading,
     error,
   ]);
+
+  if (profileLoading) {
+    return <Spinner />;
+  }
 
   return (
     <KeyboardAvoidingView

@@ -23,7 +23,7 @@ export type RootStackParamList = {
     currentUser: IUser;
     isCoverPic: boolean;
   };
-  Photo: { imageUri: string };
+  Photo: { photo: ProfileAndCoverPicType };
   AddOrEditProfileAbout: undefined;
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
@@ -76,11 +76,11 @@ export type MenuStackParamList = {
     currentUser: IUser;
     isCoverPic: boolean;
   };
-  Photo: { imageUri: string };
+  Photo: { photo: ProfileAndCoverPicType };
   AddOrEditProfileAbout: {
     isEdit: boolean;
     currentUser: IUser;
-    profileAbout: ProfileAboutType;
+    profileAbout?: ProfileAboutType;
   };
 };
 export type MenuNavProps<T extends keyof MenuStackParamList> = {
@@ -95,5 +95,10 @@ export type BlobType = Blob | Uint8Array | ArrayBuffer;
 export type ProfileAndCoverPicType = {
   imageUri: string;
   caption?: string;
-  createdAt: firebase.firestore.FieldValue;
+  creator: {
+    id: string;
+    displayName: string;
+  };
+  // createdAt: firebase.firestore.FieldValue;
+  createdAt: string;
 };

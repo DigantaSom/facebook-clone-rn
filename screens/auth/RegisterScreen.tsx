@@ -9,7 +9,7 @@ import {
   Keyboard,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -42,7 +42,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         'Fill all fields',
         'Please fill up all fields to continue',
         [{ text: 'Got it!' }],
-        { cancelable: true }
+        { cancelable: true },
       );
       return;
     }
@@ -51,7 +51,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         'Invalid Email format',
         'Please provide a valid email address',
         [{ text: 'Okay' }],
-        { cancelable: true }
+        { cancelable: true },
       );
     }
     if (password !== confirmPassword) {
@@ -59,7 +59,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         'Passwords do not match',
         'Please provide the same password',
         [{ text: 'Okay' }],
-        { cancelable: true }
+        { cancelable: true },
       );
       return;
     }
@@ -89,6 +89,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
             <TextInput
               placeholder='Full Name'
               placeholderTextColor='#c5c5c5'
+              autoCapitalize='words'
               onChangeText={text => setDisplayName(text)}
               style={styles.input}
             />
@@ -133,35 +134,35 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 24,
-    marginBottom: 20
+    marginBottom: 20,
   },
   logoContainer: {
     width: 150,
-    height: 150
+    height: 150,
   },
   logo: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   loginForm: {
     marginTop: 25,
-    width: '70%'
+    width: '70%',
   },
   input: {
     color: 'white',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'white'
+    borderBottomColor: 'white',
   },
   buttonsContainer: {
-    marginVertical: 25
+    marginVertical: 25,
   },
   signUpText: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });

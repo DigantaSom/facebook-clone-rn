@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { View, Text } from '../../components/Themed';
 
-import { MenuNavProps } from '../../types';
+import { MenuNavProps, ProfileAndCoverPicType } from '../../types';
 import { IUser } from '../../redux/user/user.types';
 import { ProfileAboutType } from '../../redux/profile/profile.types';
 
@@ -41,13 +41,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
   const { userId } = route.params;
 
-  useEffect(() => {
-    dispatch(getProfile(userId));
-  }, [dispatch, getProfile, userId]);
-
   const { profile, loading: profileLoading } = useSelector(
     (state: RootState) => state.profile,
   );
+
+  useEffect(() => {
+    dispatch(getProfile(userId));
+  }, [dispatch, getProfile, userId]);
 
   const handleIsProfilePicPressed = () => {
     setIsProfilePicPressed(true);
@@ -65,8 +65,23 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
+    if (profile?.userId === userId) {
+      bottomSheetModalRef.current?.present();
+    } else {
+      if (isProfilePicPressed && profile?.profilePic) {
+        navigation.navigate('Photo', { photo: profile.profilePic });
+      } else if (!isProfilePicPressed && profile?.coverPic) {
+        navigation.navigate('Photo', { photo: profile.coverPic });
+      }
+    }
+  }, [
+    profile?.userId,
+    userId,
+    isProfilePicPressed,
+    profile?.profilePic,
+    profile?.coverPic,
+  ]);
+
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
@@ -116,13 +131,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
                 <View style={styles.addProfileAboutButtonContainer}>
                   <Button
                     title='Add profile about'
-                    onPress={() =>
+                    onPress={() => {
                       navigation.navigate('AddOrEditProfileAbout', {
                         isEdit: false,
                         currentUser: currentUser!,
-                        profileAbout: profile.about as ProfileAboutType,
-                      })
-                    }
+                      });
+                    }}
                   />
                 </View>
               )
@@ -157,9 +171,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
                 <ProfilePicBottomDrawer
                   navigation={navigation}
                   currentUser={currentUser}
+                  profilePic={profile.profilePic}
                 />
               ) : (
-                <CoverPicBottomDrawer navigation={navigation} currentUser={currentUser} />
+                <CoverPicBottomDrawer
+                  navigation={navigation}
+                  currentUser={currentUser}
+                  coverPic={profile.coverPic}
+                />
               )}
             </View>
           )}

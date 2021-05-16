@@ -117,7 +117,11 @@ export const uploadCoverPic =
           const newCoverPicObj: ProfileAndCoverPicType = {
             imageUri: url,
             caption,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            creator: {
+              id: currentUser.id as string,
+              displayName: currentUser.displayName as string,
+            },
+            createdAt: new Date().toISOString(),
           };
 
           try {

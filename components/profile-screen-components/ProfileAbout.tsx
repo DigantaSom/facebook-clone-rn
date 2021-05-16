@@ -16,7 +16,7 @@ import Layout from '../../constants/Layout';
 
 interface ProfileAboutProps {
   profileAbout: ProfileAboutType;
-  joined: firebase.firestore.FieldValue;
+  joined: string;
   navigation?: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser?: IUser;
   isMyProfile?: boolean;
@@ -55,10 +55,7 @@ const ProfileAbout: React.FC<ProfileAboutProps> = ({
       ) : null}
       <View style={styles.aboutLine}>
         <Feather name='clock' size={24} color={Colors.dark.tabIconDefault} />
-        {/* <Text style={styles.aboutText}>Joined August 2013</Text> */}
-        <Text style={styles.aboutText}>
-          Joined {DayJS(profileAbout.birthday).format('MMM YYYY')}
-        </Text>
+        <Text style={styles.aboutText}>Joined {DayJS(joined).format('MMM YYYY')}</Text>
       </View>
       <TouchableOpacity style={styles.aboutLine} activeOpacity={0.6}>
         <Feather name='more-horizontal' size={24} color={Colors.dark.tabIconDefault} />

@@ -22,7 +22,8 @@ import {
   UPDATE_PROFILE_PIC_FAILURE,
   UPDATE_PROFILE_PIC_SUCCESS,
 } from './user.types';
-import { BlobType } from '../../types';
+import { BlobType, ProfileAndCoverPicType } from '../../types';
+import { UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
 
 import firebase from '../../firebase/firebase.utils';
 import {
@@ -33,121 +34,118 @@ import {
   getCurrentUser,
 } from '../../firebase/firebase.utils';
 
-export const checkUserSession = () => async (
-  dispatch: Dispatch<CheckUserSessionDispatchType>,
-) => {
-  dispatch({
-    type: CHECK_USER_SESSION,
-  });
-  try {
-    const authUser = await getCurrentUser();
-    // console.log(authUser);
-    if (!authUser) {
-      dispatch({
-        type: EMAIL_SIGN_IN_FAILURE,
-        payload: '', // Not logged in
-      });
-      return;
-    }
-
-    const userRef = await createUserProfileDocument(authUser);
-    const userSnapshot = await userRef?.get();
-
+export const checkUserSession =
+  () => async (dispatch: Dispatch<CheckUserSessionDispatchType>) => {
     dispatch({
-      type: EMAIL_SIGN_IN_SUCCESS,
-      payload: {
-        id: userSnapshot?.id,
-        ...userSnapshot?.data(),
-      },
+      type: CHECK_USER_SESSION,
     });
-  } catch (err) {
-    dispatch({
-      type: EMAIL_SIGN_IN_FAILURE,
-      payload: err.message,
-    });
-  }
-};
-
-export const signUp = ({
-  email,
-  password,
-  displayName,
-}: {
-  email: string;
-  password: string;
-  displayName: string;
-}) => async (dispatch: Dispatch<SignUpDispatchType>) => {
-  try {
-    dispatch({
-      type: SIGN_UP_START,
-    });
-
-    const { user } = await auth.createUserWithEmailAndPassword(email, password);
-
-    const userRef = await createUserProfileDocument(user, displayName);
-    const userSnapshot = await userRef?.get();
-
-    dispatch({
-      type: SIGN_UP_SUCCESS,
-      payload: {
-        id: userSnapshot!.id,
-        ...userSnapshot!.data(),
-      },
-    });
-
     try {
-      const profileRef = firestore.collection('profiles').doc(userSnapshot!.id);
+      const authUser = await getCurrentUser();
+      // console.log(authUser);
+      if (!authUser) {
+        dispatch({
+          type: EMAIL_SIGN_IN_FAILURE,
+          payload: '', // Not logged in
+        });
+        return;
+      }
 
-      profileRef.set({
-        userId: userSnapshot!.id,
-        displayName,
-        joined: firebase.firestore.FieldValue.serverTimestamp(),
+      const userRef = await createUserProfileDocument(authUser);
+      const userSnapshot = await userRef?.get();
+
+      dispatch({
+        type: EMAIL_SIGN_IN_SUCCESS,
+        payload: {
+          id: userSnapshot?.id,
+          ...userSnapshot?.data(),
+        },
       });
     } catch (err) {
-      console.log('Error while taking profile picture to profile collection:', err);
-      // TODO: dispatch some profile action and make an Alert.
+      dispatch({
+        type: EMAIL_SIGN_IN_FAILURE,
+        payload: err.message,
+      });
     }
-  } catch (err) {
-    dispatch({
-      type: SIGN_UP_FAILURE,
-      payload: err.message,
-    });
-    Alert.alert('Error signing up!', err.message, [{ text: 'Got it' }]);
-  }
-};
+  };
 
-export const emailSignIn = ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) => async (dispatch: Dispatch<EmailSignInDispatchType>) => {
-  try {
-    dispatch({
-      type: EMAIL_SIGN_IN_START,
-    });
+export const signUp =
+  ({
+    email,
+    password,
+    displayName,
+  }: {
+    email: string;
+    password: string;
+    displayName: string;
+  }) =>
+  async (dispatch: Dispatch<SignUpDispatchType>) => {
+    try {
+      dispatch({
+        type: SIGN_UP_START,
+      });
 
-    const { user } = await auth.signInWithEmailAndPassword(email, password);
+      const { user } = await auth.createUserWithEmailAndPassword(email, password);
 
-    const userRef = await createUserProfileDocument(user);
-    const userSnapshot = await userRef?.get();
+      const userRef = await createUserProfileDocument(user, displayName);
+      const userSnapshot = await userRef?.get();
 
-    dispatch({
-      type: EMAIL_SIGN_IN_SUCCESS,
-      payload: {
-        id: userSnapshot?.id,
-        ...userSnapshot?.data(),
-      },
-    });
-  } catch (err) {
-    dispatch({
-      type: EMAIL_SIGN_IN_FAILURE,
-      payload: err.message,
-    });
-    Alert.alert('Error signing in!', err.message, [{ text: 'Got it' }]);
-  }
-};
+      dispatch({
+        type: SIGN_UP_SUCCESS,
+        payload: {
+          id: userSnapshot!.id,
+          ...userSnapshot!.data(),
+        },
+      });
+
+      try {
+        const profileRef = firestore.collection('profiles').doc(userSnapshot!.id);
+
+        profileRef.set({
+          userId: userSnapshot!.id,
+          displayName,
+          joined: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.log('Error creating user profile:', err);
+        // TODO: dispatch some profile action and make an Alert.
+      }
+    } catch (err) {
+      dispatch({
+        type: SIGN_UP_FAILURE,
+        payload: err.message,
+      });
+      Alert.alert('Error signing up!', err.message, [{ text: 'Got it' }]);
+    }
+  };
+
+export const emailSignIn =
+  ({ email, password }: { email: string; password: string }) =>
+  async (dispatch: Dispatch<EmailSignInDispatchType>) => {
+    try {
+      dispatch({
+        type: EMAIL_SIGN_IN_START,
+      });
+
+      const { user } = await auth.signInWithEmailAndPassword(email, password);
+
+      const userRef = await createUserProfileDocument(user);
+      const userSnapshot = await userRef?.get();
+
+      dispatch({
+        type: EMAIL_SIGN_IN_SUCCESS,
+        payload: {
+          id: userSnapshot?.id,
+          ...userSnapshot?.data(),
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: EMAIL_SIGN_IN_FAILURE,
+        payload: err.message,
+      });
+      Alert.alert('Error signing in!', err.message, [{ text: 'Got it' }]);
+    }
+  };
 
 export const signOut = () => async (dispatch: Dispatch<SignOutDispatchType>) => {
   try {
@@ -167,100 +165,109 @@ export const signOut = () => async (dispatch: Dispatch<SignOutDispatchType>) => 
   }
 };
 
-export const updateProfilePic = (
-  currentUser: IUser,
-  imageUri: string,
-  caption: string,
-) => async (dispatch: Dispatch<UpdateProfilePictureDispatchType>) => {
-  // const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
-  const uploadUri = Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
+export const updateProfilePic =
+  (currentUser: IUser, imageUri: string, caption: string) =>
+  async (dispatch: Dispatch<UpdateProfilePictureDispatchType>) => {
+    // const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
+    const uploadUri = Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
 
-  const blob: BlobType = await new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = () => {
-      resolve(xhr.response);
-    };
-    xhr.onerror = () => {
-      reject(new TypeError('Network request failed'));
-    };
-    xhr.responseType = 'blob';
-    xhr.open('GET', uploadUri, true);
-    xhr.send(null);
-  });
+    const blob: BlobType = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        resolve(xhr.response);
+      };
+      xhr.onerror = () => {
+        reject(new TypeError('Network request failed'));
+      };
+      xhr.responseType = 'blob';
+      xhr.open('GET', uploadUri, true);
+      xhr.send(null);
+    });
 
-  const ref = storage
-    .ref(`profile_pics/${currentUser.displayName}`)
-    .child(new Date().toISOString());
+    const ref = storage
+      .ref(`profile_pics/${currentUser.displayName}`)
+      .child(new Date().toISOString());
 
-  const snapshot = ref.put(blob);
+    const snapshot = ref.put(blob);
 
-  snapshot.on(
-    firebase.storage.TaskEvent.STATE_CHANGED,
-    () => {
-      dispatch({
-        type: UPDATE_PROFILE_PIC_START,
-      });
-    },
-    err => {
-      dispatch({
-        type: UPDATE_PROFILE_PIC_FAILURE,
-        payload: err.message,
-      });
-      Alert.alert('Error uploading profile pic', err.message, [{ text: 'Okay' }]);
-      console.log('Error uploading profile pic:', err);
-      // blob.close();
-      return;
-    },
-    () => {
-      // success function
-      snapshot.snapshot.ref.getDownloadURL().then(async url => {
-        const userRef = firestore.doc(`users/${currentUser.id}`);
-        const profilePicsAlbum_Ref = firestore
-          .collection('albums')
-          .doc(currentUser.id)
-          .collection('profile_pics')
-          .doc();
-        const profileRef = firestore.doc(`profiles/${currentUser.id}`);
+    snapshot.on(
+      firebase.storage.TaskEvent.STATE_CHANGED,
+      () => {
+        dispatch({
+          type: UPDATE_PROFILE_PIC_START,
+        });
+      },
+      err => {
+        dispatch({
+          type: UPDATE_PROFILE_PIC_FAILURE,
+          payload: err.message,
+        });
+        Alert.alert('Error uploading profile pic', err.message, [{ text: 'Okay' }]);
+        console.log('Error uploading profile pic:', err);
+        // blob.close();
+        return;
+      },
+      () => {
+        // success function
+        snapshot.snapshot.ref.getDownloadURL().then(async url => {
+          const userRef = firestore.doc(`users/${currentUser.id}`);
+          const profilePicsAlbum_Ref = firestore
+            .collection('albums')
+            .doc(currentUser.id)
+            .collection('profile_pics')
+            .doc();
+          const profileRef = firestore.doc(`profiles/${currentUser.id}`);
 
-        const newProfilePicObj = {
-          imageUri: url,
-          caption,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        };
+          const newProfilePicObj: ProfileAndCoverPicType = {
+            imageUri: url,
+            caption,
+            creator: {
+              id: currentUser.id as string,
+              displayName: currentUser.displayName as string,
+            },
+            createdAt: new Date().toISOString(),
+          };
 
-        try {
-          const batch = firestore.batch();
+          try {
+            const batch = firestore.batch();
 
-          batch.update(userRef, {
-            profilePic: newProfilePicObj,
-          });
-          batch.set(profilePicsAlbum_Ref, newProfilePicObj);
-          batch.update(profileRef, {
-            profilePic: newProfilePicObj,
-          });
+            batch.update(userRef, {
+              profilePic: newProfilePicObj,
+            });
+            batch.set(profilePicsAlbum_Ref, newProfilePicObj);
+            batch.update(profileRef, {
+              profilePic: newProfilePicObj,
+            });
 
-          await batch.commit();
+            await batch.commit();
 
-          dispatch({
-            type: UPDATE_PROFILE_PIC_SUCCESS,
-            payload: newProfilePicObj,
-          });
-          Alert.alert(
-            'Profile Picture updated!',
-            'Your new Profile Picture is set successfully.',
-            [{ text: 'Noice!' }],
-          );
-        } catch (err) {
-          dispatch({
-            type: UPDATE_PROFILE_PIC_FAILURE,
-            payload: err.message,
-          });
-          Alert.alert('Error uploading profile pic', err.message, [{ text: 'Okay' }]);
-          console.log('Error uploading profile pic:', err);
-        }
+            dispatch({
+              type: UPDATE_PROFILE_PIC_SUCCESS,
+              payload: newProfilePicObj,
+            });
 
-        return url;
-      });
-    },
-  );
-};
+            // dispatch to update profile state as well
+            dispatch({
+              type: UPDATE_PROFILE_PIC_IN_PROFILE,
+              payload: newProfilePicObj,
+            });
+
+            Alert.alert(
+              'Profile Picture updated!',
+              'Your new Profile Picture is set successfully.',
+              [{ text: 'Noice!' }],
+            );
+          } catch (err) {
+            dispatch({
+              type: UPDATE_PROFILE_PIC_FAILURE,
+              payload: err.message,
+            });
+            Alert.alert('Error uploading profile pic', err.message, [{ text: 'Okay' }]);
+            console.log('Error uploading profile pic:', err);
+          }
+
+          return url;
+        });
+      },
+    );
+  };

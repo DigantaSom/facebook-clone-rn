@@ -1,10 +1,10 @@
-import firebase from '../../firebase/firebase.utils';
-
 import { ProfileAndCoverPicType } from '../../types';
 
 export const GET_PROFILE_START = 'GET_PROFILE_START';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
 export const GET_PROFILE_FAILURE = 'GET_PROFILE_FAILURE';
+
+export const UPDATE_PROFILE_PIC_IN_PROFILE = 'UPDATE_PROFILE_PIC_IN_PROFILE';
 
 export const UPLOAD_COVER_PIC_START = 'UPLOAD_COVER_PIC_START';
 export const UPLOAD_COVER_PIC_SUCCESS = 'UPLOAD_COVER_PIC_SUCCESS';
@@ -28,13 +28,13 @@ export type ProfileAboutType = {
     from?: string;
   };
   relationshipStatus?: RelationshipStatusType;
-  birthday?: Date;
+  birthday?: string;
 };
 
 export interface IProfile {
   userId: string;
   displayName: string;
-  joined: firebase.firestore.FieldValue;
+  joined: string;
   profilePic?: ProfileAndCoverPicType;
   coverPic?: ProfileAndCoverPicType;
   about?: ProfileAboutType;
@@ -61,6 +61,13 @@ export type GetProfileDispatchType =
   | IGetProfileStart
   | IGetProfileSuccess
   | IGetProfileFailure;
+
+// Upload a profile picture (just update the profile state)
+
+export interface IUpdateProfilePicInProfile {
+  type: typeof UPDATE_PROFILE_PIC_IN_PROFILE;
+  payload: ProfileAndCoverPicType;
+}
 
 // Upload a Cover pic
 
@@ -108,5 +115,6 @@ export type AddOrEditProfileAboutDispatchType =
 
 export type ProfileActionType =
   | GetProfileDispatchType
+  | IUpdateProfilePicInProfile
   | UploadCoverPicDispatchType
   | AddOrEditProfileAboutDispatchType;

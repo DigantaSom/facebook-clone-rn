@@ -1,5 +1,6 @@
 import firebase from '../../firebase/firebase.utils';
 import { ProfileAndCoverPicType } from '../../types';
+import { IUpdateProfilePicInProfile } from '../profile/profile.types';
 
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';
 
@@ -23,7 +24,7 @@ export interface IUser {
   displayName?: string;
   email?: string;
   profilePic?: ProfileAndCoverPicType;
-  createdAt?: firebase.firestore.FieldValue;
+  createdAt?: Date;
 }
 
 // Sign up
@@ -101,7 +102,6 @@ export interface IUpdateProfilePicSuccess {
   type: typeof UPDATE_PROFILE_PIC_SUCCESS;
   payload: ProfileAndCoverPicType;
 }
-
 export interface IUpdateProfilePicFailure {
   type: typeof UPDATE_PROFILE_PIC_FAILURE;
   payload: string; // error message
@@ -110,7 +110,8 @@ export interface IUpdateProfilePicFailure {
 export type UpdateProfilePictureDispatchType =
   | IUpdateProfilePicStart
   | IUpdateProfilePicSuccess
-  | IUpdateProfilePicFailure;
+  | IUpdateProfilePicFailure
+  | IUpdateProfilePicInProfile;
 
 // User Action Type
 

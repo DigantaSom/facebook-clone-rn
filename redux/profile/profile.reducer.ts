@@ -10,6 +10,7 @@ import {
   ADD_OR_EDIT_PROFILE_ABOUT_START,
   ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS,
   ADD_OR_EDIT_PROFILE_ABOUT_FAILURE,
+  UPDATE_PROFILE_PIC_IN_PROFILE,
 } from './profile.types';
 
 interface IDefaultState {
@@ -41,6 +42,17 @@ const profileReducer = (
       return {
         ...state,
         profile: action.payload,
+        loading: false,
+        error: '',
+      };
+
+    case UPDATE_PROFILE_PIC_IN_PROFILE:
+      return {
+        ...state,
+        profile: {
+          ...(state.profile as IProfile),
+          profilePic: action.payload,
+        },
         loading: false,
         error: '',
       };
