@@ -1,25 +1,25 @@
 import React from 'react';
-import { StyleSheet, View as ViewRN } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text, View } from '../Themed';
 
 const PostActions = () => {
   return (
-    <ViewRN style={styles.postActions}>
-      <ViewRN style={styles.actionItem}>
+    <View style={styles.postActions}>
+      <View style={styles.actionItem}>
         <AntDesign name='like2' size={20} color='white' style={styles.actionIcon} />
         <Text style={styles.actionText}>Like</Text>
-      </ViewRN>
-      <ViewRN style={styles.actionItem}>
+      </View>
+      <View style={styles.actionItem}>
         <FontAwesome5 name='comment' size={20} color='white' style={styles.actionIcon} />
         <Text style={styles.actionText}>Comment</Text>
-      </ViewRN>
-      <ViewRN style={styles.actionItem}>
+      </View>
+      <View style={styles.actionItem}>
         <MaterialCommunityIcons name='share-outline' size={24} color='white' />
         <Text style={styles.actionText}>Share</Text>
-      </ViewRN>
-    </ViewRN>
+      </View>
+    </View>
   );
 };
 
