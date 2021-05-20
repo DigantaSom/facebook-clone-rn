@@ -1,8 +1,16 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { Image, StyleSheet, View as ViewRN } from 'react-native';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
+import { Image, StyleSheet, View as ViewRN, TouchableOpacity } from 'react-native';
 import { AntDesign, MaterialIcons, Feather } from '@expo/vector-icons';
 import DayJS from 'dayjs';
 import { useHeaderHeight } from '@react-navigation/stack';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
@@ -10,6 +18,7 @@ import { RootState } from '../redux/store';
 import { Text, View } from '../components/Themed';
 import Divider from '../components/UI/Divider';
 import PostActions from '../components/post/PostActions';
+import PhotoBottomDrawer from '../components/bottom-drawers/PhotoBottomDrawer';
 
 import { RootNavProps } from '../types';
 
@@ -20,6 +29,19 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const [isMyPhoto, setIsMyPhoto] = useState<Boolean>(false);
   const headerHeight = useHeaderHeight();
+
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['40%', '40%'], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback(() => {}, []);
 
   useEffect(() => {
     if (photo.creator.id === currentUser?.id) {
@@ -37,14 +59,21 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
               <MaterialIcons name='place' size={24} color='white' style={styles.icon} />
             </>
           )}
-          <Feather name='more-vertical' size={24} color='white' style={styles.icon} />
+          <TouchableOpacity activeOpacity={0.6} onPress={handlePresentModalPress}>
+            <Feather name='more-vertical' size={24} color='white' style={styles.icon} />
+          </TouchableOpacity>
         </View>
       ),
     });
   }, [isMyPhoto]);
 
+  const handleCloseModal = () => bottomSheetModalRef.current?.collapse();
+
   return (
-    <View style={[styles.container, { marginTop: -headerHeight / 2 }]}>
+    <TouchableOpacity
+      style={[styles.container, { marginTop: -headerHeight / 2 }]}
+      activeOpacity={0.9}
+      onLongPress={handlePresentModalPress}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: photo.imageUri }} style={styles.image} />
       </View>
@@ -67,7 +96,15 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
 
         <PostActions />
       </ViewRN>
-    </View>
+
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}>
+        <PhotoBottomDrawer />
+      </BottomSheetModal>
+    </TouchableOpacity>
   );
 };
 

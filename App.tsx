@@ -1,17 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+
+import { Provider as ReduxProvider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
-
-import { Provider } from 'react-redux';
-import store from './redux/store';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 
+import store from './redux/store';
 import Navigation from './navigation';
 
-export default function App() {
+const App = () => {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
@@ -19,14 +20,18 @@ export default function App() {
     return null;
   } else {
     return (
-      <Provider store={store}>
+      <ReduxProvider store={store}>
         <PaperProvider>
-          <SafeAreaProvider>
-            <Navigation colorScheme={colorScheme} />
-            <StatusBar />
-          </SafeAreaProvider>
+          <BottomSheetModalProvider>
+            <SafeAreaProvider>
+              <Navigation colorScheme={colorScheme} />
+              <StatusBar />
+            </SafeAreaProvider>
+          </BottomSheetModalProvider>
         </PaperProvider>
-      </Provider>
+      </ReduxProvider>
     );
   }
-}
+};
+
+export default App;

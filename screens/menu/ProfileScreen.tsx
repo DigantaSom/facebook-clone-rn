@@ -1,12 +1,11 @@
 import React, { useRef, useMemo, useCallback, useState, useEffect } from 'react';
 import { StyleSheet, FlatList, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { View, Text } from '../../components/Themed';
 
-import { MenuNavProps, ProfileAndCoverPicType } from '../../types';
+import { MenuNavProps } from '../../types';
 import { IUser } from '../../redux/user/user.types';
-import { ProfileAboutType } from '../../redux/profile/profile.types';
 
 import { RootState } from '../../redux/store';
 import { getProfile } from '../../redux/profile/profile.actions';
@@ -86,6 +85,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
     console.log('handleSheetChanges', index);
   }, []);
 
+  const handleCloseModal = () => bottomSheetModalRef.current?.close();
+
   if (userLoading || profileLoading || uploading) {
     return <Spinner />;
   }
@@ -159,31 +160,31 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
         renderItem={({ item }) => <PostItem post={item} />}
       />
 
-      <BottomSheetModalProvider>
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}>
-          {!currentUser ? null : (
-            <View style={styles.bottomSheet}>
-              {isProfilePicPressed ? (
-                <ProfilePicBottomDrawer
-                  navigation={navigation}
-                  currentUser={currentUser}
-                  profilePic={profile.profilePic}
-                />
-              ) : (
-                <CoverPicBottomDrawer
-                  navigation={navigation}
-                  currentUser={currentUser}
-                  coverPic={profile.coverPic}
-                />
-              )}
-            </View>
-          )}
-        </BottomSheetModal>
-      </BottomSheetModalProvider>
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}>
+        {!currentUser ? null : (
+          <View style={styles.bottomSheet}>
+            {isProfilePicPressed ? (
+              <ProfilePicBottomDrawer
+                navigation={navigation}
+                currentUser={currentUser}
+                profilePic={profile.profilePic}
+                handleCloseModal={handleCloseModal}
+              />
+            ) : (
+              <CoverPicBottomDrawer
+                navigation={navigation}
+                currentUser={currentUser}
+                coverPic={profile.coverPic}
+                handleCloseModal={handleCloseModal}
+              />
+            )}
+          </View>
+        )}
+      </BottomSheetModal>
     </View>
   );
 };

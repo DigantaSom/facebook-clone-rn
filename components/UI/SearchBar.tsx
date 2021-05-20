@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   icon: {
-    paddingRight: 5
+    paddingRight: 5,
   },
   input: {
     paddingVertical: 5,
-    flex: 1
-  }
+    flex: 1,
+  },
 });

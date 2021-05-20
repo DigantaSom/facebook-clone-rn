@@ -20,20 +20,24 @@ type CoverPicBottomDrawerProps = {
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser: IUser;
   coverPic?: ProfileAndCoverPicType;
+  handleCloseModal: () => void;
 };
 
 const CoverPicBottomDrawer: React.FC<CoverPicBottomDrawerProps> = ({
   navigation,
   currentUser,
   coverPic,
+  handleCloseModal,
 }) => {
   const onViewCoverPhotoHandler = () => {
     if (coverPic) {
+      handleCloseModal();
       navigation.navigate('Photo', { photo: coverPic });
     }
   };
 
   const onSelectCoverPhotoHandler = () => {
+    handleCloseModal();
     navigation.navigate('UploadProfileOrCoverPic', { currentUser, isCoverPic: true });
   };
 
