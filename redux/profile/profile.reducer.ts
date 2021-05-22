@@ -11,16 +11,21 @@ import {
   ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS,
   ADD_OR_EDIT_PROFILE_ABOUT_FAILURE,
   UPDATE_PROFILE_PIC_IN_PROFILE,
+  SEARCH_PROFILES_START,
+  SEARCH_PROFILES_SUCCESS,
+  SEARCH_PROFILES_FAILURE,
 } from './profile.types';
 
 interface IDefaultState {
   profile: IProfile | null;
+  profiles: IProfile[];
   loading: boolean;
   error: string;
 }
 
 const defaultState: IDefaultState = {
   profile: null,
+  profiles: [],
   loading: false,
   error: '',
 };
@@ -79,12 +84,33 @@ const profileReducer = (
         error: '',
       };
 
+    case SEARCH_PROFILES_START:
+      return {
+        ...state,
+        loading: true,
+        profiles: [],
+      };
+    case SEARCH_PROFILES_SUCCESS:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false,
+      };
+
     case GET_PROFILE_FAILURE:
     case UPLOAD_COVER_PIC_FAILURE:
     case ADD_OR_EDIT_PROFILE_ABOUT_FAILURE:
       return {
         ...state,
         profile: null,
+        loading: false,
+        error: action.payload,
+      };
+
+    case SEARCH_PROFILES_FAILURE:
+      return {
+        ...state,
+        profiles: [],
         loading: false,
         error: action.payload,
       };

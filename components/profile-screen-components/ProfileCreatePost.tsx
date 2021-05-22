@@ -46,12 +46,16 @@ const ProfileCreatePost: React.FC<ProfileCreatePostProps> = ({ navigation }) => 
           <Entypo name='video-camera' size={20} color='red' />
           <Text style={styles.actionText}>Live</Text>
         </TouchableOpacity>
-        <View style={styles.borderVertical}></View>
+
+        <View style={styles.borderVertical} />
+
         <TouchableOpacity style={styles.actionItem} activeOpacity={0.6}>
           <Fontisto name='photograph' size={20} color='lime' />
           <Text style={styles.actionText}>Photo</Text>
         </TouchableOpacity>
-        <View style={styles.borderVertical}></View>
+
+        <View style={styles.borderVertical} />
+
         <TouchableOpacity style={styles.actionItem} activeOpacity={0.6}>
           <MaterialCommunityIcons name='flag' size={24} color='blue' />
           <Text style={styles.actionText}>Life Event</Text>
@@ -69,7 +73,6 @@ const styles = StyleSheet.create({
   },
   top: {
     marginBottom: 15,
-    // backgroundColor: Colors.dark.cardBackground,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -84,7 +87,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // backgroundColor: Colors.dark.cardBackground,
   },
   icon: {
     backgroundColor: Colors.grayButton,
@@ -98,12 +100,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: Colors.dark.tabIconDefault,
-    // backgroundColor: Colors.dark.cardBackground,
   },
   dpContainer: {
     width: 50,
     height: 50,
-    // backgroundColor: Colors.dark.cardBackground,
   },
   dp: {
     width: '100%',
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     marginLeft: 15,
-    // backgroundColor: Colors.dark.cardBackground,
   },
   formText: {
     color: Colors.grayText,

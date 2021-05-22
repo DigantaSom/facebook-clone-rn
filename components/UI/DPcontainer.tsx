@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native';
-import { View } from '../Themed';
+import { StyleSheet, Image, View as ViewRN } from 'react-native';
 
 interface DPcontainerProps {
   imageUri?: string;
@@ -8,12 +7,12 @@ interface DPcontainerProps {
 
 const DPcontainer: React.FC<DPcontainerProps> = ({ imageUri }) => {
   return (
-    <View style={styles.dpContainer}>
+    <ViewRN style={styles.dpContainer}>
       <Image
         source={imageUri ? { uri: imageUri } : require('../../assets/images/no-dp.jpg')}
         style={styles.dp}
       />
-    </View>
+    </ViewRN>
   );
 };
 

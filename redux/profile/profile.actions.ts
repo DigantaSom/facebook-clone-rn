@@ -17,6 +17,10 @@ import {
   ADD_OR_EDIT_PROFILE_ABOUT_FAILURE,
   ADD_OR_EDIT_PROFILE_ABOUT_START,
   ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS,
+  SearchProfilesDispatchType,
+  SEARCH_PROFILES_START,
+  SEARCH_PROFILES_SUCCESS,
+  SEARCH_PROFILES_FAILURE,
 } from './profile.types';
 import { IUser } from '../user/user.types';
 import { BlobType, ProfileAndCoverPicType } from '../../types';
@@ -202,5 +206,43 @@ export const addOrEditProfileAbout =
         payload: err.message,
       });
       Alert.alert('Error while adding profile about', err.message, [{ text: 'Okay' }]);
+    }
+  };
+
+export const searchProfiles =
+  (searchQuery: string) => async (dispatch: Dispatch<SearchProfilesDispatchType>) => {
+    if (searchQuery.trim().length < 3) {
+      dispatch({
+        type: SEARCH_PROFILES_FAILURE,
+        payload: '',
+      });
+      return;
+    }
+
+    try {
+      const profileRef = firestore.collection('profiles');
+
+      dispatch({
+        type: SEARCH_PROFILES_START,
+      });
+
+      const profiles = await profileRef
+        .orderBy('displayName')
+        .startAt(searchQuery)
+        .endAt(searchQuery + '\uf8ff')
+        .get();
+
+      const results: IProfile[] = [];
+      profiles.docs.forEach(doc => results.push(doc.data() as IProfile));
+
+      dispatch({
+        type: SEARCH_PROFILES_SUCCESS,
+        payload: results,
+      });
+    } catch (err) {
+      dispatch({
+        type: SEARCH_PROFILES_FAILURE,
+        payload: err.message,
+      });
     }
   };

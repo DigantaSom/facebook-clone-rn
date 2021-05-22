@@ -16,6 +16,7 @@ import Layout from '../../constants/Layout';
 
 interface ProfileAboutProps {
   profileAbout: ProfileAboutType;
+  profileDisplayName: string;
   joined: string;
   navigation?: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser?: IUser;
@@ -24,6 +25,7 @@ interface ProfileAboutProps {
 
 const ProfileAbout: React.FC<ProfileAboutProps> = ({
   profileAbout,
+  profileDisplayName,
   joined,
   navigation,
   currentUser,
@@ -59,7 +61,10 @@ const ProfileAbout: React.FC<ProfileAboutProps> = ({
       </View>
       <TouchableOpacity style={styles.aboutLine} activeOpacity={0.6}>
         <Feather name='more-horizontal' size={24} color={Colors.dark.tabIconDefault} />
-        <Text style={styles.aboutText}>See Your About Info</Text>
+        <Text style={styles.aboutText}>
+          See {isMyProfile ? 'Your' : `${profileDisplayName.split(' ')[0].trim()}'s`}{' '}
+          About Info
+        </Text>
       </TouchableOpacity>
 
       {isMyProfile && navigation && currentUser ? (

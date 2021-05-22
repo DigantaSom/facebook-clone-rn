@@ -5,7 +5,6 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { View, Text } from '../../components/Themed';
 
 import { MenuNavProps } from '../../types';
-import { IUser } from '../../redux/user/user.types';
 
 import { RootState } from '../../redux/store';
 import { getProfile } from '../../redux/profile/profile.actions';
@@ -39,6 +38,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const { userId } = route.params;
+  const isMyProfile = currentUser!.id === userId;
 
   const { profile, loading: profileLoading } = useSelector(
     (state: RootState) => state.profile,
@@ -64,7 +64,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
-    if (profile?.userId === userId) {
+    if (isMyProfile) {
       bottomSheetModalRef.current?.present();
     } else {
       if (isProfilePicPressed && profile?.profilePic) {
@@ -73,13 +73,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
         navigation.navigate('Photo', { photo: profile.coverPic });
       }
     }
-  }, [
-    profile?.userId,
-    userId,
-    isProfilePicPressed,
-    profile?.profilePic,
-    profile?.coverPic,
-  ]);
+  }, [isMyProfile, isProfilePicPressed, profile?.profilePic, profile?.coverPic]);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
@@ -115,17 +109,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
             <ProfileHeaderInfo
               userDisplayName={profile.displayName}
-              isMyProfile={profile.userId === userId}
+              isMyProfile={isMyProfile}
             />
             <Divider />
 
-            {profile.userId === userId ? (
+            {isMyProfile && currentUser ? (
               profile.about ? (
                 <ProfileAbout
                   profileAbout={profile.about}
+                  profileDisplayName={profile.displayName}
                   joined={profile.joined}
                   navigation={navigation}
-                  currentUser={currentUser as IUser}
+                  currentUser={currentUser}
                   isMyProfile
                 />
               ) : (
@@ -135,14 +130,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
                     onPress={() => {
                       navigation.navigate('AddOrEditProfileAbout', {
                         isEdit: false,
-                        currentUser: currentUser!,
+                        currentUser: currentUser,
                       });
                     }}
                   />
                 </View>
               )
-            ) : profile.about ? (
-              <ProfileAbout profileAbout={profile.about} joined={profile.joined} />
+            ) : profile.about && currentUser ? (
+              <ProfileAbout
+                profileAbout={profile.about}
+                profileDisplayName={profile.displayName} // not using this in this condition. TODO: fix it.
+                joined={profile.joined}
+              />
             ) : (
               <Text style={{ textAlign: 'center' }}>No profile information</Text>
             )}
@@ -152,7 +151,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
             <ProfileFriends />
             <Divider />
 
-            <ProfileCreatePost navigation={navigation} />
+            {!isMyProfile ? null : <ProfileCreatePost navigation={navigation} />}
           </View>
         }
         data={posts}

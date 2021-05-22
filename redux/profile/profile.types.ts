@@ -14,6 +14,10 @@ export const ADD_OR_EDIT_PROFILE_ABOUT_START = 'ADD_OR_EDIT_PROFILE_ABOUT_START'
 export const ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS = 'ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS';
 export const ADD_OR_EDIT_PROFILE_ABOUT_FAILURE = 'ADD_OR_EDIT_PROFILE_ABOUT_FAILURE';
 
+export const SEARCH_PROFILES_START = 'SEARCH_PROFILES_START';
+export const SEARCH_PROFILES_SUCCESS = 'SEARCH_PROFILES_SUCCESS';
+export const SEARCH_PROFILES_FAILURE = 'SEARCH_PROFILES_FAILURE';
+
 export type RelationshipStatusType =
   | 'Single'
   | 'Commited'
@@ -111,10 +115,30 @@ export type AddOrEditProfileAboutDispatchType =
   | IAddOrEditProfileAboutSuccess
   | IAddOrEditProfileAboutFailure;
 
+// Search profile(s)
+
+export interface ISearchProfilesStart {
+  type: typeof SEARCH_PROFILES_START;
+}
+export interface ISearchProfilesSuccess {
+  type: typeof SEARCH_PROFILES_SUCCESS;
+  payload: IProfile[];
+}
+export interface ISearchProfilesFailure {
+  type: typeof SEARCH_PROFILES_FAILURE;
+  payload: string;
+}
+
+export type SearchProfilesDispatchType =
+  | ISearchProfilesStart
+  | ISearchProfilesSuccess
+  | ISearchProfilesFailure;
+
 // Profile Action Type
 
 export type ProfileActionType =
   | GetProfileDispatchType
   | IUpdateProfilePicInProfile
   | UploadCoverPicDispatchType
-  | AddOrEditProfileAboutDispatchType;
+  | AddOrEditProfileAboutDispatchType
+  | SearchProfilesDispatchType;

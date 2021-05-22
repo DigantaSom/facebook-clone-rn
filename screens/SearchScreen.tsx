@@ -1,14 +1,29 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
-const SearchScreen = () => {
+import { RootNavProps } from '../types';
+
+import { View } from '../components/Themed';
+import Spinner from '../components/UI/Spinner';
+import ProfileItem from '../components/profile/ProfileSearchItem';
+
+type SearchScreenProps = RootNavProps<'Search'>;
+
+const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
+  const { profiles, loading } = useSelector((state: RootState) => state.profile);
+
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>SearchScreen</Text>
-      <EditScreenInfo path='/screens/TabOneScreen.tsx' />
+      {profiles.map(profile => (
+        <ProfileItem key={profile.userId} profile={profile} navigation={navigation} />
+      ))}
     </View>
   );
 };
@@ -17,9 +32,7 @@ export default SearchScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 20,
   },
   title: {
     fontSize: 20,
