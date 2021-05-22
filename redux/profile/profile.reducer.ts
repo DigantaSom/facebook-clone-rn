@@ -110,8 +110,8 @@ const profileReducer = (
     case SEARCH_PROFILES_FAILURE:
       return {
         ...state,
+        profile: null,
         profiles: [],
-        loading: false,
         error: action.payload,
       };
 

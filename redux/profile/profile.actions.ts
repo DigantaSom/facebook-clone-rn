@@ -30,12 +30,14 @@ import { firestore, storage } from '../../firebase/firebase.utils';
 
 export const getProfile =
   (userId: string | undefined) => async (dispatch: Dispatch<GetProfileDispatchType>) => {
-    dispatch({
-      type: GET_PROFILE_START,
-    });
-
     try {
       const profileRef = firestore.doc(`profiles/${userId}`);
+
+      dispatch({
+        type: GET_PROFILE_START,
+      });
+      console.log('GET_PROFILE_START');
+
       const profileSnapshot = await profileRef.get();
 
       if (profileSnapshot.data()) {

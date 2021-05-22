@@ -39,6 +39,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchBarDisabled }) => {
         editable={!searchBarDisabled}
         placeholder='Search'
         placeholderTextColor='#b3b3b3'
+        autoFocus
       />
     </View>
   );
