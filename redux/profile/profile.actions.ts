@@ -117,6 +117,11 @@ export const uploadCoverPic =
             .doc(currentUser.id)
             .collection('cover_pics')
             .doc();
+          const allPicsAlbum_Ref = firestore
+            .collection('albums')
+            .doc(currentUser.id)
+            .collection('cover_pics')
+            .doc();
 
           const newCoverPicObj: ProfileAndCoverPicType = {
             imageUri: url,
@@ -135,6 +140,7 @@ export const uploadCoverPic =
               coverPic: newCoverPicObj,
             });
             batch.set(coverPicsAlbum_Ref, newCoverPicObj);
+            batch.set(allPicsAlbum_Ref, newCoverPicObj);
 
             await batch.commit();
 

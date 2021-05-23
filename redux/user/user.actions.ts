@@ -73,10 +73,12 @@ export const signUp =
     email,
     password,
     displayName,
+    birthday,
   }: {
     email: string;
     password: string;
     displayName: string;
+    birthday: string;
   }) =>
   async (dispatch: Dispatch<SignUpDispatchType>) => {
     try {
@@ -103,6 +105,7 @@ export const signUp =
         profileRef.set({
           userId: userSnapshot!.id,
           displayName,
+          birthday,
           joined: new Date().toISOString(),
         });
       } catch (err) {
@@ -211,12 +214,17 @@ export const updateProfilePic =
         // success function
         snapshot.snapshot.ref.getDownloadURL().then(async url => {
           const userRef = firestore.doc(`users/${currentUser.id}`);
+          const profileRef = firestore.doc(`profiles/${currentUser.id}`);
           const profilePicsAlbum_Ref = firestore
             .collection('albums')
             .doc(currentUser.id)
             .collection('profile_pics')
             .doc();
-          const profileRef = firestore.doc(`profiles/${currentUser.id}`);
+          const allPicsAlbum_Ref = firestore
+            .collection('albums')
+            .doc(currentUser.id)
+            .collection('all_pics')
+            .doc();
 
           const newProfilePicObj: ProfileAndCoverPicType = {
             imageUri: url,
@@ -232,12 +240,13 @@ export const updateProfilePic =
             const batch = firestore.batch();
 
             batch.update(userRef, {
-              profilePic: newProfilePicObj,
+              profilePic: url,
             });
-            batch.set(profilePicsAlbum_Ref, newProfilePicObj);
             batch.update(profileRef, {
               profilePic: newProfilePicObj,
             });
+            batch.set(profilePicsAlbum_Ref, newProfilePicObj);
+            batch.set(allPicsAlbum_Ref, newProfilePicObj);
 
             await batch.commit();
 

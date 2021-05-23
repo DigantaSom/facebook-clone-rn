@@ -38,6 +38,7 @@ export type ProfileAboutType = {
 export interface IProfile {
   userId: string;
   displayName: string;
+  birthday: string;
   joined: string;
   profilePic?: ProfileAndCoverPicType;
   coverPic?: ProfileAndCoverPicType;

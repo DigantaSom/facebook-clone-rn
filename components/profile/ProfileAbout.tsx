@@ -19,6 +19,8 @@ import { Text, View } from '../Themed';
 import Colors from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 
+import getFirstName from '../../utils/getFirstName';
+
 interface ProfileAboutProps {
   profileAbout: ProfileAboutType;
   profileDisplayName: string;
@@ -72,8 +74,7 @@ const ProfileAbout: React.FC<ProfileAboutProps> = ({
         <Feather name='more-horizontal' size={24} color={Colors.dark.tabIconDefault} />
 
         <Text style={styles.aboutText}>
-          See {isMyProfile ? 'Your' : `${profileDisplayName.split(' ')[0].trim()}'s`}{' '}
-          About Info
+          See {isMyProfile ? 'Your' : `${getFirstName(profileDisplayName)}'s`} About Info
         </Text>
       </TouchableOpacity>
 

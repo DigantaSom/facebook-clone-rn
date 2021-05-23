@@ -24,6 +24,7 @@ import PostItem from '../../components/post/PostItem';
 
 import ProfilePicBottomDrawer from '../../components/bottom-drawers/ProfilePicBottomDrawer';
 import CoverPicBottomDrawer from '../../components/bottom-drawers/CoverPicBottomDrawer';
+import ProfileWidgets from '../../components/profile/ProfileWidgets';
 
 type ProfileScreenProps = MenuNavProps<'Profile'>;
 
@@ -152,6 +153,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
             <Divider />
 
             {!isMyProfile ? null : <ProfileCreatePost navigation={navigation} />}
+
+            <ProfileWidgets
+              navigation={navigation}
+              userId={profile.userId}
+              displayName={profile.displayName}
+            />
+            <Divider />
           </View>
         }
         data={posts}

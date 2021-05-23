@@ -25,6 +25,10 @@ export type RootStackParamList = {
   };
   Photo: { photo: ProfileAndCoverPicType };
   AddOrEditProfileAbout: undefined;
+  AlbumsTab: {
+    userId: string;
+    displayName: string;
+  };
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
   navigation: StackNavigationProp<RootStackParamList, T>;
@@ -37,15 +41,6 @@ export type AuthStackParamList = {
 };
 export type AuthNavProps<T extends keyof AuthStackParamList> = {
   navigation: StackNavigationProp<AuthStackParamList, T>;
-};
-
-export type FacebookStackParamList = {
-  Facebook: undefined;
-  Search: undefined;
-  Messenger: undefined;
-};
-export type FacebookNavProps<T extends keyof FacebookStackParamList> = {
-  navigation: StackNavigationProp<FacebookStackParamList, T>;
 };
 
 export type TopTabParamList = {
@@ -82,10 +77,30 @@ export type MenuStackParamList = {
     currentUser: IUser;
     profileAbout?: ProfileAboutType;
   };
+  AlbumsTab: {
+    userId: string;
+    displayName: string;
+  };
 };
 export type MenuNavProps<T extends keyof MenuStackParamList> = {
   navigation: StackNavigationProp<MenuStackParamList, T>;
   route: RouteProp<MenuStackParamList, T>;
+};
+
+export type AlbumsTabParamList = {
+  Saved: undefined;
+  PhotosOfYou: undefined;
+  AllPhotos: {
+    userId: string;
+  };
+  AlbumsStack: undefined;
+};
+export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
+  route: RouteProp<AlbumsTabParamList, T>;
+};
+
+export type AlbumsStackParamList = {
+  Albums: undefined;
 };
 
 // Photo
@@ -99,6 +114,5 @@ export type ProfileAndCoverPicType = {
     id: string;
     displayName: string;
   };
-  // createdAt: firebase.firestore.FieldValue;
   createdAt: string;
 };

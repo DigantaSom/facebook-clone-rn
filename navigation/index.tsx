@@ -1,13 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import {
-  ColorSchemeName,
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { ColorSchemeName, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
 import { RootStackParamList, AuthStackParamList, RootNavProps } from '../types';
@@ -17,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkUserSession } from '../redux/user/user.actions';
 import { RootState } from '../redux/store';
 
+import { Text } from '../components/Themed';
 import SearchBar from '../components/UI/SearchBar';
 
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -29,6 +24,7 @@ import CreatePost from '../screens/CreatePost';
 import PhotoScreen from '../screens/PhotoScreen';
 import UploadProfileOrCoverPicScreen from '../screens/menu/UploadProfileOrCoverPicScreen';
 import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutScreen';
+import AlbumsTopTabNavigator from './AlbumsTopTab';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -128,6 +124,13 @@ const RootNavigator = () => {
       <Stack.Screen
         name='AddOrEditProfileAbout'
         component={AddOrEditProfileAboutScreen}
+      />
+      <Stack.Screen
+        name='AlbumsTab'
+        component={AlbumsTopTabNavigator}
+        options={({ route }: RootNavProps<'AlbumsTab'>) => ({
+          title: route.params.displayName, // route params coming from profile
+        })}
       />
       {/* <Stack.Screen
         name='NotFound'
