@@ -9,11 +9,11 @@ import { MenuNavProps } from '../../types';
 import { RootState } from '../../redux/store';
 import { getProfile } from '../../redux/profile/profile.actions';
 
-import ProfileHeader from '../../components/profile-screen-components/ProfileHeader';
-import ProfileHeaderInfo from '../../components/profile-screen-components/ProfileHeaderInfo';
-import ProfileAbout from '../../components/profile-screen-components/ProfileAbout';
-import ProfileFriends from '../../components/profile-screen-components/ProfileFriends';
-import ProfileCreatePost from '../../components/profile-screen-components/ProfileCreatePost';
+import ProfileHeader from '../../components/profile/ProfileHeader';
+import ProfileHeaderInfo from '../../components/profile/ProfileHeaderInfo';
+import ProfileAbout from '../../components/profile/ProfileAbout';
+import ProfileFriends from '../../components/profile/ProfileFriends';
+import ProfileCreatePost from '../../components/profile/ProfileCreatePost';
 
 import Divider from '../../components/UI/Divider';
 import Spinner from '../../components/UI/Spinner';

@@ -36,10 +36,8 @@ export const getProfile =
       dispatch({
         type: GET_PROFILE_START,
       });
-      console.log('GET_PROFILE_START');
 
       const profileSnapshot = await profileRef.get();
-
       if (profileSnapshot.data()) {
         dispatch({
           type: GET_PROFILE_SUCCESS,

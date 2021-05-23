@@ -1,15 +1,20 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
-import { Text, View } from '../Themed';
-
 import DayJS from 'dayjs';
-import firebase from '../../firebase/firebase.utils';
+import {
+  Ionicons,
+  MaterialIcons,
+  AntDesign,
+  Feather,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MenuStackParamList } from '../../types';
 import { ProfileAboutType } from '../../redux/profile/profile.types';
 import { IUser } from '../../redux/user/user.types';
+
+import { Text, View } from '../Themed';
 
 import Colors from '../../constants/Colors';
 import Layout from '../../constants/Layout';
@@ -56,11 +61,16 @@ const ProfileAbout: React.FC<ProfileAboutProps> = ({
         </View>
       ) : null}
       <View style={styles.aboutLine}>
-        <Feather name='clock' size={24} color={Colors.dark.tabIconDefault} />
+        <MaterialCommunityIcons
+          name='clock'
+          size={24}
+          color={Colors.dark.tabIconDefault}
+        />
         <Text style={styles.aboutText}>Joined {DayJS(joined).format('MMM YYYY')}</Text>
       </View>
       <TouchableOpacity style={styles.aboutLine} activeOpacity={0.6}>
         <Feather name='more-horizontal' size={24} color={Colors.dark.tabIconDefault} />
+
         <Text style={styles.aboutText}>
           See {isMyProfile ? 'Your' : `${profileDisplayName.split(' ')[0].trim()}'s`}{' '}
           About Info

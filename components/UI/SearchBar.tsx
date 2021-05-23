@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { useDispatch } from 'react-redux';
 import { searchProfiles } from '../../redux/profile/profile.actions';
 
 import { View } from '../Themed';
@@ -16,12 +15,9 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ searchBarDisabled }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
-  const profileLoading = useSelector((state: RootState) => state.profile.loading);
 
   useEffect(() => {
-    // if (searchText.trim().length >= 3) {
     dispatch(searchProfiles(searchText));
-    // }
   }, [searchText]);
 
   return (
