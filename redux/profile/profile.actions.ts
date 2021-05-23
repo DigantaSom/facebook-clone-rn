@@ -120,7 +120,7 @@ export const uploadCoverPic =
           const allPicsAlbum_Ref = firestore
             .collection('albums')
             .doc(currentUser.id)
-            .collection('cover_pics')
+            .collection('all_pics')
             .doc();
 
           const newCoverPicObj: ProfileAndCoverPicType = {
