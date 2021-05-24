@@ -1,4 +1,4 @@
-import { ProfileAndCoverPicType } from '../../types';
+import { IPhoto } from '../../types';
 
 export const GET_PROFILE_START = 'GET_PROFILE_START';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
@@ -40,8 +40,8 @@ export interface IProfile {
   displayName: string;
   birthday: string;
   joined: string;
-  profilePic?: ProfileAndCoverPicType;
-  coverPic?: ProfileAndCoverPicType;
+  profilePic?: IPhoto;
+  coverPic?: IPhoto;
   about?: ProfileAboutType;
   // TODO: add more gradually
 }
@@ -71,7 +71,7 @@ export type GetProfileDispatchType =
 
 export interface IUpdateProfilePicInProfile {
   type: typeof UPDATE_PROFILE_PIC_IN_PROFILE;
-  payload: ProfileAndCoverPicType;
+  payload: IPhoto;
 }
 
 // Upload a Cover pic
@@ -82,7 +82,7 @@ export interface IUploadCoverPicStart {
 
 export interface IUploadCoverPicSuccess {
   type: typeof UPLOAD_COVER_PIC_SUCCESS;
-  payload: ProfileAndCoverPicType;
+  payload: IPhoto;
 }
 
 export interface IUploadCoverPicFailure {

@@ -1,3 +1,5 @@
+import { IPhoto } from '../../types';
+
 export const GET_ALL_PHOTOS_START = 'GET_ALL_PHOTOS_START';
 export const GET_ALL_PHOTOS_SUCCESS = 'GET_ALL_PHOTOS_SUCCESS';
 export const GET_ALL_PHOTOS_FAILURE = 'GET_ALL_PHOTOS_FAILURE';
@@ -11,7 +13,7 @@ export interface IGetAllPhotosStart {
 }
 export interface IGetAllPhotosSuccess {
   type: typeof GET_ALL_PHOTOS_SUCCESS;
-  payload: any; // TODO: add apt type
+  payload: IPhoto[]; // TODO: add apt type
 }
 export interface IGetAllPhotosFailure {
   type: typeof GET_ALL_PHOTOS_FAILURE;

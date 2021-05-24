@@ -9,7 +9,7 @@ import {
 
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { MenuStackParamList, ProfileAndCoverPicType } from '../../types';
+import { MenuStackParamList, IPhoto } from '../../types';
 import { IUser } from '../../redux/user/user.types';
 
 import DrawerOption from '../bottom-drawers/DrawerOption';
@@ -19,7 +19,7 @@ import Colors from '../../constants/Colors';
 type CoverPicBottomDrawerProps = {
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser: IUser;
-  coverPic?: ProfileAndCoverPicType;
+  coverPic?: IPhoto;
   handleCloseModal: () => void;
 };
 

@@ -23,7 +23,7 @@ export type RootStackParamList = {
     currentUser: IUser;
     isCoverPic: boolean;
   };
-  Photo: { photo: ProfileAndCoverPicType };
+  Photo: { photo: IPhoto };
   AddOrEditProfileAbout: undefined;
   AlbumsTab: {
     userId: string;
@@ -71,7 +71,7 @@ export type MenuStackParamList = {
     currentUser: IUser;
     isCoverPic: boolean;
   };
-  Photo: { photo: ProfileAndCoverPicType };
+  Photo: { photo: IPhoto };
   AddOrEditProfileAbout: {
     isEdit: boolean;
     currentUser: IUser;
@@ -94,20 +94,18 @@ export type AlbumsTabParamList = {
     userId: string;
   };
   AlbumsStack: undefined;
+  Photo: { photo: IPhoto };
 };
 export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
+  navigation: StackNavigationProp<AlbumsTabParamList, T>;
   route: RouteProp<AlbumsTabParamList, T>;
-};
-
-export type AlbumsStackParamList = {
-  Albums: undefined;
 };
 
 // Photo
 
 export type BlobType = Blob | Uint8Array | ArrayBuffer;
 
-export type ProfileAndCoverPicType = {
+export interface IPhoto {
   imageUri: string;
   caption?: string;
   creator: {
@@ -115,4 +113,4 @@ export type ProfileAndCoverPicType = {
     displayName: string;
   };
   createdAt: string;
-};
+}

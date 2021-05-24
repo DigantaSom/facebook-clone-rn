@@ -23,7 +23,7 @@ import {
   SEARCH_PROFILES_FAILURE,
 } from './profile.types';
 import { IUser } from '../user/user.types';
-import { BlobType, ProfileAndCoverPicType } from '../../types';
+import { BlobType, IPhoto } from '../../types';
 
 import firebase from '../../firebase/firebase.utils';
 import { firestore, storage } from '../../firebase/firebase.utils';
@@ -123,7 +123,7 @@ export const uploadCoverPic =
             .collection('all_pics')
             .doc();
 
-          const newCoverPicObj: ProfileAndCoverPicType = {
+          const newCoverPicObj: IPhoto = {
             imageUri: url,
             caption,
             creator: {

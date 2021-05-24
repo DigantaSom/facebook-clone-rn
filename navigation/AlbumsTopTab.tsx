@@ -8,16 +8,16 @@ import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
-import { AlbumsStackParamList, AlbumsTabParamList, RootNavProps } from '../types';
-import getFirstName from '../utils/getFirstName';
+import { AlbumsTabParamList, RootNavProps } from '../types';
 
 import SavedScreen from '../screens/albums/SavedScreen';
 import PhotosOfYouScreen from '../screens/albums/PhotosOfYouScreen';
 import AllPhotosScreen from '../screens/albums/AllPhotosScreen';
 import AlbumsScreen from '../screens/albums/AlbumsScreen';
 
-import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+import Colors from '../constants/Colors';
+import getFirstName from '../utils/getFirstName';
 
 const AlbumsTopTab = createMaterialTopTabNavigator<AlbumsTabParamList>();
 
@@ -72,7 +72,7 @@ const AlbumsTopTabNavigator = ({ route }: RootNavProps<'AlbumsTab'>) => {
       />
       <AlbumsTopTab.Screen
         name='AlbumsStack'
-        component={AlbumsStackNavigator}
+        component={AlbumsScreen}
         options={{ title: 'Albums' }}
       />
     </AlbumsTopTab.Navigator>
@@ -80,11 +80,3 @@ const AlbumsTopTabNavigator = ({ route }: RootNavProps<'AlbumsTab'>) => {
 };
 
 export default AlbumsTopTabNavigator;
-
-const AlbumsStack = createStackNavigator<AlbumsStackParamList>();
-
-const AlbumsStackNavigator = () => (
-  <AlbumsStack.Navigator screenOptions={{ header: () => null }}>
-    <AlbumsStack.Screen name='Albums' component={AlbumsScreen} />
-  </AlbumsStack.Navigator>
-);

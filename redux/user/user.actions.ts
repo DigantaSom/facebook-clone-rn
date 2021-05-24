@@ -22,7 +22,7 @@ import {
   UPDATE_PROFILE_PIC_FAILURE,
   UPDATE_PROFILE_PIC_SUCCESS,
 } from './user.types';
-import { BlobType, ProfileAndCoverPicType } from '../../types';
+import { BlobType, IPhoto } from '../../types';
 import { UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
 
 import firebase from '../../firebase/firebase.utils';
@@ -226,7 +226,7 @@ export const updateProfilePic =
             .collection('all_pics')
             .doc();
 
-          const newProfilePicObj: ProfileAndCoverPicType = {
+          const newProfilePicObj: IPhoto = {
             imageUri: url,
             caption,
             creator: {

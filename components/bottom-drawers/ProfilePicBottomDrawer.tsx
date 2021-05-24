@@ -9,7 +9,7 @@ import {
 } from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { MenuStackParamList, ProfileAndCoverPicType } from '../../types';
+import { MenuStackParamList, IPhoto } from '../../types';
 
 import DrawerOption from './DrawerOption';
 import Colors from '../../constants/Colors';
@@ -19,7 +19,7 @@ import { IUser } from '../../redux/user/user.types';
 type ProfilePicBottomDrawer = {
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser: IUser;
-  profilePic?: ProfileAndCoverPicType;
+  profilePic?: IPhoto;
   handleCloseModal: () => void;
 };
 
