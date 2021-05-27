@@ -117,6 +117,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         <TextInput
           placeholder='Full Name'
           placeholderTextColor='#c5c5c5'
+          textContentType='name'
           autoCapitalize='words'
           onChangeText={text => setDisplayName(text)}
           style={styles.input}
@@ -124,6 +125,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         <TextInput
           placeholder='Email'
           placeholderTextColor='#c5c5c5'
+          textContentType='emailAddress'
           keyboardType='email-address'
           onChangeText={text => setEmail(text)}
           style={styles.input}
@@ -131,6 +133,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         <TextInput
           placeholder='Password'
           placeholderTextColor='#c5c5c5'
+          textContentType='password'
           secureTextEntry
           onChangeText={text => setPassword(text)}
           style={styles.input}
@@ -138,6 +141,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
         <TextInput
           placeholder='Confirm Password'
           placeholderTextColor='#c5c5c5'
+          textContentType='password'
           secureTextEntry
           onChangeText={text => setConfirmPassword(text)}
           style={styles.input}

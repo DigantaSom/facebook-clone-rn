@@ -82,6 +82,7 @@ const LoginScreen = ({ navigation }: AuthNavProps<'Login'>) => {
             <TextInput
               placeholder='Email'
               placeholderTextColor='#c5c5c5'
+              textContentType='emailAddress'
               keyboardType='email-address'
               onChangeText={text => setEmail(text)}
               style={styles.input}
@@ -89,6 +90,7 @@ const LoginScreen = ({ navigation }: AuthNavProps<'Login'>) => {
             <TextInput
               placeholder='Password'
               placeholderTextColor='#c5c5c5'
+              textContentType='password'
               secureTextEntry
               onChangeText={text => setPassword(text)}
               style={styles.input}
