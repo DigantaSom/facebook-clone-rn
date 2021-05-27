@@ -30,7 +30,7 @@ const AlbumsTopTabNavigator = ({ route }: RootNavProps<'AlbumsTab'>) => {
 
   return (
     <AlbumsTopTab.Navigator
-      initialRouteName='AllPhotos'
+      initialRouteName='Albums'
       tabBarOptions={{
         activeTintColor: Colors[colorScheme].tint,
         labelStyle: {
@@ -71,8 +71,9 @@ const AlbumsTopTabNavigator = ({ route }: RootNavProps<'AlbumsTab'>) => {
         options={{ title: 'All Photos' }}
       />
       <AlbumsTopTab.Screen
-        name='AlbumsStack'
+        name='Albums'
         component={AlbumsScreen}
+        initialParams={{ userId }}
         options={{ title: 'Albums' }}
       />
     </AlbumsTopTab.Navigator>

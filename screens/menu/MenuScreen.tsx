@@ -37,7 +37,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({ navigation }) => {
               navigation.navigate('Profile', { userId: currentUser!.id as string })
             }>
             <View style={styles.header}>
-              <DPcontainer imageUri={currentUser?.profilePic?.imageUri} />
+              <DPcontainer imageUri={currentUser?.profilePic} />
               <View style={styles.headerInfo}>
                 <Text style={styles.headerUsername}>{currentUser?.displayName}</Text>
                 <Text style={styles.headerSubtitle}>See your profile</Text>

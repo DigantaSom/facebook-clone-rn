@@ -25,8 +25,7 @@ import {
 import { BlobType, IPhoto } from '../../types';
 import { UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
 
-import firebase from '../../firebase/firebase.utils';
-import {
+import firebase, {
   auth,
   firestore,
   storage,
@@ -215,16 +214,10 @@ export const updateProfilePic =
         snapshot.snapshot.ref.getDownloadURL().then(async url => {
           const userRef = firestore.doc(`users/${currentUser.id}`);
           const profileRef = firestore.doc(`profiles/${currentUser.id}`);
-          const profilePicsAlbum_Ref = firestore
-            .collection('albums')
-            .doc(currentUser.id)
-            .collection('profile_pics')
-            .doc();
-          const allPicsAlbum_Ref = firestore
-            .collection('albums')
-            .doc(currentUser.id)
-            .collection('all_pics')
-            .doc();
+
+          const albumsRef = firestore.collection('albums').doc(currentUser.id);
+          const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc();
+          const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
 
           const newProfilePicObj: IPhoto = {
             imageUri: url,
@@ -248,11 +241,21 @@ export const updateProfilePic =
             batch.set(profilePicsAlbum_Ref, newProfilePicObj);
             batch.set(allPicsAlbum_Ref, newProfilePicObj);
 
+            const albumsSnapshot = await albumsRef.get();
+            const all_albums_obj = albumsSnapshot.data();
+            if (all_albums_obj) {
+              if (!Object.keys(all_albums_obj).includes('profile_pics')) {
+                batch.update(albumsRef, {
+                  all_albums: firebase.firestore.FieldValue.arrayUnion('profile_pics'),
+                });
+              }
+            }
+
             await batch.commit();
 
             dispatch({
               type: UPDATE_PROFILE_PIC_SUCCESS,
-              payload: newProfilePicObj,
+              payload: url,
             });
 
             // dispatch to update profile state as well

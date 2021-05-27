@@ -1,19 +1,30 @@
 import { IPhoto } from '../../types';
 import {
+  AlbumPreviewType,
   AlbumActionType,
   GET_ALL_PHOTOS_START,
   GET_ALL_PHOTOS_SUCCESS,
   GET_ALL_PHOTOS_FAILURE,
+  GET_ALBUMS_START,
+  GET_ALBUMS_SUCCESS,
+  GET_ALBUMS_FAILURE,
+  GET_ALBUM_PICS_START,
+  GET_ALBUM_PICS_SUCCESS,
+  GET_ALBUM_PICS_FAILURE,
 } from './album.types';
 
 interface IDefaultState {
-  all_photos: IPhoto[];
+  albumsPreview: AlbumPreviewType[];
+  allPhotos: IPhoto[];
+  photos: IPhoto[];
   loading: boolean;
   error: string;
 }
 
 const defaultState: IDefaultState = {
-  all_photos: [],
+  allPhotos: [],
+  photos: [],
+  albumsPreview: [],
   loading: false,
   error: '',
 };
@@ -24,6 +35,8 @@ const albumReducer = (
 ): IDefaultState => {
   switch (action.type) {
     case GET_ALL_PHOTOS_START:
+    case GET_ALBUMS_START:
+    case GET_ALBUM_PICS_START:
       return {
         ...state,
         loading: true,
@@ -32,11 +45,27 @@ const albumReducer = (
     case GET_ALL_PHOTOS_SUCCESS:
       return {
         ...state,
-        all_photos: action.payload,
+        allPhotos: action.payload,
+        loading: false,
+      };
+
+    case GET_ALBUMS_SUCCESS:
+      return {
+        ...state,
+        albumsPreview: action.payload,
+        loading: false,
+      };
+
+    case GET_ALBUM_PICS_SUCCESS:
+      return {
+        ...state,
+        photos: action.payload,
         loading: false,
       };
 
     case GET_ALL_PHOTOS_FAILURE:
+    case GET_ALBUMS_FAILURE:
+    case GET_ALBUM_PICS_FAILURE:
       return {
         ...state,
         loading: false,

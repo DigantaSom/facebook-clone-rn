@@ -23,7 +23,7 @@ export interface IUser {
   id?: string;
   displayName?: string;
   email?: string;
-  profilePic?: IPhoto;
+  profilePic?: string;
   createdAt?: Date;
 }
 
@@ -100,7 +100,7 @@ export interface IUpdateProfilePicStart {
 
 export interface IUpdateProfilePicSuccess {
   type: typeof UPDATE_PROFILE_PIC_SUCCESS;
-  payload: IPhoto;
+  payload: string;
 }
 export interface IUpdateProfilePicFailure {
   type: typeof UPDATE_PROFILE_PIC_FAILURE;

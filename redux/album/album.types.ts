@@ -8,12 +8,23 @@ export const GET_ALBUMS_START = 'GET_ALBUMS_START';
 export const GET_ALBUMS_SUCCESS = 'GET_ALBUMS_SUCCESS';
 export const GET_ALBUMS_FAILURE = 'GET_ALBUMS_FAILURE';
 
+export const GET_ALBUM_PICS_START = 'GET_ALBUM_PICS_START';
+export const GET_ALBUM_PICS_SUCCESS = 'GET_ALBUM_PICS_SUCCESS';
+export const GET_ALBUM_PICS_FAILURE = 'GET_ALBUM_PICS_FAILURE';
+
+export type AlbumPreviewType = {
+  albumTitle: string;
+  lastImageUri: string;
+};
+
+// Get all photos
+
 export interface IGetAllPhotosStart {
   type: typeof GET_ALL_PHOTOS_START;
 }
 export interface IGetAllPhotosSuccess {
   type: typeof GET_ALL_PHOTOS_SUCCESS;
-  payload: IPhoto[]; // TODO: add apt type
+  payload: IPhoto[];
 }
 export interface IGetAllPhotosFailure {
   type: typeof GET_ALL_PHOTOS_FAILURE;
@@ -25,12 +36,14 @@ export type GetAllPhotosDispatchType =
   | IGetAllPhotosSuccess
   | IGetAllPhotosFailure;
 
+// Get albums
+
 export interface IGetAlbumsStart {
   type: typeof GET_ALBUMS_START;
 }
 export interface IGetAlbumsSuccess {
   type: typeof GET_ALBUMS_SUCCESS;
-  payload: any; // TODO: add apt type
+  payload: AlbumPreviewType[];
 }
 export interface IGetAlbumsFailure {
   type: typeof GET_ALBUMS_FAILURE;
@@ -42,4 +55,28 @@ export type GetAlbumsDispatchType =
   | IGetAlbumsSuccess
   | IGetAlbumsFailure;
 
-export type AlbumActionType = GetAllPhotosDispatchType | GetAlbumsDispatchType;
+// Get Album pics
+
+export interface IGetAlbumPicsStart {
+  type: typeof GET_ALBUM_PICS_START;
+}
+export interface IGetAlbumPicsSuccess {
+  type: typeof GET_ALBUM_PICS_SUCCESS;
+  payload: IPhoto[];
+}
+export interface IGetAlbumPicsFailure {
+  type: typeof GET_ALBUM_PICS_FAILURE;
+  payload: string;
+}
+
+export type GetAlbumPicsDispatchType =
+  | IGetAlbumPicsStart
+  | IGetAlbumPicsSuccess
+  | IGetAlbumPicsFailure;
+
+// Album action type
+
+export type AlbumActionType =
+  | GetAllPhotosDispatchType
+  | GetAlbumsDispatchType
+  | GetAlbumPicsDispatchType;

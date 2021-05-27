@@ -25,6 +25,7 @@ import PhotoScreen from '../screens/PhotoScreen';
 import UploadProfileOrCoverPicScreen from '../screens/menu/UploadProfileOrCoverPicScreen';
 import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutScreen';
 import AlbumsTopTabNavigator from './AlbumsTopTab';
+import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -132,6 +133,7 @@ const RootNavigator = () => {
           title: route.params.displayName, // route params coming from profile
         })}
       />
+      <Stack.Screen name='IndividualAlbum' component={IndividualAlbumScreen} />
       {/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}

@@ -6,10 +6,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import Layout from '../../constants/Layout';
 
-interface PhotoGridItemProps {
+type PhotoGridItemProps = {
   photo: IPhoto;
-  navigation: StackNavigationProp<AlbumsTabParamList, 'AllPhotos'>;
-}
+  navigation:
+    | StackNavigationProp<AlbumsTabParamList, 'AllPhotos'>
+    | StackNavigationProp<AlbumsTabParamList, 'IndividualAlbum'>;
+};
 
 const PhotoGridItem: React.FC<PhotoGridItemProps> = ({ photo, navigation }) => {
   return (

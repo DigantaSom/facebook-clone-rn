@@ -29,6 +29,7 @@ export type RootStackParamList = {
     userId: string;
     displayName: string;
   };
+  IndividualAlbum: undefined;
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
   navigation: StackNavigationProp<RootStackParamList, T>;
@@ -88,13 +89,23 @@ export type MenuNavProps<T extends keyof MenuStackParamList> = {
 };
 
 export type AlbumsTabParamList = {
-  Saved: undefined;
-  PhotosOfYou: undefined;
+  Saved: {
+    userId: string;
+  };
+  PhotosOfYou: {
+    userId: string;
+  };
   AllPhotos: {
     userId: string;
   };
-  AlbumsStack: undefined;
+  Albums: {
+    userId: string;
+  };
   Photo: { photo: IPhoto };
+  IndividualAlbum: {
+    albumTitle: string;
+    userId: string;
+  };
 };
 export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
   navigation: StackNavigationProp<AlbumsTabParamList, T>;
@@ -114,3 +125,5 @@ export interface IPhoto {
   };
   createdAt: string;
 }
+
+export type EmptyContentType = 'album' | 'photo'; // TODO: add more gradually

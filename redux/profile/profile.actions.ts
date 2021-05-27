@@ -25,8 +25,7 @@ import {
 import { IUser } from '../user/user.types';
 import { BlobType, IPhoto } from '../../types';
 
-import firebase from '../../firebase/firebase.utils';
-import { firestore, storage } from '../../firebase/firebase.utils';
+import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
 export const getProfile =
   (userId: string | undefined) => async (dispatch: Dispatch<GetProfileDispatchType>) => {
@@ -112,16 +111,9 @@ export const uploadCoverPic =
         // success function
         snapshot.snapshot.ref.getDownloadURL().then(async url => {
           const profileRef = firestore.doc(`profiles/${currentUser.id}`);
-          const coverPicsAlbum_Ref = firestore
-            .collection('albums')
-            .doc(currentUser.id)
-            .collection('cover_pics')
-            .doc();
-          const allPicsAlbum_Ref = firestore
-            .collection('albums')
-            .doc(currentUser.id)
-            .collection('all_pics')
-            .doc();
+          const albumsRef = firestore.collection('albums').doc(currentUser.id);
+          const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc();
+          const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
 
           const newCoverPicObj: IPhoto = {
             imageUri: url,
@@ -141,6 +133,16 @@ export const uploadCoverPic =
             });
             batch.set(coverPicsAlbum_Ref, newCoverPicObj);
             batch.set(allPicsAlbum_Ref, newCoverPicObj);
+
+            const albumsSnapshot = await albumsRef.get();
+            const all_albums_obj = albumsSnapshot.data();
+            if (all_albums_obj) {
+              if (!Object.keys(all_albums_obj).includes('cover_pics')) {
+                batch.update(albumsRef, {
+                  all_albums: firebase.firestore.FieldValue.arrayUnion('cover_pics'),
+                });
+              }
+            }
 
             await batch.commit();
 
