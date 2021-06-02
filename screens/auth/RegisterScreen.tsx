@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import DayJS from 'dayjs';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { AuthNavProps } from '../../types';
@@ -33,11 +34,13 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
   // const [date, setDate] = useState(new Date(1598051730000));
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [hasPickedDate, setHasPickedDate] = useState(false);
 
   const dispatch = useDispatch();
   const signUpLoading = useSelector((state: RootState) => state.user.loading);
 
   const onDateChange = (event: any, selectedDate: Date | undefined) => {
+    setHasPickedDate(true);
     const currentDate = selectedDate || date;
 
     setShow(Platform.OS === 'ios');
@@ -150,7 +153,9 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
           activeOpacity={0.5}
           onPress={showDatepicker}
           style={styles.birthdayButton}>
-          <Text style={styles.birthdayButtonText}>Birthday</Text>
+          <Text style={styles.birthdayButtonText}>
+            {hasPickedDate ? DayJS(date).format('DD-MMM-YYYY') : 'Birthday'}
+          </Text>
         </TouchableOpacity>
         {show && (
           <DateTimePicker

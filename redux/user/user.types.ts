@@ -1,5 +1,5 @@
 import firebase from '../../firebase/firebase.utils';
-import { IPhoto } from '../../types';
+import { IPost } from '../../types';
 import { IUpdateProfilePicInProfile } from '../profile/profile.types';
 
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';

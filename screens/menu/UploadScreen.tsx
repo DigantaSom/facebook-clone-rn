@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { StyleSheet, Platform, Button, Image, TextInput, ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { StyleSheet, Platform, Button, Image, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { RootNavProps } from '../../types';
@@ -22,14 +22,14 @@ const UploadScreen: React.FC<UploadScreenProps> = ({ navigation, route }) => {
   const [image, setImage] = useState('');
   const [title, setTitle] = useState('');
 
-  const { currentUser, uploadType } = route.params;
+  const { currentUser, postType } = route.params;
 
   const dispatch = useDispatch();
   const { uploading, error } = useSelector((state: RootState) => state.user);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: `Upload a ${uploadType === 'Cover Pic' ? 'Cover' : 'Profile'} Picture`,
+      headerTitle: `Upload a ${postType === 'Cover Pic' ? 'Cover' : 'Profile'} Picture`,
       headerTitleStyle: {
         fontSize: 15,
         marginLeft: -15,
@@ -39,7 +39,7 @@ const UploadScreen: React.FC<UploadScreenProps> = ({ navigation, route }) => {
           <HeaderActionButton
             actionType='Post'
             onPressAction={() => {
-              if (uploadType === 'Cover Pic') {
+              if (postType === 'Cover Pic') {
                 dispatch(uploadCoverPic(currentUser, image, title));
               } else {
                 dispatch(updateProfilePic(currentUser, image, title));
@@ -84,7 +84,7 @@ const UploadScreen: React.FC<UploadScreenProps> = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {!image ? (
         <Button title='Pick an image from camera roll' onPress={pickImage} />
       ) : (
@@ -101,7 +101,7 @@ const UploadScreen: React.FC<UploadScreenProps> = ({ navigation, route }) => {
           />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

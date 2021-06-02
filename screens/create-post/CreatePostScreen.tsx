@@ -1,42 +1,55 @@
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { createPostWithPhoto } from '../../redux/post/post.actions';
 
-import { RootNavProps } from '../types';
+import { RootNavProps } from '../../types';
 
-import { Text, View } from '../components/Themed';
-import HeaderActionButton from '../components/UI/HeaderActionButton';
-import DPcontainer from '../components/UI/DPcontainer';
-import PostSettingItem from '../components/post/PostSettingItem';
-import CreatePostBottomDrawer from '../components/bottom-drawers/CreatePostBottomDrawer';
+import { Text, View } from '../../components/Themed';
+import Spinner from '../../components/UI/Spinner';
+import HeaderActionButton from '../../components/UI/HeaderActionButton';
+import DPcontainer from '../../components/UI/DPcontainer';
+import PostSettingItem from '../../components/post/PostSettingItem';
+import CreatePostBottomDrawer from '../../components/bottom-drawers/CreatePostBottomDrawer';
 
-import useValues from '../hooks/useValues';
+import useValues from '../../hooks/useValues';
 
-import Colors from '../constants/Colors';
-import Layout from '../constants/Layout';
+import Colors from '../../constants/Colors';
+import Layout from '../../constants/Layout';
 
 type CreatePostScreenProps = RootNavProps<'CreatePost'>;
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const [postTitle, setPostTitle] = useState('');
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const [postPhoto, setPostPhoto] = useState('');
+
   const values = useValues();
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { loading: postUploading, error } = useSelector((state: RootState) => state.post);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <HeaderActionButton
           actionType='Post'
-          disabled={!postTitle}
-          onPressAction={() => {}}
+          disabled={!postTitle || !postPhoto}
+          onPressAction={() => {
+            if ((postTitle || postPhoto) && currentUser) {
+              dispatch(createPostWithPhoto(postTitle, postPhoto, currentUser));
+            }
+            if (!postUploading || !error) {
+              navigation.navigate('Root');
+            }
+          }}
         />
       ),
     });
-  }, [postTitle]);
+  }, [postTitle, postPhoto, currentUser, createPostWithPhoto, postUploading, error]);
 
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -56,6 +69,15 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const handleCloseModal = useCallback(() => {
     bottomSheetModalRef.current?.close();
   }, []);
+
+  // others
+  const handlePostPhoto = (pickedImage: string) => {
+    setPostPhoto(pickedImage);
+  };
+
+  if (postUploading) {
+    return <Spinner />;
+  }
 
   return !currentUser ? null : (
     <ScrollView contentContainerStyle={styles.container}>
@@ -91,10 +113,12 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           </View>
         </View>
 
-        <View
+        <ScrollView
           style={[
             styles.postContent,
-            { maxHeight: Layout.window.height - values.tabHeaderHeight - 60 - 150 },
+            {
+              maxHeight: Layout.window.height - values.tabHeaderHeight - 60 - 150,
+            },
           ]}>
           <TextInput
             placeholder="What's on your mind?"
@@ -106,7 +130,13 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
             multiline
             onFocus={handleCloseModal}
           />
-        </View>
+
+          {!postPhoto ? null : (
+            <View style={styles.postPhotoContainer}>
+              <Image source={{ uri: postPhoto }} style={styles.postPhoto} />
+            </View>
+          )}
+        </ScrollView>
 
         <TouchableOpacity
           activeOpacity={0.6}
@@ -123,7 +153,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         index={1}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}>
-        <CreatePostBottomDrawer postTitle={postTitle} />
+        <CreatePostBottomDrawer handlePostPhoto={handlePostPhoto} />
       </BottomSheetModal>
     </ScrollView>
   );
@@ -165,6 +195,15 @@ const styles = StyleSheet.create({
     color: 'white',
     padding: 10,
     // maxHeight: '100%',
+  },
+  postPhotoContainer: {
+    width: Layout.window.width - 30,
+    height: Layout.window.width - 30,
+    alignItems: 'center',
+  },
+  postPhoto: {
+    width: '100%',
+    height: '100%',
   },
   seeOptionsButtonContainer: {
     position: 'absolute',

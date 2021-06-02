@@ -16,7 +16,7 @@ import {
   GET_ALBUM_PICS_SUCCESS,
   GET_ALBUM_PICS_FAILURE,
 } from './album.types';
-import { IPhoto } from '../../types';
+import { IPost } from '../../types';
 
 import { firestore } from '../../firebase/firebase.utils';
 
@@ -35,9 +35,9 @@ export const getAllPhotos =
 
       const all_pics_Snapshot = await all_pics_Ref.get();
 
-      const all_photos: IPhoto[] = [];
+      const all_photos: IPost[] = [];
       all_pics_Snapshot.docs.forEach(doc => {
-        all_photos.push(doc.data() as IPhoto);
+        all_photos.push(doc.data() as IPost);
       });
 
       dispatch({
@@ -124,10 +124,10 @@ export const getAlbumPics =
 
       const albumPicsSnapshot = await albumPicsRef.get();
 
-      const photosToDispatch: IPhoto[] = [];
+      const photosToDispatch: IPost[] = [];
 
       albumPicsSnapshot.docs.forEach(doc => {
-        photosToDispatch.push(doc.data() as IPhoto);
+        photosToDispatch.push(doc.data() as IPost);
       });
 
       dispatch({

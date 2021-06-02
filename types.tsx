@@ -16,18 +16,18 @@ export type RootStackParamList = {
   Search: undefined;
   NotFound: undefined;
   Profile: { userId: string };
-  CreatePost: undefined;
   Upload: {
     currentUser: IUser;
-    uploadType: UploadType;
+    postType: PostType;
   };
-  Photo: { photo: IPhoto };
+  Photo: { photo: IPost };
   AddOrEditProfileAbout: undefined;
   AlbumsTab: {
     userId: string;
     displayName: string;
   };
   IndividualAlbum: undefined;
+  CreatePost: undefined;
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
   navigation: StackNavigationProp<RootStackParamList, T>;
@@ -49,8 +49,8 @@ export type TopTabParamList = {
   Notifications: undefined;
   Menu: undefined;
   // for navigation to other navigators' screens
-  CreatePost: undefined;
   Profile: { userId: string };
+  CreatePost: undefined;
 };
 export type TopTabNavProps<T extends keyof TopTabParamList> = {
   navigation: StackNavigationProp<TopTabParamList, T>;
@@ -71,9 +71,9 @@ export type MenuStackParamList = {
   CreatePost: undefined;
   Upload: {
     currentUser: IUser;
-    uploadType: UploadType;
+    postType: PostType;
   };
-  Photo: { photo: IPhoto };
+  Photo: { photo: IPost };
   AddOrEditProfileAbout: {
     isEdit: boolean;
     currentUser: IUser;
@@ -102,7 +102,7 @@ export type AlbumsTabParamList = {
   Albums: {
     userId: string;
   };
-  Photo: { photo: IPhoto };
+  Photo: { photo: IPost };
   IndividualAlbum: {
     albumTitle: string;
     userId: string;
@@ -113,18 +113,19 @@ export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
   route: RouteProp<AlbumsTabParamList, T>;
 };
 
-// Photo
+// Post
 
 export type BlobType = Blob | Uint8Array | ArrayBuffer;
 
-export interface IPhoto {
-  imageUri: string;
+export interface IPost {
+  imageUri?: string;
   title?: string;
   creator: {
     id: string;
     displayName: string;
   };
   createdAt: string;
+  postType: PostType;
 }
 
 // others
@@ -133,6 +134,6 @@ export type HeaderActionType = 'Save' | 'Edit' | 'Post';
 
 export type EmptyContentType = 'album' | 'photo'; // TODO: add more gradually
 
-export type UploadType = 'Profile Pic' | 'Cover Pic' | 'Photo';
+export type PostType = 'Profile Pic' | 'Cover Pic' | 'Photo';
 
 export type PostSettingsType = 'Privacy' | 'Album';

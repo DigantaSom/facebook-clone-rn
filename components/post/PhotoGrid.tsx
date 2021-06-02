@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, FlatList } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AlbumsTabParamList, IPhoto } from '../../types';
+import { AlbumsTabParamList, IPost } from '../../types';
 
 import { View } from '../Themed';
 import Center from '../UI/Center';
@@ -10,7 +10,7 @@ import EmptyContent from '../UI/EmptyContent';
 import PhotoGridItem from './PhotoGridItem';
 
 type PhotoGridProps = {
-  photoList: IPhoto[];
+  photoList: IPost[];
   navigation:
     | StackNavigationProp<AlbumsTabParamList, 'AllPhotos'>
     | StackNavigationProp<AlbumsTabParamList, 'IndividualAlbum'>;

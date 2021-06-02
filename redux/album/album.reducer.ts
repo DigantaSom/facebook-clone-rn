@@ -1,4 +1,4 @@
-import { IPhoto } from '../../types';
+import { IPost } from '../../types';
 import {
   AlbumPreviewType,
   AlbumActionType,
@@ -15,8 +15,8 @@ import {
 
 interface IDefaultState {
   albumsPreview: AlbumPreviewType[];
-  allPhotos: IPhoto[];
-  photos: IPhoto[];
+  allPhotos: IPost[];
+  photos: IPost[];
   loading: boolean;
   error: string;
 }

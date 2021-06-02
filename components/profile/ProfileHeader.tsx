@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { View } from '../Themed';
 
-import { IPhoto } from '../../types';
+import { IPost } from '../../types';
 
 import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
@@ -11,8 +11,8 @@ type ProfileHeaderProps = {
   handleShowPicOptions: () => void;
   handleIsProfilePicPressed: () => void;
   handleIsCoverPicPressed: () => void;
-  profilePic: IPhoto | undefined;
-  coverPic: IPhoto | undefined;
+  profilePic: IPost | undefined;
+  coverPic: IPost | undefined;
 };
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({

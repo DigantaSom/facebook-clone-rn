@@ -23,7 +23,7 @@ import {
   SEARCH_PROFILES_FAILURE,
 } from './profile.types';
 import { IUser } from '../user/user.types';
-import { BlobType, IPhoto } from '../../types';
+import { BlobType, IPost } from '../../types';
 
 import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
@@ -115,7 +115,7 @@ export const uploadCoverPic =
           const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc();
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
 
-          const newCoverPicObj: IPhoto = {
+          const newCoverPicObj: IPost = {
             imageUri: url,
             title,
             creator: {
@@ -123,6 +123,7 @@ export const uploadCoverPic =
               displayName: currentUser.displayName as string,
             },
             createdAt: new Date().toISOString(),
+            postType: 'Cover Pic',
           };
 
           try {

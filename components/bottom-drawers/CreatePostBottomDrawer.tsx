@@ -1,29 +1,55 @@
-import React from 'react';
-import { StyleSheet, View as ViewRN } from 'react-native';
+import React, { useEffect } from 'react';
+import { Platform, StyleSheet, View as ViewRN } from 'react-native';
 import {
   Fontisto,
   MaterialCommunityIcons,
-  FontAwesome,
   FontAwesome5,
   AntDesign,
   MaterialIcons,
 } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 import DrawerOption from './DrawerOption';
 
 import Colors from '../../constants/Colors';
 
 interface CreatePostBottomDrawerProps {
-  postTitle: string;
+  handlePostPhoto: (pickedImage: string) => void;
 }
 
-const CreatePostBottomDrawer: React.FC<CreatePostBottomDrawerProps> = ({ postTitle }) => {
+const CreatePostBottomDrawer: React.FC<CreatePostBottomDrawerProps> = ({
+  handlePostPhoto,
+}) => {
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      handlePostPhoto(result.uri);
+    }
+  };
+
   return (
     <ViewRN style={styles.container}>
       <DrawerOption
-        icon={<Fontisto name='photograph' size={20} color='green' style={styles.icon} />}
+        icon={<Fontisto name='photograph' size={20} color='lime' style={styles.icon} />}
         text='Photo'
-        onPressDrawerOption={() => {}}
+        onPressDrawerOption={pickImage}
       />
       <DrawerOption
         icon={<AntDesign name='tago' size={20} color='blue' />}

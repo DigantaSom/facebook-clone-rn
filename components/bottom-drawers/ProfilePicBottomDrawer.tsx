@@ -9,7 +9,7 @@ import {
 } from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { MenuStackParamList, IPhoto } from '../../types';
+import { MenuStackParamList, IPost } from '../../types';
 
 import DrawerOption from './DrawerOption';
 import Colors from '../../constants/Colors';
@@ -19,7 +19,7 @@ import { IUser } from '../../redux/user/user.types';
 type ProfilePicBottomDrawer = {
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
   currentUser: IUser;
-  profilePic?: IPhoto;
+  profilePic?: IPost;
   handleCloseModal: () => void;
 };
 
@@ -32,7 +32,7 @@ const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
   const onSelectProfilePictureHandler = () => {
     if (currentUser) {
       handleCloseModal();
-      navigation.navigate('Upload', { currentUser, uploadType: 'Profile Pic' });
+      navigation.navigate('Upload', { currentUser, postType: 'Profile Pic' });
     }
   };
 

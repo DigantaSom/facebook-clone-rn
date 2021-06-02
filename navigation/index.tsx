@@ -20,12 +20,12 @@ import RegisterScreen from '../screens/auth/RegisterScreen';
 import TopTabNavigator from './TopTabNavigator';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/menu/ProfileScreen';
-import CreatePostScreen from '../screens/CreatePostScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import UploadScreen from '../screens/menu/UploadScreen';
 import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutScreen';
 import AlbumsTopTabNavigator from './AlbumsTopTab';
 import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
+import CreatePostScreen from '../screens/create-post/CreatePostScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -104,13 +104,6 @@ const RootNavigator = () => {
         })}
       />
       <Stack.Screen
-        name='CreatePost'
-        component={CreatePostScreen}
-        options={{
-          headerTitle: 'Create Post',
-        }}
-      />
-      <Stack.Screen
         name='Photo'
         component={PhotoScreen}
         options={{
@@ -131,6 +124,13 @@ const RootNavigator = () => {
         })}
       />
       <Stack.Screen name='IndividualAlbum' component={IndividualAlbumScreen} />
+      <Stack.Screen
+        name='CreatePost'
+        component={CreatePostScreen}
+        options={{
+          headerTitle: 'Create Post',
+        }}
+      />
       {/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}

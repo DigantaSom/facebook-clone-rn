@@ -1,13 +1,13 @@
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { AlbumsTabParamList, IPhoto } from '../../types';
+import { AlbumsTabParamList, IPost } from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import Layout from '../../constants/Layout';
 
 type PhotoGridItemProps = {
-  photo: IPhoto;
+  photo: IPost;
   navigation:
     | StackNavigationProp<AlbumsTabParamList, 'AllPhotos'>
     | StackNavigationProp<AlbumsTabParamList, 'IndividualAlbum'>;

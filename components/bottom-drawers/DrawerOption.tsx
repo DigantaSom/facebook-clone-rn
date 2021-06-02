@@ -3,6 +3,7 @@ import { StyleSheet, View as ViewRN } from 'react-native';
 import { TouchableOpacity } from '@gorhom/bottom-sheet';
 
 import { Text } from '../Themed';
+
 import Colors from '../../constants/Colors';
 
 type DrawerOptionProps = {
@@ -49,7 +50,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   iconContainer: {
-    // backgroundColor: '#454545',
     alignItems: 'center',
     justifyContent: 'center',
     width: 40,

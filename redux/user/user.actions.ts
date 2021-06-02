@@ -22,7 +22,7 @@ import {
   UPDATE_PROFILE_PIC_FAILURE,
   UPDATE_PROFILE_PIC_SUCCESS,
 } from './user.types';
-import { BlobType, IPhoto } from '../../types';
+import { BlobType, IPost } from '../../types';
 import { UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
 
 import firebase, {
@@ -219,7 +219,7 @@ export const updateProfilePic =
           const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc();
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
 
-          const newProfilePicObj: IPhoto = {
+          const newProfilePicObj: IPost = {
             imageUri: url,
             title,
             creator: {
@@ -227,6 +227,7 @@ export const updateProfilePic =
               displayName: currentUser.displayName as string,
             },
             createdAt: new Date().toISOString(),
+            postType: 'Profile Pic',
           };
 
           try {

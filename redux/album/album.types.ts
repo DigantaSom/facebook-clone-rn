@@ -1,4 +1,4 @@
-import { IPhoto } from '../../types';
+import { IPost } from '../../types';
 
 export const GET_ALL_PHOTOS_START = 'GET_ALL_PHOTOS_START';
 export const GET_ALL_PHOTOS_SUCCESS = 'GET_ALL_PHOTOS_SUCCESS';
@@ -24,7 +24,7 @@ export interface IGetAllPhotosStart {
 }
 export interface IGetAllPhotosSuccess {
   type: typeof GET_ALL_PHOTOS_SUCCESS;
-  payload: IPhoto[];
+  payload: IPost[];
 }
 export interface IGetAllPhotosFailure {
   type: typeof GET_ALL_PHOTOS_FAILURE;
@@ -62,7 +62,7 @@ export interface IGetAlbumPicsStart {
 }
 export interface IGetAlbumPicsSuccess {
   type: typeof GET_ALBUM_PICS_SUCCESS;
-  payload: IPhoto[];
+  payload: IPost[];
 }
 export interface IGetAlbumPicsFailure {
   type: typeof GET_ALBUM_PICS_FAILURE;

@@ -9,7 +9,6 @@ import React, {
 import { Image, StyleSheet, View as ViewRN, TouchableOpacity } from 'react-native';
 import { AntDesign, MaterialIcons, Feather } from '@expo/vector-icons';
 import DayJS from 'dayjs';
-import { useHeaderHeight } from '@react-navigation/stack';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { useSelector } from 'react-redux';
@@ -21,6 +20,7 @@ import PostActions from '../components/post/PostActions';
 import PhotoBottomDrawer from '../components/bottom-drawers/PhotoBottomDrawer';
 
 import { RootNavProps } from '../types';
+import useValues from '../hooks/useValues';
 
 type PhotoScreenProps = RootNavProps<'Photo'>;
 
@@ -28,7 +28,7 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
   const { photo } = route.params;
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const [isMyPhoto, setIsMyPhoto] = useState<Boolean>(false);
-  const headerHeight = useHeaderHeight();
+  const { tabHeaderHeight } = useValues();
 
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -71,7 +71,7 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
 
   return (
     <TouchableOpacity
-      style={[styles.container, { marginTop: -headerHeight / 2 }]}
+      style={[styles.container, { marginTop: -tabHeaderHeight / 2 }]}
       activeOpacity={0.9}
       onLongPress={handlePresentModalPress}>
       <View style={styles.imageContainer}>
