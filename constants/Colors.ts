@@ -17,6 +17,7 @@ export default {
     tabIconSelected: tintColorDark,
     cardBackground: '#222',
     dividerColor: '#CCC',
+    placeholderColor: '#C5C5C5',
   },
   danger: '#DF4759',
   success: '#42BA96',

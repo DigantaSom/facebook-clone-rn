@@ -12,18 +12,22 @@ const PhotoBottomDrawer = () => {
         icon={<Entypo name='download' size={20} color='white' />}
         text='Save to phone'
         onPressDrawerOption={() => {}}
+        iconCircle
       />
       <DrawerOption
         icon={<FontAwesome5 name='share' size={20} color='white' />}
         text='Share external'
+        iconCircle
       />
       <DrawerOption
         icon={<FontAwesome5 name='facebook-messenger' size={20} color='white' />}
         text='Send in Messenger'
+        iconCircle
       />
       <DrawerOption
         icon={<Octicons name='report' size={20} color='white' />}
         text='Find support or report photo'
+        iconCircle
       />
     </ViewRN>
   );

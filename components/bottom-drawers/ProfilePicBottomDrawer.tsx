@@ -32,7 +32,7 @@ const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
   const onSelectProfilePictureHandler = () => {
     if (currentUser) {
       handleCloseModal();
-      navigation.navigate('UploadProfileOrCoverPic', { currentUser, isCoverPic: false });
+      navigation.navigate('Upload', { currentUser, uploadType: 'Profile Pic' });
     }
   };
 
@@ -55,36 +55,44 @@ const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
           />
         }
         text='Add Frame'
+        iconCircle
       />
       <DrawerOption
         icon={<Ionicons name='md-videocam' size={20} color='white' />}
         text='Take new profile video'
+        iconCircle
       />
       <DrawerOption
         icon={<Ionicons name='md-logo-youtube' size={20} color='white' />}
         text='Select profile video'
+        iconCircle
       />
       <DrawerOption
         icon={<Fontisto name='photograph' size={20} color='white' />}
         text='Select profile picture'
         onPressDrawerOption={onSelectProfilePictureHandler}
+        iconCircle
       />
       <DrawerOption
         icon={<FontAwesome name='user' size={20} color='white' />}
         text='View profile picture'
         onPressDrawerOption={onViewProfilePictureHandler}
+        iconCircle
       />
       <DrawerOption
         icon={<Entypo name='shield' size={20} color='white' />}
         text='Turn on profile picture guard'
+        iconCircle
       />
       <DrawerOption
         icon={<FontAwesome name='paint-brush' size={20} color='white' />}
         text='Add design'
+        iconCircle
       />
       <DrawerOption
         icon={<Ionicons name='happy' size={20} color='white' />}
         text='Make avatar profile picture'
+        iconCircle
       />
     </ViewRN>
   );

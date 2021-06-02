@@ -152,7 +152,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
             <ProfileFriends />
             <Divider />
 
-            {!isMyProfile ? null : <ProfileCreatePost navigation={navigation} />}
+            {isMyProfile ? (
+              <ProfileCreatePost currentUser={currentUser} navigation={navigation} />
+            ) : null}
 
             <ProfileWidgets
               navigation={navigation}

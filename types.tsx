@@ -6,8 +6,6 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import firebase from './firebase/firebase.utils';
-
 import { IUser } from './redux/user/user.types';
 import { ProfileAboutType } from './redux/profile/profile.types';
 
@@ -19,9 +17,9 @@ export type RootStackParamList = {
   NotFound: undefined;
   Profile: { userId: string };
   CreatePost: undefined;
-  UploadProfileOrCoverPic: {
+  Upload: {
     currentUser: IUser;
-    isCoverPic: boolean;
+    uploadType: UploadType;
   };
   Photo: { photo: IPhoto };
   AddOrEditProfileAbout: undefined;
@@ -50,10 +48,12 @@ export type TopTabParamList = {
   Groups: undefined;
   Notifications: undefined;
   Menu: undefined;
+  // for navigation to other navigators' screens
+  CreatePost: undefined;
+  Profile: { userId: string };
 };
-
-export type HomeStackParamList = {
-  Home: undefined;
+export type TopTabNavProps<T extends keyof TopTabParamList> = {
+  navigation: StackNavigationProp<TopTabParamList, T>;
 };
 
 export type GroupsStackParamList = {
@@ -66,11 +66,12 @@ export type NotificationsStackParamList = {
 
 export type MenuStackParamList = {
   Menu: undefined;
+  // for navigation to other navigators' screens
   Profile: { userId: string };
   CreatePost: undefined;
-  UploadProfileOrCoverPic: {
+  Upload: {
     currentUser: IUser;
-    isCoverPic: boolean;
+    uploadType: UploadType;
   };
   Photo: { photo: IPhoto };
   AddOrEditProfileAbout: {
@@ -118,7 +119,7 @@ export type BlobType = Blob | Uint8Array | ArrayBuffer;
 
 export interface IPhoto {
   imageUri: string;
-  caption?: string;
+  title?: string;
   creator: {
     id: string;
     displayName: string;
@@ -126,4 +127,12 @@ export interface IPhoto {
   createdAt: string;
 }
 
+// others
+
+export type HeaderActionType = 'Save' | 'Edit' | 'Post';
+
 export type EmptyContentType = 'album' | 'photo'; // TODO: add more gradually
+
+export type UploadType = 'Profile Pic' | 'Cover Pic' | 'Photo';
+
+export type PostSettingsType = 'Privacy' | 'Album';

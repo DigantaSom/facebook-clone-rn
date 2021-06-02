@@ -79,9 +79,9 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
       </View>
 
       <ViewRN style={styles.info}>
-        <ViewRN style={styles.captionContainer}>
+        <ViewRN style={styles.titleContainer}>
           <Text style={styles.username}>{photo.creator.displayName}</Text>
-          {photo.caption ? <Text style={styles.caption}>{photo.caption}</Text> : null}
+          {photo.title ? <Text style={styles.title}>{photo.title}</Text> : null}
           <Text style={styles.date}>
             {DayJS(photo.createdAt).format('MMM DD [at] HH:mm')}
           </Text>
@@ -141,12 +141,12 @@ const styles = StyleSheet.create({
     minHeight: 100,
     width: '100%',
   },
-  captionContainer: {},
+  titleContainer: {},
   username: {
     fontWeight: 'bold',
     fontSize: 14,
   },
-  caption: {
+  title: {
     marginTop: 5,
     fontSize: 14,
   },

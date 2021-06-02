@@ -20,9 +20,9 @@ import RegisterScreen from '../screens/auth/RegisterScreen';
 import TopTabNavigator from './TopTabNavigator';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/menu/ProfileScreen';
-import CreatePost from '../screens/CreatePost';
+import CreatePostScreen from '../screens/CreatePostScreen';
 import PhotoScreen from '../screens/PhotoScreen';
-import UploadProfileOrCoverPicScreen from '../screens/menu/UploadProfileOrCoverPicScreen';
+import UploadScreen from '../screens/menu/UploadScreen';
 import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutScreen';
 import AlbumsTopTabNavigator from './AlbumsTopTab';
 import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
@@ -105,7 +105,7 @@ const RootNavigator = () => {
       />
       <Stack.Screen
         name='CreatePost'
-        component={CreatePost}
+        component={CreatePostScreen}
         options={{
           headerTitle: 'Create Post',
         }}
@@ -118,10 +118,7 @@ const RootNavigator = () => {
           headerTitle: () => null,
         }}
       />
-      <Stack.Screen
-        name='UploadProfileOrCoverPic'
-        component={UploadProfileOrCoverPicScreen}
-      />
+      <Stack.Screen name='Upload' component={UploadScreen} />
       <Stack.Screen
         name='AddOrEditProfileAbout'
         component={AddOrEditProfileAboutScreen}

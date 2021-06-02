@@ -1,20 +1,26 @@
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
-
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons, Entypo, Fontisto, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text, View } from '../Themed';
-
 import { StackNavigationProp } from '@react-navigation/stack';
+
 import { MenuStackParamList } from '../../types';
+import { IUser } from '../../redux/user/user.types';
+
+import { Text, View } from '../Themed';
+import DPcontainer from '../UI/DPcontainer';
 
 import Colors from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 
 type ProfileCreatePostProps = {
+  currentUser: IUser | null;
   navigation: StackNavigationProp<MenuStackParamList, 'Profile'>;
 };
 
-const ProfileCreatePost: React.FC<ProfileCreatePostProps> = ({ navigation }) => {
+const ProfileCreatePost: React.FC<ProfileCreatePostProps> = ({
+  currentUser,
+  navigation,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.top}>
@@ -33,9 +39,7 @@ const ProfileCreatePost: React.FC<ProfileCreatePostProps> = ({ navigation }) => 
         style={styles.postFormContainer}
         activeOpacity={0.6}
         onPress={() => navigation.navigate('CreatePost')}>
-        <View style={styles.dpContainer}>
-          <Image style={styles.dp} source={require('../../assets/images/no-dp.jpg')} />
-        </View>
+        <DPcontainer imageUri={currentUser?.profilePic} />
         <View style={styles.form}>
           <Text style={styles.formText}>What's on your mind?</Text>
         </View>
@@ -100,15 +104,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: Colors.dark.tabIconDefault,
-  },
-  dpContainer: {
-    width: 50,
-    height: 50,
-  },
-  dp: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 25,
   },
   form: {
     height: 50,

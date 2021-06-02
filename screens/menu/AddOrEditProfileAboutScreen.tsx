@@ -19,7 +19,7 @@ import { RelationshipStatusType } from '../../redux/profile/profile.types';
 import { addOrEditProfileAbout } from '../../redux/profile/profile.actions';
 
 import { Text } from '../../components/Themed';
-import HeaderSaveButton from '../../components/UI/HeaderSaveButton';
+import HeaderActionButton from '../../components/UI/HeaderActionButton';
 import Spinner from '../../components/UI/Spinner';
 
 import { RootState } from '../../redux/store';
@@ -86,8 +86,9 @@ const AddOrEditProfileAboutScreen: React.FC<AddOrEditProfileAboutScreenProps> = 
     navigation.setOptions({
       headerTitle: `${isEdit ? 'Edit' : 'Add'} Profile`,
       headerRight: () => (
-        <HeaderSaveButton
-          onSavePress={() => {
+        <HeaderActionButton
+          actionType={isEdit ? 'Edit' : 'Save'}
+          onPressAction={() => {
             if (
               livesInLocation.trim() === '' &&
               fromLocation.trim() === '' &&

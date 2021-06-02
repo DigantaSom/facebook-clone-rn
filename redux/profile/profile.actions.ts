@@ -66,7 +66,7 @@ export const getProfile =
   };
 
 export const uploadCoverPic =
-  (currentUser: IUser, imageUri: string, caption: string) =>
+  (currentUser: IUser, imageUri: string, title: string) =>
   async (dispatch: Dispatch<UploadCoverPicDispatchType>) => {
     // const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
     const uploadUri = Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
@@ -117,7 +117,7 @@ export const uploadCoverPic =
 
           const newCoverPicObj: IPhoto = {
             imageUri: url,
-            caption,
+            title,
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,

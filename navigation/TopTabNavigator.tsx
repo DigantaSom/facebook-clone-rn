@@ -15,7 +15,6 @@ import useColorScheme from '../hooks/useColorScheme';
 
 import {
   TopTabParamList,
-  HomeStackParamList,
   NotificationsStackParamList,
   GroupsStackParamList,
   MenuStackParamList,
@@ -51,7 +50,7 @@ export default function TopTabNavigator() {
       }}>
       <TopTab.Screen
         name='Home'
-        component={HomeStackNavigator}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({ color, focused }) =>
             focused ? (
@@ -136,15 +135,6 @@ const TabBarIcon = (props: {
   color: string;
   size?: number;
 }) => <Ionicons size={24} style={{ marginBottom: -3 }} {...props} />;
-
-const HomeStack = createStackNavigator<HomeStackParamList>();
-const HomeStackNavigator = () => {
-  return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name='Home' component={HomeScreen} />
-    </HomeStack.Navigator>
-  );
-};
 
 const NotificationsStack = createStackNavigator<NotificationsStackParamList>();
 const NotificationsStackNavigator = () => {

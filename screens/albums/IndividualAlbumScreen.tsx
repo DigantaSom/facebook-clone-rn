@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { getAlbumPics } from '../../redux/album/album.actions';
 
-import PhotoGrid from '../../components/post/PhotoGrid';
 import Spinner from '../../components/UI/Spinner';
+import PhotoGrid from '../../components/post/PhotoGrid';
 
 import { AlbumsTabNavProps } from '../../types';
 

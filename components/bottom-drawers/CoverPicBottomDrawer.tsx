@@ -38,7 +38,7 @@ const CoverPicBottomDrawer: React.FC<CoverPicBottomDrawerProps> = ({
 
   const onSelectCoverPhotoHandler = () => {
     handleCloseModal();
-    navigation.navigate('UploadProfileOrCoverPic', { currentUser, isCoverPic: true });
+    navigation.navigate('Upload', { currentUser, uploadType: 'Cover Pic' });
   };
 
   return (
@@ -47,23 +47,28 @@ const CoverPicBottomDrawer: React.FC<CoverPicBottomDrawerProps> = ({
         icon={<FontAwesome name='photo' size={20} color='white' style={styles.icon} />}
         text='View Profile Cover'
         onPressDrawerOption={onViewCoverPhotoHandler}
+        iconCircle
       />
       <DrawerOption
         icon={<Entypo name='upload' size={20} color='white' />}
         text='Upload Photo'
         onPressDrawerOption={onSelectCoverPhotoHandler}
+        iconCircle
       />
       <DrawerOption
         icon={<FontAwesome5 name='facebook' size={20} color='white' />}
         text='Select Photo on Facebook'
+        iconCircle
       />
       <DrawerOption
         icon={<MaterialCommunityIcons name='collage' size={20} color='white' />}
         text='Create cover collage'
+        iconCircle
       />
       <DrawerOption
         icon={<FontAwesome name='paint-brush' size={20} color='white' />}
         text='Select artwork'
+        iconCircle
       />
     </ViewRN>
   );
