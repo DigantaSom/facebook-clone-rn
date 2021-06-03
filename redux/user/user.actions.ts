@@ -100,13 +100,21 @@ export const signUp =
 
       try {
         const profileRef = firestore.collection('profiles').doc(userSnapshot!.id);
+        const albumsRef = firestore.collection('albums').doc(userSnapshot!.id);
 
-        profileRef.set({
+        const batch = firestore.batch();
+
+        batch.set(profileRef, {
           userId: userSnapshot!.id,
           displayName,
           birthday,
           joined: new Date().toISOString(),
         });
+        batch.set(albumsRef, {
+          all_albums: [],
+        });
+
+        await batch.commit();
       } catch (err) {
         console.log('Error creating user profile:', err);
         // TODO: dispatch some profile action and make an Alert.
@@ -219,6 +227,9 @@ export const updateProfilePic =
           const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc();
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
 
+          const postRef = firestore.doc(`posts/${currentUser.id}`);
+          const userPostsRef = postRef.collection('user_posts').doc();
+
           const newProfilePicObj: IPost = {
             imageUri: url,
             title,
@@ -241,12 +252,22 @@ export const updateProfilePic =
             });
             batch.set(profilePicsAlbum_Ref, newProfilePicObj);
             batch.set(allPicsAlbum_Ref, newProfilePicObj);
+            batch.set(userPostsRef, newProfilePicObj);
 
             const albumsSnapshot = await albumsRef.get();
             const all_albums_obj = albumsSnapshot.data();
+
+            // if (all_albums_obj) {
+            //   if (!Object.keys(all_albums_obj).includes('profile_pics')) {
+            //     batch.update(albumsRef, {
+            //       all_albums: firebase.firestore.FieldValue.arrayUnion('profile_pics'),
+            //     });
+            //   }
+            // }
             if (all_albums_obj) {
-              if (!Object.keys(all_albums_obj).includes('profile_pics')) {
-                batch.update(albumsRef, {
+              // if 'profile_pics' album does not already exists
+              if (!all_albums_obj['all_albums'].includes('profile_pics')) {
+                await albumsSnapshot.ref.update({
                   all_albums: firebase.firestore.FieldValue.arrayUnion('profile_pics'),
                 });
               }

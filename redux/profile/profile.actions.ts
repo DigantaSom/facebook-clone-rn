@@ -111,9 +111,13 @@ export const uploadCoverPic =
         // success function
         snapshot.snapshot.ref.getDownloadURL().then(async url => {
           const profileRef = firestore.doc(`profiles/${currentUser.id}`);
+
           const albumsRef = firestore.collection('albums').doc(currentUser.id);
           const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc();
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
+
+          const postRef = firestore.doc(`posts/${currentUser.id}`);
+          const userPostsRef = postRef.collection('user_posts').doc();
 
           const newCoverPicObj: IPost = {
             imageUri: url,
@@ -134,12 +138,15 @@ export const uploadCoverPic =
             });
             batch.set(coverPicsAlbum_Ref, newCoverPicObj);
             batch.set(allPicsAlbum_Ref, newCoverPicObj);
+            batch.set(userPostsRef, newCoverPicObj);
 
             const albumsSnapshot = await albumsRef.get();
             const all_albums_obj = albumsSnapshot.data();
+
             if (all_albums_obj) {
-              if (!Object.keys(all_albums_obj).includes('cover_pics')) {
-                batch.update(albumsRef, {
+              // if 'cover_pics' album does not already exists
+              if (!all_albums_obj['all_albums'].includes('cover_pics')) {
+                await albumsSnapshot.ref.update({
                   all_albums: firebase.firestore.FieldValue.arrayUnion('cover_pics'),
                 });
               }

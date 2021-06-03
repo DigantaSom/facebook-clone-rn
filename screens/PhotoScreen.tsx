@@ -27,7 +27,7 @@ type PhotoScreenProps = RootNavProps<'Photo'>;
 const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
   const { photo } = route.params;
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
-  const [isMyPhoto, setIsMyPhoto] = useState<Boolean>(false);
+  const [isMyPhoto, setIsMyPhoto] = useState(false);
   const { tabHeaderHeight } = useValues();
 
   // ref
@@ -97,13 +97,15 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
         <PostActions />
       </ViewRN>
 
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={1}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}>
-        <PhotoBottomDrawer />
-      </BottomSheetModal>
+      {!currentUser ? null : (
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}>
+          <PhotoBottomDrawer photo={photo} isMyPhoto={isMyPhoto} />
+        </BottomSheetModal>
+      )}
     </TouchableOpacity>
   );
 };

@@ -6,9 +6,10 @@ import {
   CREATE_POST_WITH_PHOTO_START,
   CREATE_POST_WITH_PHOTO_SUCCESS,
   CREATE_POST_WITH_PHOTO_FAILURE,
+  DeletePhotoDispatchType,
 } from './post.types';
 import { IUser } from '../user/user.types';
-import { BlobType, IPost } from '../../types';
+import { BlobType, IPost, PostType } from '../../types';
 
 import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
@@ -32,7 +33,7 @@ export const createPostWithPhoto =
     });
 
     const ref = storage
-      .ref(`posts/${currentUser.displayName}`)
+      .ref(`timeline_pics/${currentUser.displayName}`)
       .child(new Date().toISOString());
 
     const snapshot = ref.put(blob);
@@ -58,9 +59,11 @@ export const createPostWithPhoto =
         // success function
         snapshot.snapshot.ref.getDownloadURL().then(async url => {
           const albumsRef = firestore.collection('albums').doc(currentUser.id);
-
           const timelinePicsAlbum_Ref = albumsRef.collection('timeline_pics').doc();
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
+
+          const postRef = firestore.doc(`posts/${currentUser.id}`);
+          const userPostsRef = postRef.collection('user_posts').doc();
 
           const newPostObj: IPost = {
             imageUri: url,
@@ -78,12 +81,14 @@ export const createPostWithPhoto =
 
             batch.set(timelinePicsAlbum_Ref, newPostObj);
             batch.set(allPicsAlbum_Ref, newPostObj);
+            batch.set(userPostsRef, newPostObj);
 
             const albumsSnapshot = await albumsRef.get();
             const all_albums_obj = albumsSnapshot.data();
             if (all_albums_obj) {
-              if (!Object.keys(all_albums_obj).includes('timeline_pics')) {
-                batch.update(albumsRef, {
+              // if 'timeline_pics' album does not already exists
+              if (!all_albums_obj['all_albums'].includes('timeline_pics')) {
+                await albumsSnapshot.ref.update({
                   all_albums: firebase.firestore.FieldValue.arrayUnion('timeline_pics'),
                 });
               }
@@ -110,3 +115,7 @@ export const createPostWithPhoto =
       },
     );
   };
+
+export const deletePhoto =
+  (imageUri: string, postType: PostType) =>
+  async (dispatch: Dispatch<DeletePhotoDispatchType>) => {};
