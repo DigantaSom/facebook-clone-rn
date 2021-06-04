@@ -45,7 +45,9 @@ export const createPostWithPhoto =
       xhr.send(null);
     });
 
-    const ref = storage.ref(`timeline_pics/${currentUser.displayName}`).child(newPostId);
+    const ref = storage
+      .ref(`timeline_pics/${currentUser.displayName}_${currentUser.id}`)
+      .child(newPostId);
 
     const snapshot = ref.put(blob);
 

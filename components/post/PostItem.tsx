@@ -5,14 +5,14 @@ import { Text, View } from '../Themed';
 type PostItemProps = {
   post: {
     id: number;
-    caption: string;
+    postTitle: string;
   };
 };
 
-const PostItem: React.FC<PostItemProps> = ({ post: { caption } }) => {
+const PostItem: React.FC<PostItemProps> = ({ post: { postTitle } }) => {
   return (
     <View>
-      <Text>{caption}</Text>
+      <Text>{postTitle}</Text>
     </View>
   );
 };

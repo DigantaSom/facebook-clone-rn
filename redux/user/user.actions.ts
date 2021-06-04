@@ -199,7 +199,9 @@ export const updateProfilePic =
       xhr.send(null);
     });
 
-    const ref = storage.ref(`profile_pics/${currentUser.displayName}`).child(newPostId);
+    const ref = storage
+      .ref(`profile_pics/${currentUser.displayName}_${currentUser.id}`)
+      .child(newPostId);
 
     const snapshot = ref.put(blob);
 

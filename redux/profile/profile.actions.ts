@@ -89,7 +89,9 @@ export const uploadCoverPic =
       xhr.send(null);
     });
 
-    const ref = storage.ref(`cover_pics/${currentUser.displayName}`).child(newPostId);
+    const ref = storage
+      .ref(`cover_pics/${currentUser.displayName}_${currentUser.id}`)
+      .child(newPostId);
 
     const snapshot = ref.put(blob);
 
