@@ -18,7 +18,10 @@ import {
 } from './post.types';
 import { BlobType, IPost, PostType } from '../../types';
 import { IUser, REMOVE_PROFILE_PIC_FROM_USER } from '../user/user.types';
-import { REMOVE_PROFILE_PIC_FROM_PROFILE } from '../profile/profile.types';
+import {
+  REMOVE_PROFILE_PIC_FROM_PROFILE,
+  REMOVE_COVER_PIC_FROM_PROFILE,
+} from '../profile/profile.types';
 import { REMOVE_PHOTO_FROM_ALBUM } from '../album/album.types';
 
 export const createPostWithPhoto =
@@ -140,6 +143,9 @@ export const deletePhoto =
     const albumsRef = firestore.collection('albums').doc(currentUser.id);
     const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(photo.postId);
 
+    const postsRef = firestore.doc(`posts/${currentUser.id}`);
+    const userPostsRef = postsRef.collection('user_posts').doc(photo.postId);
+
     if (postType === 'Profile Pic') {
       const isCurrentProfilePic: boolean = photo.imageUri === currentUser.profilePic;
 
@@ -149,16 +155,13 @@ export const deletePhoto =
 
       const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc(photo.postId);
 
-      const postsRef = firestore.doc(`posts/${currentUser.id}`);
-      const userPostsRef = postsRef.collection('user_posts').doc(photo.postId);
-
       try {
         await profilePic_StorageRef.delete();
 
         try {
           const batch = firestore.batch();
 
-          // if it's the current profile pic, only then delete from 'users' and 'profiles' collections.
+          // if it's the current profile pic, only then, delete from 'users' and 'profiles' collections.
           if (isCurrentProfilePic) {
             batch.update(userRef, {
               profilePic: firebase.firestore.FieldValue.delete(),
@@ -182,23 +185,80 @@ export const deletePhoto =
             });
           }
           dispatch({
-            type: DELETE_PHOTO_SUCCESS,
-            payload: photo,
+            type: REMOVE_PHOTO_FROM_ALBUM,
+            payload: photo.postId,
           });
           dispatch({
-            type: REMOVE_PHOTO_FROM_ALBUM,
+            type: DELETE_PHOTO_SUCCESS,
             payload: photo.postId,
           });
           Alert.alert('Deletion success!', 'Your profile pic is deleted successfully');
         } catch (err) {
-          Alert.alert('Error deleting photo', err.message);
+          Alert.alert('Error deleting profile pic', err.message);
           dispatch({
             type: DELETE_PHOTO_FAILURE,
             payload: err.message,
           });
         }
       } catch (err) {
-        Alert.alert('Error deleting photo', err.message);
+        Alert.alert('Error deleting profile pic', err.message);
+        dispatch({
+          type: DELETE_PHOTO_FAILURE,
+          payload: err.message,
+        });
+      }
+    } else if (postType === 'Cover Pic') {
+      const profileSnapshot = await profileRef.get();
+      const isCurrentProfilePic: boolean =
+        photo.postId === profileSnapshot?.data()?.coverPic.postId;
+
+      const coverPic_StorageRef = storage
+        .ref(`cover_pics/${currentUser.displayName}`)
+        .child(photo.postId);
+
+      const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc(photo.postId);
+
+      try {
+        await coverPic_StorageRef.delete();
+
+        try {
+          const batch = firestore.batch();
+
+          // if it's the current cover pic, only then, delete from 'profiles' collection.
+          if (isCurrentProfilePic) {
+            batch.update(profileRef, {
+              coverPic: firebase.firestore.FieldValue.delete(),
+            });
+          }
+          batch.delete(allPicsAlbum_Ref);
+          batch.delete(coverPicsAlbum_Ref);
+          batch.delete(userPostsRef);
+
+          await batch.commit();
+
+          if (isCurrentProfilePic) {
+            dispatch({
+              type: REMOVE_COVER_PIC_FROM_PROFILE,
+            });
+          }
+          dispatch({
+            type: REMOVE_PHOTO_FROM_ALBUM,
+            payload: photo.postId,
+          });
+          dispatch({
+            type: DELETE_PHOTO_SUCCESS,
+            payload: photo.postId,
+          });
+          Alert.alert('Deletion success!', 'Your cover pic is deleted successfully');
+        } catch (err) {
+          Alert.alert('Error deleting cover pic', err.message);
+          dispatch({
+            type: DELETE_PHOTO_FAILURE,
+            payload: err.message,
+          });
+        }
+      } catch (err) {
+        Alert.alert('Error deleting cover pic', err.message);
         dispatch({
           type: DELETE_PHOTO_FAILURE,
           payload: err.message,

@@ -73,7 +73,7 @@ const albumReducer = (
         error: action.payload,
       };
 
-    // After deletion of current profile pic from post.actions
+    // After deleting a photo from post.actions
     case REMOVE_PHOTO_FROM_ALBUM:
       return {
         ...state,

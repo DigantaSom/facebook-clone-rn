@@ -19,6 +19,7 @@ export const SEARCH_PROFILES_SUCCESS = 'SEARCH_PROFILES_SUCCESS';
 export const SEARCH_PROFILES_FAILURE = 'SEARCH_PROFILES_FAILURE';
 
 export const REMOVE_PROFILE_PIC_FROM_PROFILE = 'REMOVE_PROFILE_PIC_FROM_PROFILE';
+export const REMOVE_COVER_PIC_FROM_PROFILE = 'REMOVE_COVER_PIC_FROM_PROFILE';
 
 export type RelationshipStatusType =
   | 'Single'
@@ -141,6 +142,10 @@ export type SearchProfilesDispatchType =
 export interface IRemoveProfilePicFromProfile {
   type: typeof REMOVE_PROFILE_PIC_FROM_PROFILE;
 }
+// Remove coverPic from profile state
+export interface IRemoveCoverPicFromProfile {
+  type: typeof REMOVE_COVER_PIC_FROM_PROFILE;
+}
 
 // Profile Action Type
 
@@ -150,4 +155,5 @@ export type ProfileActionType =
   | UploadCoverPicDispatchType
   | AddOrEditProfileAboutDispatchType
   | SearchProfilesDispatchType
-  | IRemoveProfilePicFromProfile;
+  | IRemoveProfilePicFromProfile
+  | IRemoveCoverPicFromProfile;

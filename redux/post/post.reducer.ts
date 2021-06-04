@@ -58,7 +58,7 @@ const postReducer = (
       return {
         ...state,
         post: null,
-        posts: state.posts.filter(post => post.postId !== action.payload.postId),
+        posts: state.posts.filter(post => post.postId !== action.payload),
         loading: false,
         error: '',
       };
