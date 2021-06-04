@@ -29,6 +29,9 @@ const PhotoBottomDrawer: React.FC<PhotoBottomDrawerProps> = ({
   const dispatch = useDispatch();
 
   const handleDeletePhoto = () => {
+    if (!isMyPhoto) {
+      return;
+    }
     Alert.alert(
       'Delete Confirmation',
       'Are you sure that you want to delete this photo?',
@@ -36,10 +39,8 @@ const PhotoBottomDrawer: React.FC<PhotoBottomDrawerProps> = ({
         {
           text: 'Yes',
           onPress: () => {
-            if (isMyPhoto) {
-              dispatch(deletePhoto(photo, currentUser, photo.postType));
-              navigation.goBack();
-            }
+            dispatch(deletePhoto(photo, currentUser, photo.postType));
+            navigation.goBack();
           },
         },
         { text: 'No' },

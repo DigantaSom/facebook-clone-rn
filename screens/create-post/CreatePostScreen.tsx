@@ -1,5 +1,12 @@
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import {
+  Button,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -32,10 +39,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const { loading: postUploading, error } = useSelector((state: RootState) => state.post);
 
-  // TODO: fix logic
-  const isHeaderPostButtonDisabled =
-    (!!postTitle && !postPhoto) ||
+  const isHeaderPostButtonEnabled =
     (!postTitle && !!postPhoto) ||
+    (!!postTitle && !postPhoto) ||
     (!!postTitle && !!postPhoto);
 
   useLayoutEffect(() => {
@@ -43,7 +49,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
       headerRight: () => (
         <HeaderActionButton
           actionType='Post'
-          disabled={isHeaderPostButtonDisabled}
+          disabled={!isHeaderPostButtonEnabled}
           onPressAction={() => {
             if ((postTitle || postPhoto) && currentUser) {
               dispatch(createPostWithPhoto(postTitle, postPhoto, currentUser));
@@ -144,14 +150,16 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
           )}
         </ScrollView>
 
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={handlePresentModalPress}
-          style={styles.seeOptionsButtonContainer}>
-          <View style={styles.seeOptionsButton}>
-            <Text>Add to your Post</Text>
-          </View>
-        </TouchableOpacity>
+        {postPhoto ? null : (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={handlePresentModalPress}
+            style={styles.seeOptionsButtonContainer}>
+            <View style={styles.seeOptionsButton}>
+              <Text>Add to your Post</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
 
       <BottomSheetModal

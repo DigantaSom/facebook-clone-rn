@@ -264,5 +264,49 @@ export const deletePhoto =
           payload: err.message,
         });
       }
+    } else if (postType === 'Photo') {
+      const timelinePic_StorageRef = storage
+        .ref(`timeline_pics/${currentUser.displayName}`)
+        .child(photo.postId);
+
+      const timelinePicsAlbum_Ref = albumsRef
+        .collection('timeline_pics')
+        .doc(photo.postId);
+
+      try {
+        await timelinePic_StorageRef.delete();
+
+        try {
+          const batch = firestore.batch();
+
+          batch.delete(allPicsAlbum_Ref);
+          batch.delete(timelinePicsAlbum_Ref);
+          batch.delete(userPostsRef);
+
+          await batch.commit();
+
+          dispatch({
+            type: REMOVE_PHOTO_FROM_ALBUM,
+            payload: photo.postId,
+          });
+          dispatch({
+            type: DELETE_PHOTO_SUCCESS,
+            payload: photo.postId,
+          });
+          Alert.alert('Deletion success!', 'Your cover pic is deleted successfully');
+        } catch (err) {
+          Alert.alert('Error deleting photo', err.message);
+          dispatch({
+            type: DELETE_PHOTO_FAILURE,
+            payload: err.message,
+          });
+        }
+      } catch (err) {
+        Alert.alert('Error deleting photo', err.message);
+        dispatch({
+          type: DELETE_PHOTO_FAILURE,
+          payload: err.message,
+        });
+      }
     }
   };

@@ -53,6 +53,7 @@ export const getAllPhotos =
     }
   };
 
+// TODO: after deleting last image of an album, update it in a way so that the newly last photo shown as Album-Preview, after going back in the client.
 export const getAlbums =
   (userId: string) => async (dispatch: Dispatch<GetAlbumsDispatchType>) => {
     dispatch({
@@ -86,7 +87,7 @@ export const getAlbums =
             .orderBy('createdAt', 'desc');
           customAlbumSnapshot = await customAlbumRef.get();
 
-          if (customAlbumSnapshot.docs[0].data()) {
+          if (customAlbumSnapshot?.docs[0]?.data()) {
             all_albums_dispatchArray.push({
               albumTitle,
               lastImageUri: customAlbumSnapshot.docs[0].data().imageUri,

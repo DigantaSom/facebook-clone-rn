@@ -70,13 +70,13 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
   const handleCloseModal = () => bottomSheetModalRef.current?.collapse();
 
   return (
-    <TouchableOpacity
-      style={[styles.container, { marginTop: -tabHeaderHeight / 2 }]}
-      activeOpacity={0.9}
-      onLongPress={handlePresentModalPress}>
-      <View style={styles.imageContainer}>
+    <View style={[styles.container, { marginTop: -tabHeaderHeight / 2 }]}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onLongPress={handlePresentModalPress}
+        style={styles.imageContainer}>
         <Image source={{ uri: photo.imageUri }} style={styles.image} />
-      </View>
+      </TouchableOpacity>
 
       <ViewRN style={styles.info}>
         <ViewRN style={styles.titleContainer}>
@@ -111,7 +111,7 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
           />
         </BottomSheetModal>
       )}
-    </TouchableOpacity>
+    </View>
   );
 };
 
