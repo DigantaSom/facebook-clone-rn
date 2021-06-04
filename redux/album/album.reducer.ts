@@ -11,6 +11,7 @@ import {
   GET_ALBUM_PICS_START,
   GET_ALBUM_PICS_SUCCESS,
   GET_ALBUM_PICS_FAILURE,
+  REMOVE_PHOTO_FROM_ALBUM,
 } from './album.types';
 
 interface IDefaultState {
@@ -70,6 +71,15 @@ const albumReducer = (
         ...state,
         loading: false,
         error: action.payload,
+      };
+
+    // After deletion of current profile pic from post.actions
+    case REMOVE_PHOTO_FROM_ALBUM:
+      return {
+        ...state,
+        allPhotos: state.allPhotos.filter(photo => photo.postId !== action.payload),
+        photos: state.photos.filter(photo => photo.postId !== action.payload),
+        loading: false,
       };
 
     default:

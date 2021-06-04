@@ -1,4 +1,7 @@
 import { IPost } from '../../types';
+import { IRemoveProfilePicFromUser } from '../user/user.types';
+import { IRemoveProfilePicFromProfile } from '../profile/profile.types';
+import { IRemovePhotoFromAlbum } from '../album/album.types';
 
 export const CREATE_POST_WITH_PHOTO_START = 'CREATE_POST_WITH_PHOTO_START';
 export const CREATE_POST_WITH_PHOTO_SUCCESS = 'CREATE_POST_WITH_PHOTO_SUCCESS';
@@ -32,8 +35,8 @@ export interface IDeletePhotoStart {
   type: typeof DELETE_PHOTO_START;
 }
 export interface IDeletePhotoSuccess {
-  type: typeof DELETE_PHOTO_START;
-  payload: any; // TODO: apt type
+  type: typeof DELETE_PHOTO_SUCCESS;
+  payload: IPost;
 }
 export interface IDeletePhotoFailure {
   type: typeof DELETE_PHOTO_FAILURE;
@@ -42,7 +45,10 @@ export interface IDeletePhotoFailure {
 export type DeletePhotoDispatchType =
   | IDeletePhotoStart
   | IDeletePhotoSuccess
-  | IDeletePhotoFailure;
+  | IDeletePhotoFailure
+  | IRemoveProfilePicFromUser // from user.types
+  | IRemoveProfilePicFromProfile // from profile.types
+  | IRemovePhotoFromAlbum; // from album.types
 
 // Post Action type
 

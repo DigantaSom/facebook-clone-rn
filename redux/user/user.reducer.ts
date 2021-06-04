@@ -14,6 +14,7 @@ import {
   UPDATE_PROFILE_PIC_START,
   UPDATE_PROFILE_PIC_SUCCESS,
   UPDATE_PROFILE_PIC_FAILURE,
+  REMOVE_PROFILE_PIC_FROM_USER,
 } from './user.types';
 
 interface IDefaultState {
@@ -93,6 +94,18 @@ const userReducer = (
         loading: false,
         uploading: false,
         error: action.payload,
+      };
+
+    // After deletion of current profile pic from post.actions
+    case REMOVE_PROFILE_PIC_FROM_USER:
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          profilePic: '',
+        },
+        loading: false,
+        error: '',
       };
 
     default:

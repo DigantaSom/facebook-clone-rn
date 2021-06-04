@@ -32,12 +32,18 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const { loading: postUploading, error } = useSelector((state: RootState) => state.post);
 
+  // TODO: fix logic
+  const isHeaderPostButtonDisabled =
+    (!!postTitle && !postPhoto) ||
+    (!postTitle && !!postPhoto) ||
+    (!!postTitle && !!postPhoto);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <HeaderActionButton
           actionType='Post'
-          disabled={!postTitle || !postPhoto}
+          disabled={isHeaderPostButtonDisabled}
           onPressAction={() => {
             if ((postTitle || postPhoto) && currentUser) {
               dispatch(createPostWithPhoto(postTitle, postPhoto, currentUser));

@@ -1,5 +1,3 @@
-import firebase from '../../firebase/firebase.utils';
-import { IPost } from '../../types';
 import { IUpdateProfilePicInProfile } from '../profile/profile.types';
 
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';
@@ -19,6 +17,8 @@ export const SIGN_OUT_FAILURE = 'SIGN_OUT_FAILURE';
 export const UPDATE_PROFILE_PIC_START = 'UPDATE_PROFILE_PIC_START';
 export const UPDATE_PROFILE_PIC_SUCCESS = 'UPDATE_PROFILE_PIC_SUCCESS';
 export const UPDATE_PROFILE_PIC_FAILURE = 'UPDATE_PROFILE_PIC_FAILURE';
+
+export const REMOVE_PROFILE_PIC_FROM_USER = 'REMOVE_PROFILE_PIC_FROM_USER';
 export interface IUser {
   id?: string;
   displayName?: string;
@@ -113,6 +113,11 @@ export type UpdateProfilePictureDispatchType =
   | IUpdateProfilePicFailure
   | IUpdateProfilePicInProfile;
 
+// Remove profilePic from user state
+export interface IRemoveProfilePicFromUser {
+  type: typeof REMOVE_PROFILE_PIC_FROM_USER;
+}
+
 // User Action Type
 
 export type UserActionType =
@@ -120,4 +125,5 @@ export type UserActionType =
   | SignUpDispatchType
   | EmailSignInDispatchType
   | SignOutDispatchType
-  | UpdateProfilePictureDispatchType;
+  | UpdateProfilePictureDispatchType
+  | IRemoveProfilePicFromUser;

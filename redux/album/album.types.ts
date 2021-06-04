@@ -12,6 +12,8 @@ export const GET_ALBUM_PICS_START = 'GET_ALBUM_PICS_START';
 export const GET_ALBUM_PICS_SUCCESS = 'GET_ALBUM_PICS_SUCCESS';
 export const GET_ALBUM_PICS_FAILURE = 'GET_ALBUM_PICS_FAILURE';
 
+export const REMOVE_PHOTO_FROM_ALBUM = 'REMOVE_PHOTO_FROM_ALBUM ';
+
 export type AlbumPreviewType = {
   albumTitle: string;
   lastImageUri: string;
@@ -74,9 +76,16 @@ export type GetAlbumPicsDispatchType =
   | IGetAlbumPicsSuccess
   | IGetAlbumPicsFailure;
 
+// Remove photo from album state
+export interface IRemovePhotoFromAlbum {
+  type: typeof REMOVE_PHOTO_FROM_ALBUM;
+  payload: string; // postId
+}
+
 // Album action type
 
 export type AlbumActionType =
   | GetAllPhotosDispatchType
   | GetAlbumsDispatchType
-  | GetAlbumPicsDispatchType;
+  | GetAlbumPicsDispatchType
+  | IRemovePhotoFromAlbum;

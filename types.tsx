@@ -118,6 +118,7 @@ export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
 export type BlobType = Blob | Uint8Array | ArrayBuffer;
 
 export interface IPost {
+  postId: string; // TODO: remove optional after testing
   imageUri?: string;
   title?: string;
   creator: {

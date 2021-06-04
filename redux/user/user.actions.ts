@@ -1,6 +1,9 @@
 import { Dispatch } from 'redux';
 import { Alert, Platform } from 'react-native';
 
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
+
 import {
   CheckUserSessionDispatchType,
   CHECK_USER_SESSION,
@@ -180,6 +183,8 @@ export const updateProfilePic =
   async (dispatch: Dispatch<UpdateProfilePictureDispatchType>) => {
     // const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
     const uploadUri = Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
+    const newPostId = uuid();
+    const newDate = new Date().toISOString();
 
     const blob: BlobType = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -194,9 +199,7 @@ export const updateProfilePic =
       xhr.send(null);
     });
 
-    const ref = storage
-      .ref(`profile_pics/${currentUser.displayName}`)
-      .child(new Date().toISOString());
+    const ref = storage.ref(`profile_pics/${currentUser.displayName}`).child(newPostId);
 
     const snapshot = ref.put(blob);
 
@@ -224,32 +227,31 @@ export const updateProfilePic =
           const profileRef = firestore.doc(`profiles/${currentUser.id}`);
 
           const albumsRef = firestore.collection('albums').doc(currentUser.id);
-          const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc();
-          const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
+          const profilePicsAlbum_Ref = albumsRef
+            .collection('profile_pics')
+            .doc(newPostId);
+          const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(newPostId);
 
           const postRef = firestore.doc(`posts/${currentUser.id}`);
-          const userPostsRef = postRef.collection('user_posts').doc();
+          const userPostsRef = postRef.collection('user_posts').doc(newPostId);
 
           const newProfilePicObj: IPost = {
+            postId: newPostId,
             imageUri: url,
             title,
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
             },
-            createdAt: new Date().toISOString(),
+            createdAt: newDate,
             postType: 'Profile Pic',
           };
 
           try {
             const batch = firestore.batch();
 
-            batch.update(userRef, {
-              profilePic: url,
-            });
-            batch.update(profileRef, {
-              profilePic: newProfilePicObj,
-            });
+            batch.update(userRef, { profilePic: url });
+            batch.update(profileRef, { profilePic: newProfilePicObj });
             batch.set(profilePicsAlbum_Ref, newProfilePicObj);
             batch.set(allPicsAlbum_Ref, newProfilePicObj);
             batch.set(userPostsRef, newProfilePicObj);

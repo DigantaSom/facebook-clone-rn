@@ -14,6 +14,7 @@ import {
   SEARCH_PROFILES_START,
   SEARCH_PROFILES_SUCCESS,
   SEARCH_PROFILES_FAILURE,
+  REMOVE_PROFILE_PIC_FROM_PROFILE,
 } from './profile.types';
 
 interface IDefaultState {
@@ -113,6 +114,17 @@ const profileReducer = (
         profile: null,
         profiles: [],
         error: action.payload,
+      };
+
+    // After deletion of current profile pic from post.actions
+    case REMOVE_PROFILE_PIC_FROM_PROFILE:
+      return {
+        ...state,
+        profile: {
+          ...(state.profile as IProfile),
+          profilePic: undefined,
+        },
+        loading: false,
       };
 
     default:

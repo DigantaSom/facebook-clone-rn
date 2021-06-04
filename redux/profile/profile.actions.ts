@@ -1,6 +1,9 @@
 import { Dispatch } from 'redux';
 import { Platform, Alert } from 'react-native';
 
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
+
 import {
   IProfile,
   GetProfileDispatchType,
@@ -70,6 +73,8 @@ export const uploadCoverPic =
   async (dispatch: Dispatch<UploadCoverPicDispatchType>) => {
     // const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
     const uploadUri = Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
+    const newPostId = uuid();
+    const newDate = new Date().toISOString();
 
     const blob: BlobType = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -84,9 +89,7 @@ export const uploadCoverPic =
       xhr.send(null);
     });
 
-    const ref = storage
-      .ref(`cover_pics/${currentUser.displayName}`)
-      .child(new Date().toISOString());
+    const ref = storage.ref(`cover_pics/${currentUser.displayName}`).child(newPostId);
 
     const snapshot = ref.put(blob);
 
@@ -113,20 +116,21 @@ export const uploadCoverPic =
           const profileRef = firestore.doc(`profiles/${currentUser.id}`);
 
           const albumsRef = firestore.collection('albums').doc(currentUser.id);
-          const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc();
-          const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc();
+          const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc(newPostId);
+          const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(newPostId);
 
-          const postRef = firestore.doc(`posts/${currentUser.id}`);
-          const userPostsRef = postRef.collection('user_posts').doc();
+          const postsRef = firestore.doc(`posts/${currentUser.id}`);
+          const userPostsRef = postsRef.collection('user_posts').doc(newPostId);
 
           const newCoverPicObj: IPost = {
+            postId: newPostId,
             imageUri: url,
             title,
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
             },
-            createdAt: new Date().toISOString(),
+            createdAt: newDate,
             postType: 'Cover Pic',
           };
 

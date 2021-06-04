@@ -103,7 +103,12 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
           index={1}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}>
-          <PhotoBottomDrawer photo={photo} isMyPhoto={isMyPhoto} />
+          <PhotoBottomDrawer
+            photo={photo}
+            currentUser={currentUser}
+            isMyPhoto={isMyPhoto}
+            navigation={navigation}
+          />
         </BottomSheetModal>
       )}
     </TouchableOpacity>
