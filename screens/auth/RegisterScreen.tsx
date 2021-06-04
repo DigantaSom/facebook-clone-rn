@@ -9,18 +9,20 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { RadioButton } from 'react-native-paper';
+
 import DayJS from 'dayjs';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { AuthNavProps } from '../../types';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { signUp } from '../../redux/user/user.actions';
+
+import { AuthNavProps, GenderType } from '../../types';
 import { validateBirthday, validateEmail } from '../../utils/validators';
 
 import { View, Text } from '../../components/Themed';
 import Spinner from '../../components/UI/Spinner';
-
-import { RootState } from '../../redux/store';
-import { signUp } from '../../redux/user/user.actions';
 
 import Colors from '../../constants/Colors';
 import Layout from '../../constants/Layout';
@@ -30,6 +32,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [gender, setGender] = useState<GenderType>('Female');
   // date states
   // const [date, setDate] = useState(new Date(1598051730000));
   const [date, setDate] = useState(new Date());
@@ -55,7 +58,8 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
       displayName.trim() === '' ||
       email.trim() === '' ||
       password.trim() === '' ||
-      confirmPassword.trim() === ''
+      confirmPassword.trim() === '' ||
+      gender.trim() === ''
     ) {
       Alert.alert(
         'Fill all fields',
@@ -99,7 +103,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
 
     const birthday = date.toISOString();
 
-    dispatch(signUp({ email, password, displayName, birthday }));
+    dispatch(signUp({ email, password, displayName, birthday, gender }));
   };
 
   if (signUpLoading) {
@@ -149,6 +153,7 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
           onChangeText={text => setConfirmPassword(text)}
           style={styles.input}
         />
+
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={showDatepicker}
@@ -166,6 +171,44 @@ const RegisterScreen = ({ navigation }: AuthNavProps<'Register'>) => {
             onChange={(e, selectedDate) => onDateChange(e, selectedDate)}
           />
         )}
+
+        <Text style={styles.text}>Gender:</Text>
+        <TouchableOpacity
+          style={styles.radioContainer}
+          activeOpacity={0.7}
+          onPress={() => setGender('Female')}>
+          <RadioButton
+            value='Single'
+            status={gender === 'Female' ? 'checked' : 'unchecked'}
+            onPress={() => setGender('Female')}
+            color={Colors.facebookSecondary}
+          />
+          <Text>Female</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.radioContainer}
+          activeOpacity={0.7}
+          onPress={() => setGender('Male')}>
+          <RadioButton
+            value='Single'
+            status={gender === 'Male' ? 'checked' : 'unchecked'}
+            onPress={() => setGender('Male')}
+            color={Colors.facebookSecondary}
+          />
+          <Text>Male</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.radioContainer}
+          activeOpacity={0.7}
+          onPress={() => setGender('Rather not say')}>
+          <RadioButton
+            value='Single'
+            status={gender === 'Rather not say' ? 'checked' : 'unchecked'}
+            onPress={() => setGender('Rather not say')}
+            color={Colors.facebookSecondary}
+          />
+          <Text>Rather not say</Text>
+        </TouchableOpacity>
 
         <View style={styles.buttonContainer}>
           <Button title="Let's do it!" onPress={handleSignUp} />
@@ -185,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
+    paddingVertical: 25,
   },
   title: {
     fontWeight: 'bold',
@@ -219,6 +262,14 @@ const styles = StyleSheet.create({
   },
   birthdayButtonText: {
     color: '#c5c5c5',
+  },
+  text: {
+    fontSize: 16,
+    marginVertical: 12,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonContainer: {
     marginVertical: 20,

@@ -16,7 +16,7 @@ import {
   DELETE_PHOTO_SUCCESS,
   DELETE_PHOTO_FAILURE,
 } from './post.types';
-import { BlobType, IPost, PostType } from '../../types';
+import { BlobType, GenderType, IPost, PostType } from '../../types';
 import { IUser, REMOVE_PROFILE_PIC_FROM_USER } from '../user/user.types';
 import {
   REMOVE_PROFILE_PIC_FROM_PROFILE,
@@ -87,6 +87,7 @@ export const createPostWithPhoto =
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
+              gender: currentUser.gender as GenderType,
             },
             createdAt: newDate,
             postType: 'Photo',

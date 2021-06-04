@@ -25,8 +25,8 @@ import {
   UPDATE_PROFILE_PIC_FAILURE,
   UPDATE_PROFILE_PIC_SUCCESS,
 } from './user.types';
-import { BlobType, IPost } from '../../types';
-import { UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
+import { BlobType, GenderType, IPost } from '../../types';
+import { IProfile, UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
 
 import firebase, {
   auth,
@@ -76,11 +76,13 @@ export const signUp =
     password,
     displayName,
     birthday,
+    gender,
   }: {
     email: string;
     password: string;
     displayName: string;
     birthday: string;
+    gender: GenderType;
   }) =>
   async (dispatch: Dispatch<SignUpDispatchType>) => {
     try {
@@ -90,7 +92,7 @@ export const signUp =
 
       const { user } = await auth.createUserWithEmailAndPassword(email, password);
 
-      const userRef = await createUserProfileDocument(user, displayName);
+      const userRef = await createUserProfileDocument(user, displayName, gender);
       const userSnapshot = await userRef?.get();
 
       dispatch({
@@ -105,17 +107,18 @@ export const signUp =
         const profileRef = firestore.collection('profiles').doc(userSnapshot!.id);
         const albumsRef = firestore.collection('albums').doc(userSnapshot!.id);
 
-        const batch = firestore.batch();
-
-        batch.set(profileRef, {
+        const newUserProfileObj: IProfile = {
           userId: userSnapshot!.id,
           displayName,
           birthday,
+          gender,
           joined: new Date().toISOString(),
-        });
-        batch.set(albumsRef, {
-          all_albums: [],
-        });
+        };
+
+        const batch = firestore.batch();
+
+        batch.set(profileRef, newUserProfileObj);
+        batch.set(albumsRef, { all_albums: [] });
 
         await batch.commit();
       } catch (err) {
@@ -244,6 +247,7 @@ export const updateProfilePic =
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
+              gender: currentUser.gender as GenderType,
             },
             createdAt: newDate,
             postType: 'Profile Pic',

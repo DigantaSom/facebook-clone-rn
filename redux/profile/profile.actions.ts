@@ -26,7 +26,7 @@ import {
   SEARCH_PROFILES_FAILURE,
 } from './profile.types';
 import { IUser } from '../user/user.types';
-import { BlobType, IPost } from '../../types';
+import { BlobType, GenderType, IPost } from '../../types';
 
 import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
@@ -131,6 +131,7 @@ export const uploadCoverPic =
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
+              gender: currentUser.gender as GenderType,
             },
             createdAt: newDate,
             postType: 'Cover Pic',

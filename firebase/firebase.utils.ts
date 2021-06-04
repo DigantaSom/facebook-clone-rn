@@ -3,6 +3,8 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 
+import { GenderType } from '../types';
+
 const firebaseConfig = {
   apiKey: 'AIzaSyBIXyRtbJ2S_kLflLICH5_Lnqcl_AAkAgo',
   authDomain: 'facebook-clone-74af5.firebaseapp.com',
@@ -23,6 +25,7 @@ if (firebase.apps.length === 0) {
 export const createUserProfileDocument = async (
   authUser: firebase.User | null,
   displayName?: string,
+  gender?: GenderType,
 ) => {
   if (!authUser) {
     return;
@@ -38,6 +41,7 @@ export const createUserProfileDocument = async (
       await userRef.set({
         displayName,
         email: authUser.email,
+        gender,
         createdAt,
       });
     } catch (err) {

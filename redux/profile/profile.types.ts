@@ -1,4 +1,4 @@
-import { IPost } from '../../types';
+import { GenderType, IPost } from '../../types';
 
 export const GET_PROFILE_START = 'GET_PROFILE_START';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
@@ -42,6 +42,7 @@ export interface IProfile {
   userId: string;
   displayName: string;
   birthday: string;
+  gender: GenderType;
   joined: string;
   profilePic?: IPost;
   coverPic?: IPost;

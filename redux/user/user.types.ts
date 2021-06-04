@@ -1,3 +1,4 @@
+import { GenderType } from '../../types';
 import { IUpdateProfilePicInProfile } from '../profile/profile.types';
 
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';
@@ -23,6 +24,7 @@ export interface IUser {
   id?: string;
   displayName?: string;
   email?: string;
+  gender?: GenderType;
   profilePic?: string;
   createdAt?: Date;
 }
