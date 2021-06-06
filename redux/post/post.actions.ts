@@ -223,7 +223,7 @@ export const deletePhoto =
       const isCurrentProfilePic: boolean = photo.imageUri === currentUser.profilePic;
 
       const profilePic_StorageRef = storage
-        .ref(`profile_pics/${currentUser.displayName}`)
+        .ref(`profile_pics/${currentUser.displayName}_${currentUser.id}`)
         .child(photo.postId);
 
       const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc(photo.postId);
@@ -286,7 +286,7 @@ export const deletePhoto =
         photo.postId === profileSnapshot?.data()?.coverPic.postId;
 
       const coverPic_StorageRef = storage
-        .ref(`cover_pics/${currentUser.displayName}`)
+        .ref(`cover_pics/${currentUser.displayName}_${currentUser.displayName}`)
         .child(photo.postId);
 
       const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc(photo.postId);
@@ -339,7 +339,7 @@ export const deletePhoto =
       }
     } else if (postType === 'Photo') {
       const timelinePic_StorageRef = storage
-        .ref(`timeline_pics/${currentUser.displayName}`)
+        .ref(`timeline_pics/${currentUser.displayName}_${currentUser.displayName}`)
         .child(photo.postId);
 
       const timelinePicsAlbum_Ref = albumsRef

@@ -19,8 +19,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { posts, loading: postsLoading } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
 
-  // TODO: 'postsLoading' is not becoming true while fetching posts, i.e., it remains false, so the spinner isn't showing.
-
   useFocusEffect(
     useCallback(() => {
       dispatch(fetchAllPosts());

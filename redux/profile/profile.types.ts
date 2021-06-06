@@ -1,4 +1,5 @@
 import { GenderType, IPost } from '../../types';
+import { IUpdatePosts } from '../post/post.types';
 
 export const GET_PROFILE_START = 'GET_PROFILE_START';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
@@ -89,7 +90,8 @@ export interface IUploadCoverPicFailure {
 export type UploadCoverPicDispatchType =
   | IUploadCoverPicStart
   | IUploadCoverPicSuccess
-  | IUploadCoverPicFailure;
+  | IUploadCoverPicFailure
+  | IUpdatePosts;
 
 // Add or Edit profile about information
 

@@ -22,6 +22,8 @@ export const DELETE_PHOTO_START = 'DELETE_PHOTO_START';
 export const DELETE_PHOTO_SUCCESS = 'DELETE_PHOTO_SUCCESS';
 export const DELETE_PHOTO_FAILURE = 'DELETE_PHOTO_FAILURE';
 
+export const UPDATE_POSTS = 'UPDATE_POSTS';
+
 // Fetch a specific user's posts
 
 export interface IFetchUserPostsStart {
@@ -98,10 +100,17 @@ export type DeletePhotoDispatchType =
   | IRemovePhotoFromAlbum // from album.types
   | IRemoveCoverPicFromProfile; // from profile.types
 
+// Update posts[] array of posts reducer state, upon adding a new profile/cover pic. (p.s. posts[] array is update logic is already there for timeline_pics upload)
+export interface IUpdatePosts {
+  type: typeof UPDATE_POSTS;
+  payload: IPost;
+}
+
 // Post Action type
 
 export type PostActionType =
   | FetchUserPostsDispatchType
   | FetchAllPostsDispatchType
   | CreatePostWithPhotoDispatchType
-  | DeletePhotoDispatchType;
+  | DeletePhotoDispatchType
+  | IUpdatePosts;

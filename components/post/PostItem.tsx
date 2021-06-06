@@ -57,7 +57,9 @@ const PostItem: React.FC<PostItemProps> = ({
               }}>
               <Text style={styles.displayName}>{creator.displayName}</Text>
             </TouchableOpacity>
-            <Text style={styles.createdAt}>{DayJS(createdAt).format('MMM DD')}</Text>
+            <Text style={styles.createdAt}>
+              {DayJS(createdAt).format("MMM DD 'YY HH:mm")}
+            </Text>
           </View>
         </View>
 
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   createdAt: {
-    fontSize: 13,
+    fontSize: 11,
     color: Colors.grayText,
   },
   postContent: {},

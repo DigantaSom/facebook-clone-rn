@@ -4,6 +4,7 @@ import { Platform, Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
+import { BlobType, GenderType, IPost } from '../../types';
 import {
   IProfile,
   GetProfileDispatchType,
@@ -26,7 +27,7 @@ import {
   SEARCH_PROFILES_FAILURE,
 } from './profile.types';
 import { IUser } from '../user/user.types';
-import { BlobType, GenderType, IPost } from '../../types';
+import { UPDATE_POSTS } from '../post/post.types';
 
 import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
@@ -165,6 +166,11 @@ export const uploadCoverPic =
               type: UPLOAD_COVER_PIC_SUCCESS,
               payload: newCoverPicObj,
             });
+            dispatch({
+              type: UPDATE_POSTS,
+              payload: newCoverPicObj,
+            });
+
             Alert.alert(
               'Cover Photo updated!',
               'Your new Cover Photo is set successfully.',

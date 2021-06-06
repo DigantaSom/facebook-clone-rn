@@ -27,6 +27,7 @@ import {
 } from './user.types';
 import { BlobType, GenderType, IPost } from '../../types';
 import { IProfile, UPDATE_PROFILE_PIC_IN_PROFILE } from '../profile/profile.types';
+import { UPDATE_POSTS } from '../post/post.types';
 
 import firebase, {
   auth,
@@ -288,9 +289,14 @@ export const updateProfilePic =
               payload: url,
             });
 
-            // dispatch to update profile state as well
+            // dispatch to update profile state as well.
             dispatch({
               type: UPDATE_PROFILE_PIC_IN_PROFILE,
+              payload: newProfilePicObj,
+            });
+            // so that the newly created profile pic also gets added to the posts[] array of posts state.
+            dispatch({
+              type: UPDATE_POSTS,
               payload: newProfilePicObj,
             });
 

@@ -13,6 +13,7 @@ import {
   FETCH_ALL_POSTS_START,
   FETCH_ALL_POSTS_SUCCESS,
   FETCH_ALL_POSTS_FAILURE,
+  UPDATE_POSTS,
 } from './post.types';
 
 interface IDefaultState {
@@ -116,6 +117,14 @@ const postReducer = (
         ...state,
         loading: false,
         error: action.payload,
+      };
+
+    // Update posts[] array to have the newly created profile/cover pic
+    case UPDATE_POSTS:
+      return {
+        ...state,
+        posts: [action.payload, ...state.posts],
+        loading: false,
       };
 
     default:

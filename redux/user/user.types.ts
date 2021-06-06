@@ -1,4 +1,5 @@
 import { GenderType } from '../../types';
+import { IUpdatePosts } from '../post/post.types';
 import { IUpdateProfilePicInProfile } from '../profile/profile.types';
 
 export const CHECK_USER_SESSION = 'CHECK_USER_SESSION';
@@ -113,7 +114,8 @@ export type UpdateProfilePictureDispatchType =
   | IUpdateProfilePicStart
   | IUpdateProfilePicSuccess
   | IUpdateProfilePicFailure
-  | IUpdateProfilePicInProfile;
+  | IUpdateProfilePicInProfile // from profile.types
+  | IUpdatePosts; // from post.types
 
 // Remove profilePic from user state
 export interface IRemoveProfilePicFromUser {
