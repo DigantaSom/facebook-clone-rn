@@ -1,12 +1,12 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import {
-  Button,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -62,6 +62,12 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
       ),
     });
   }, [postTitle, postPhoto, currentUser, createPostWithPhoto, postUploading, error]);
+
+  useEffect(() => {
+    if (postPhoto) {
+      handleCloseModal();
+    }
+  }, [postPhoto]);
 
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);

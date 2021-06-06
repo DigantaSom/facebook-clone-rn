@@ -31,7 +31,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photoList, navigation }) => {
     <View style={styles.gridContainer}>
       <FlatList
         data={photoList}
-        keyExtractor={item => item.imageUri}
+        keyExtractor={item => item.postId}
         numColumns={3}
         renderItem={({ item }) => <PhotoGridItem photo={item} navigation={navigation} />}
       />

@@ -7,6 +7,12 @@ import {
   DELETE_PHOTO_START,
   DELETE_PHOTO_SUCCESS,
   DELETE_PHOTO_FAILURE,
+  FETCH_USER_POSTS_START,
+  FETCH_USER_POSTS_SUCCESS,
+  FETCH_USER_POSTS_FAILURE,
+  FETCH_ALL_POSTS_START,
+  FETCH_ALL_POSTS_SUCCESS,
+  FETCH_ALL_POSTS_FAILURE,
 } from './post.types';
 
 interface IDefaultState {
@@ -28,6 +34,48 @@ const postReducer = (
   action: PostActionType,
 ): IDefaultState => {
   switch (action.type) {
+    // Fetch all posts (News Feed)
+    case FETCH_ALL_POSTS_START:
+      return {
+        ...state,
+        post: null,
+        posts: [],
+        loading: true,
+      };
+    case FETCH_ALL_POSTS_SUCCESS:
+      return {
+        ...state,
+        posts: action.payload,
+        loading: false,
+      };
+    case FETCH_ALL_POSTS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Fetch a specific user's posts
+    case FETCH_USER_POSTS_START:
+      return {
+        ...state,
+        post: null,
+        posts: [],
+        loading: true,
+      };
+    case FETCH_USER_POSTS_SUCCESS:
+      return {
+        ...state,
+        posts: action.payload,
+        loading: false,
+      };
+    case FETCH_USER_POSTS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
     // Create post with photo
     case CREATE_POST_WITH_PHOTO_START:
       return {
@@ -38,6 +86,7 @@ const postReducer = (
       return {
         ...state,
         post: action.payload,
+        posts: [action.payload, ...state.posts],
         loading: false,
       };
     case CREATE_POST_WITH_PHOTO_FAILURE:

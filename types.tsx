@@ -51,6 +51,7 @@ export type TopTabParamList = {
   // for navigation to other navigators' screens
   Profile: { userId: string };
   CreatePost: undefined;
+  Photo: { photo: IPost };
 };
 export type TopTabNavProps<T extends keyof TopTabParamList> = {
   navigation: StackNavigationProp<TopTabParamList, T>;
@@ -120,6 +121,7 @@ export type BlobType = Blob | Uint8Array | ArrayBuffer;
 type CreatorType = {
   id: string;
   displayName: string;
+  profilePicUri: string;
   gender: GenderType;
 };
 

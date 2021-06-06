@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { View, Text } from '../../components/Themed';
 
-import { MenuNavProps } from '../../types';
+import { MenuNavProps, TopTabNavProps } from '../../types';
 
 import { RootState } from '../../redux/store';
 import { getProfile } from '../../redux/profile/profile.actions';
@@ -18,13 +18,12 @@ import ProfileCreatePost from '../../components/profile/ProfileCreatePost';
 import Divider from '../../components/UI/Divider';
 import Spinner from '../../components/UI/Spinner';
 import Center from '../../components/UI/Center';
-
-import posts from '../../utils/dummy-posts';
 import PostItem from '../../components/post/PostItem';
 
 import ProfilePicBottomDrawer from '../../components/bottom-drawers/ProfilePicBottomDrawer';
 import CoverPicBottomDrawer from '../../components/bottom-drawers/CoverPicBottomDrawer';
 import ProfileWidgets from '../../components/profile/ProfileWidgets';
+import { fetchUserPosts } from '../../redux/post/post.actions';
 
 type ProfileScreenProps = MenuNavProps<'Profile'>;
 
@@ -44,10 +43,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   const { profile, loading: profileLoading } = useSelector(
     (state: RootState) => state.profile,
   );
+  const { posts, loading: postsLoading } = useSelector((state: RootState) => state.post);
 
   useEffect(() => {
     dispatch(getProfile(userId));
-  }, [dispatch, getProfile, userId]);
+  }, [getProfile, userId]);
+
+  useEffect(() => {
+    dispatch(fetchUserPosts(userId));
+  }, [fetchUserPosts, userId]);
 
   const handleIsProfilePicPressed = () => {
     setIsProfilePicPressed(true);
@@ -82,7 +86,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
   const handleCloseModal = () => bottomSheetModalRef.current?.close();
 
-  if (userLoading || profileLoading || uploading) {
+  if (userLoading || profileLoading || uploading || postsLoading) {
     return <Spinner />;
   }
 
@@ -165,8 +169,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
           </View>
         }
         data={posts}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => <PostItem post={item} />}
+        keyExtractor={item => item.postId}
+        renderItem={({ item }) => (
+          <PostItem post={item} navigationFromProfile={navigation} />
+        )}
       />
 
       <BottomSheetModal

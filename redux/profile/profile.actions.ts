@@ -121,8 +121,7 @@ export const uploadCoverPic =
           const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc(newPostId);
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(newPostId);
 
-          const postsRef = firestore.doc(`posts/${currentUser.id}`);
-          const userPostsRef = postsRef.collection('user_posts').doc(newPostId);
+          const postsRef = firestore.collection('posts').doc(newPostId);
 
           const newCoverPicObj: IPost = {
             postId: newPostId,
@@ -131,6 +130,7 @@ export const uploadCoverPic =
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
+              profilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
               gender: currentUser.gender as GenderType,
             },
             createdAt: newDate,
@@ -145,7 +145,7 @@ export const uploadCoverPic =
             });
             batch.set(coverPicsAlbum_Ref, newCoverPicObj);
             batch.set(allPicsAlbum_Ref, newCoverPicObj);
-            batch.set(userPostsRef, newCoverPicObj);
+            batch.set(postsRef, newCoverPicObj);
 
             const albumsSnapshot = await albumsRef.get();
             const all_albums_obj = albumsSnapshot.data();

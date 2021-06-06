@@ -237,8 +237,7 @@ export const updateProfilePic =
             .doc(newPostId);
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(newPostId);
 
-          const postRef = firestore.doc(`posts/${currentUser.id}`);
-          const userPostsRef = postRef.collection('user_posts').doc(newPostId);
+          const postRef = firestore.collection('posts').doc(newPostId);
 
           const newProfilePicObj: IPost = {
             postId: newPostId,
@@ -247,6 +246,7 @@ export const updateProfilePic =
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
+              profilePicUri: url,
               gender: currentUser.gender as GenderType,
             },
             createdAt: newDate,
@@ -260,7 +260,7 @@ export const updateProfilePic =
             batch.update(profileRef, { profilePic: newProfilePicObj });
             batch.set(profilePicsAlbum_Ref, newProfilePicObj);
             batch.set(allPicsAlbum_Ref, newProfilePicObj);
-            batch.set(userPostsRef, newProfilePicObj);
+            batch.set(postRef, newProfilePicObj);
 
             const albumsSnapshot = await albumsRef.get();
             const all_albums_obj = albumsSnapshot.data();

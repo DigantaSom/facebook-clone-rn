@@ -15,9 +15,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
 import { Text, View } from '../components/Themed';
-import Divider from '../components/UI/Divider';
 import PostActions from '../components/post/PostActions';
 import PhotoBottomDrawer from '../components/bottom-drawers/PhotoBottomDrawer';
+import ReactCommentShow from '../components/post/ReactCommentShow';
 
 import { RootNavProps } from '../types';
 import useValues from '../hooks/useValues';
@@ -87,12 +87,7 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
           </Text>
         </ViewRN>
 
-        <ViewRN style={styles.reactCommentContainer}>
-          <Text style={styles.reactCommentText}>57 Reacts</Text>
-          <Text style={styles.reactCommentText}>12 Comments</Text>
-        </ViewRN>
-
-        <Divider marginVerticalValue={10} />
+        <ReactCommentShow />
 
         <PostActions />
       </ViewRN>
@@ -162,15 +157,5 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontSize: 10,
     color: '#CCC',
-  },
-  reactCommentContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  reactCommentText: {
-    fontSize: 12,
-    fontWeight: '700',
   },
 });

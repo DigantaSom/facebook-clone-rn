@@ -7,6 +7,14 @@ import { v4 as uuid } from 'uuid';
 import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
 import {
+  FetchUserPostsDispatchType,
+  FETCH_USER_POSTS_START,
+  FETCH_USER_POSTS_SUCCESS,
+  FETCH_USER_POSTS_FAILURE,
+  FetchAllPostsDispatchType,
+  FETCH_ALL_POSTS_START,
+  FETCH_ALL_POSTS_SUCCESS,
+  FETCH_ALL_POSTS_FAILURE,
   CreatePostWithPhotoDispatchType,
   CREATE_POST_WITH_PHOTO_START,
   CREATE_POST_WITH_PHOTO_SUCCESS,
@@ -23,6 +31,69 @@ import {
   REMOVE_COVER_PIC_FROM_PROFILE,
 } from '../profile/profile.types';
 import { REMOVE_PHOTO_FROM_ALBUM } from '../album/album.types';
+
+export const fetchUserPosts =
+  (userId: string) => async (dispatch: Dispatch<FetchUserPostsDispatchType>) => {
+    dispatch({
+      type: FETCH_USER_POSTS_START,
+    });
+
+    try {
+      // TODO: Cursor Pagination
+
+      const postsRef = firestore.collection('posts').orderBy('createdAt', 'desc');
+      const postsSnapshot = await postsRef.get();
+
+      const userPosts = await postsSnapshot.query.where('creator.id', '==', userId).get();
+
+      const postsToDispatch: IPost[] = [];
+
+      userPosts.docs.map(doc => {
+        postsToDispatch.push(doc.data() as IPost);
+      });
+
+      dispatch({
+        type: FETCH_USER_POSTS_SUCCESS,
+        payload: postsToDispatch,
+      });
+    } catch (err) {
+      dispatch({
+        type: FETCH_USER_POSTS_FAILURE,
+        payload: err.message,
+      });
+      Alert.alert("Error fetch user's posts", err.message);
+    }
+  };
+
+export const fetchAllPosts =
+  () => async (dispatch: Dispatch<FetchAllPostsDispatchType>) => {
+    dispatch({
+      type: FETCH_ALL_POSTS_START,
+    });
+
+    try {
+      // TODO: Cursor Pagination
+      const allPostsRef = firestore.collection('posts').orderBy('createdAt', 'desc');
+      const allPostsSnapshot = await allPostsRef.get();
+
+      const allPostsToDispatch: IPost[] = [];
+
+      allPostsSnapshot.docs.map(doc => {
+        allPostsToDispatch.push(doc.data() as IPost);
+      });
+
+      dispatch({
+        type: FETCH_ALL_POSTS_SUCCESS,
+        payload: allPostsToDispatch,
+      });
+    } catch (err) {
+      dispatch({
+        type: FETCH_ALL_POSTS_FAILURE,
+        payload: err.message,
+      });
+      Alert.alert("Error fetch user's posts", err.message);
+    }
+  };
 
 export const createPostWithPhoto =
   (postTitle: string, postPhoto: string, currentUser: IUser) =>
@@ -77,8 +148,7 @@ export const createPostWithPhoto =
             .doc(newPostId);
           const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(newPostId);
 
-          const postRef = firestore.doc(`posts/${currentUser.id}`);
-          const userPostsRef = postRef.collection('user_posts').doc(newPostId);
+          const postsRef = firestore.collection('posts').doc(newPostId);
 
           const newPostObj: IPost = {
             postId: newPostId,
@@ -87,6 +157,7 @@ export const createPostWithPhoto =
             creator: {
               id: currentUser.id as string,
               displayName: currentUser.displayName as string,
+              profilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
               gender: currentUser.gender as GenderType,
             },
             createdAt: newDate,
@@ -98,7 +169,7 @@ export const createPostWithPhoto =
 
             batch.set(timelinePicsAlbum_Ref, newPostObj);
             batch.set(allPicsAlbum_Ref, newPostObj);
-            batch.set(userPostsRef, newPostObj);
+            batch.set(postsRef, newPostObj);
 
             const albumsSnapshot = await albumsRef.get();
             const all_albums_obj = albumsSnapshot.data();
@@ -146,8 +217,7 @@ export const deletePhoto =
     const albumsRef = firestore.collection('albums').doc(currentUser.id);
     const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(photo.postId);
 
-    const postsRef = firestore.doc(`posts/${currentUser.id}`);
-    const userPostsRef = postsRef.collection('user_posts').doc(photo.postId);
+    const postsRef = firestore.collection('posts').doc(photo.postId);
 
     if (postType === 'Profile Pic') {
       const isCurrentProfilePic: boolean = photo.imageUri === currentUser.profilePic;
@@ -175,7 +245,7 @@ export const deletePhoto =
           }
           batch.delete(allPicsAlbum_Ref);
           batch.delete(profilePicsAlbum_Ref);
-          batch.delete(userPostsRef);
+          batch.delete(postsRef);
 
           await batch.commit();
 
@@ -235,7 +305,7 @@ export const deletePhoto =
           }
           batch.delete(allPicsAlbum_Ref);
           batch.delete(coverPicsAlbum_Ref);
-          batch.delete(userPostsRef);
+          batch.delete(postsRef);
 
           await batch.commit();
 
@@ -284,7 +354,7 @@ export const deletePhoto =
 
           batch.delete(allPicsAlbum_Ref);
           batch.delete(timelinePicsAlbum_Ref);
-          batch.delete(userPostsRef);
+          batch.delete(postsRef);
 
           await batch.commit();
 
@@ -313,3 +383,24 @@ export const deletePhoto =
       }
     }
   };
+
+// Test
+export const testAction = (userId: string) => async (dispatch: Dispatch) => {
+  try {
+    const postsRef = firestore.collection('posts2').orderBy('createdAt', 'desc');
+    const postsSnapshot = await postsRef.get();
+
+    const x = await postsSnapshot.query.where('creator.id', '==', userId).get();
+
+    console.log('=========================== dig');
+    x.docs.map(doc => {
+      console.log(doc.data());
+    });
+
+    // postsSnapshot.docs.map(doc => {
+    //   console.log(doc.data());
+    // });
+  } catch (err) {
+    console.log('testAction error:', err.message);
+  }
+};

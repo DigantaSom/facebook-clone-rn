@@ -1,25 +1,25 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, View as ViewRN } from 'react-native';
 
 import { AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text, View } from '../Themed';
+import { Text } from '../Themed';
 
-const PostActions = () => {
+const PostActions: React.FC<{}> = ({}) => {
   return (
-    <View style={styles.postActions}>
-      <View style={styles.actionItem}>
+    <ViewRN style={styles.postActions}>
+      <TouchableOpacity style={styles.actionItem} activeOpacity={0.4} onPress={() => {}}>
         <AntDesign name='like2' size={20} color='white' style={styles.actionIcon} />
         <Text style={styles.actionText}>Like</Text>
-      </View>
-      <View style={styles.actionItem}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.actionItem} activeOpacity={0.4} onPress={() => {}}>
         <FontAwesome5 name='comment' size={20} color='white' style={styles.actionIcon} />
         <Text style={styles.actionText}>Comment</Text>
-      </View>
-      <View style={styles.actionItem}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.actionItem} activeOpacity={0.4} onPress={() => {}}>
         <MaterialCommunityIcons name='share-outline' size={24} color='white' />
         <Text style={styles.actionText}>Share</Text>
-      </View>
-    </View>
+      </TouchableOpacity>
+    </ViewRN>
   );
 };
 
