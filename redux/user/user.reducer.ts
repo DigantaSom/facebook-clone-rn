@@ -36,16 +36,40 @@ const userReducer = (
   action: UserActionType,
 ): IDefaultState => {
   switch (action.type) {
+    // Check user session
     case CHECK_USER_SESSION:
-    case SIGN_UP_START:
-    case EMAIL_SIGN_IN_START:
-    case SIGN_OUT_START:
       return {
         ...state,
         loading: true,
       };
 
+    // Sign Up
+    case SIGN_UP_START:
+      return {
+        ...state,
+        loading: true,
+      };
     case SIGN_UP_SUCCESS:
+      return {
+        ...state,
+        currentUser: action.payload,
+        loading: false,
+        error: '',
+      };
+    case SIGN_UP_FAILURE:
+      return {
+        ...state,
+        currentUser: null,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Email Sign In
+    case EMAIL_SIGN_IN_START:
+      return {
+        ...state,
+        loading: true,
+      };
     case EMAIL_SIGN_IN_SUCCESS:
       return {
         ...state,
@@ -53,26 +77,6 @@ const userReducer = (
         loading: false,
         error: '',
       };
-
-    case SIGN_OUT_SUCCESS:
-      return defaultState;
-
-    case UPDATE_PROFILE_PIC_START:
-      return {
-        ...state,
-        loading: false,
-        uploading: true,
-      };
-
-    case UPDATE_PROFILE_PIC_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        uploading: false,
-        currentUser: { ...state.currentUser, profilePic: action.payload },
-      };
-
-    case SIGN_UP_FAILURE:
     case EMAIL_SIGN_IN_FAILURE:
       return {
         ...state,
@@ -81,6 +85,14 @@ const userReducer = (
         error: action.payload,
       };
 
+    // Sign Out
+    case SIGN_OUT_START:
+      return {
+        ...state,
+        loading: true,
+      };
+    case SIGN_OUT_SUCCESS:
+      return defaultState;
     case SIGN_OUT_FAILURE:
       return {
         ...state,
@@ -88,6 +100,20 @@ const userReducer = (
         error: action.payload,
       };
 
+    // Update Profile Picture (in user state only)
+    case UPDATE_PROFILE_PIC_START:
+      return {
+        ...state,
+        loading: false,
+        uploading: true,
+      };
+    case UPDATE_PROFILE_PIC_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        uploading: false,
+        currentUser: { ...state.currentUser, profilePic: action.payload },
+      };
     case UPDATE_PROFILE_PIC_FAILURE:
       return {
         ...state,

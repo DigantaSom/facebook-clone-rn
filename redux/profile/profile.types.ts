@@ -4,8 +4,6 @@ export const GET_PROFILE_START = 'GET_PROFILE_START';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
 export const GET_PROFILE_FAILURE = 'GET_PROFILE_FAILURE';
 
-export const UPDATE_PROFILE_PIC_IN_PROFILE = 'UPDATE_PROFILE_PIC_IN_PROFILE';
-
 export const UPLOAD_COVER_PIC_START = 'UPLOAD_COVER_PIC_START';
 export const UPLOAD_COVER_PIC_SUCCESS = 'UPLOAD_COVER_PIC_SUCCESS';
 export const UPLOAD_COVER_PIC_FAILURE = 'UPLOAD_COVER_PIC_FAILURE';
@@ -18,6 +16,7 @@ export const SEARCH_PROFILES_START = 'SEARCH_PROFILES_START';
 export const SEARCH_PROFILES_SUCCESS = 'SEARCH_PROFILES_SUCCESS';
 export const SEARCH_PROFILES_FAILURE = 'SEARCH_PROFILES_FAILURE';
 
+export const UPDATE_PROFILE_PIC_IN_PROFILE = 'UPDATE_PROFILE_PIC_IN_PROFILE';
 export const REMOVE_PROFILE_PIC_FROM_PROFILE = 'REMOVE_PROFILE_PIC_FROM_PROFILE';
 export const REMOVE_COVER_PIC_FROM_PROFILE = 'REMOVE_COVER_PIC_FROM_PROFILE';
 
@@ -70,13 +69,6 @@ export type GetProfileDispatchType =
   | IGetProfileStart
   | IGetProfileSuccess
   | IGetProfileFailure;
-
-// Upload a profile picture (just update the profile state)
-
-export interface IUpdateProfilePicInProfile {
-  type: typeof UPDATE_PROFILE_PIC_IN_PROFILE;
-  payload: IPost;
-}
 
 // Upload a Cover pic
 
@@ -138,6 +130,12 @@ export type SearchProfilesDispatchType =
   | ISearchProfilesStart
   | ISearchProfilesSuccess
   | ISearchProfilesFailure;
+
+// Upload a profile picture (just update the profile state)
+export interface IUpdateProfilePicInProfile {
+  type: typeof UPDATE_PROFILE_PIC_IN_PROFILE;
+  payload: IPost;
+}
 
 // Remove profilePic from profile state
 export interface IRemoveProfilePicFromProfile {

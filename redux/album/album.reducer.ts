@@ -35,37 +35,56 @@ const albumReducer = (
   action: AlbumActionType,
 ): IDefaultState => {
   switch (action.type) {
+    // Get all Photos
     case GET_ALL_PHOTOS_START:
-    case GET_ALBUMS_START:
-    case GET_ALBUM_PICS_START:
       return {
         ...state,
         loading: true,
       };
-
     case GET_ALL_PHOTOS_SUCCESS:
       return {
         ...state,
         allPhotos: action.payload,
         loading: false,
       };
+    case GET_ALL_PHOTOS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
 
+    // Get all Albums
+    case GET_ALBUMS_START:
+      return {
+        ...state,
+        loading: true,
+      };
     case GET_ALBUMS_SUCCESS:
       return {
         ...state,
         albumsPreview: action.payload,
         loading: false,
       };
+    case GET_ALBUMS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
 
+    // Get all pics in a specific album
+    case GET_ALBUM_PICS_START:
+      return {
+        ...state,
+        loading: true,
+      };
     case GET_ALBUM_PICS_SUCCESS:
       return {
         ...state,
         photos: action.payload,
         loading: false,
       };
-
-    case GET_ALL_PHOTOS_FAILURE:
-    case GET_ALBUMS_FAILURE:
     case GET_ALBUM_PICS_FAILURE:
       return {
         ...state,

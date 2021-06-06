@@ -37,14 +37,12 @@ const profileReducer = (
   action: ProfileActionType,
 ): IDefaultState => {
   switch (action.type) {
+    // Fetch a profile
     case GET_PROFILE_START:
-    case UPLOAD_COVER_PIC_START:
-    case ADD_OR_EDIT_PROFILE_ABOUT_START:
       return {
         ...state,
         loading: true,
       };
-
     case GET_PROFILE_SUCCESS:
       return {
         ...state,
@@ -52,18 +50,20 @@ const profileReducer = (
         loading: false,
         error: '',
       };
-
-    case UPDATE_PROFILE_PIC_IN_PROFILE:
+    case GET_PROFILE_FAILURE:
       return {
         ...state,
-        profile: {
-          ...(state.profile as IProfile),
-          profilePic: action.payload,
-        },
+        profile: null,
         loading: false,
-        error: '',
+        error: action.payload,
       };
 
+    // Upload Cover Pic
+    case UPLOAD_COVER_PIC_START:
+      return {
+        ...state,
+        loading: true,
+      };
     case UPLOAD_COVER_PIC_SUCCESS:
       return {
         ...state,
@@ -74,7 +74,20 @@ const profileReducer = (
         loading: false,
         error: '',
       };
+    case UPLOAD_COVER_PIC_FAILURE:
+      return {
+        ...state,
+        profile: null,
+        loading: false,
+        error: action.payload,
+      };
 
+    // Add or Edit Profile-About information
+    case ADD_OR_EDIT_PROFILE_ABOUT_START:
+      return {
+        ...state,
+        loading: true,
+      };
     case ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS:
       return {
         ...state,
@@ -85,22 +98,6 @@ const profileReducer = (
         loading: false,
         error: '',
       };
-
-    case SEARCH_PROFILES_START:
-      return {
-        ...state,
-        loading: true,
-        profiles: [],
-      };
-    case SEARCH_PROFILES_SUCCESS:
-      return {
-        ...state,
-        profiles: action.payload,
-        loading: false,
-      };
-
-    case GET_PROFILE_FAILURE:
-    case UPLOAD_COVER_PIC_FAILURE:
     case ADD_OR_EDIT_PROFILE_ABOUT_FAILURE:
       return {
         ...state,
@@ -109,14 +106,38 @@ const profileReducer = (
         error: action.payload,
       };
 
+    // Search profiles
+    case SEARCH_PROFILES_START:
+      return {
+        ...state,
+        profiles: [],
+        loading: true,
+      };
+    case SEARCH_PROFILES_SUCCESS:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false,
+      };
     case SEARCH_PROFILES_FAILURE:
       return {
         ...state,
-        profile: null,
         profiles: [],
+        loading: false,
         error: action.payload,
       };
 
+    // Upload a profile picture (just update the profile state)
+    case UPDATE_PROFILE_PIC_IN_PROFILE:
+      return {
+        ...state,
+        profile: {
+          ...(state.profile as IProfile),
+          profilePic: action.payload,
+        },
+        loading: false,
+        error: '',
+      };
     // After deletion of current profile pic from post.actions
     case REMOVE_PROFILE_PIC_FROM_PROFILE:
       return {
