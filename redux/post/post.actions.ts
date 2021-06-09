@@ -7,6 +7,10 @@ import { v4 as uuid } from 'uuid';
 import firebase, { firestore, storage } from '../../firebase/firebase.utils';
 
 import {
+  FetchSinglePostDispatchType,
+  FETCH_SINGLE_POST_START,
+  FETCH_SINGLE_POST_SUCCESS,
+  FETCH_SINGLE_POST_FAILURE,
   FetchUserPostsDispatchType,
   FETCH_USER_POSTS_START,
   FETCH_USER_POSTS_SUCCESS,
@@ -23,14 +27,57 @@ import {
   DELETE_PHOTO_START,
   DELETE_PHOTO_SUCCESS,
   DELETE_PHOTO_FAILURE,
+  UpdateReactOnPostDispatchType,
+  UPDATE_REACT_ON_POST_START,
+  UPDATE_REACT_ON_POST_SUCCESS,
+  UPDATE_REACT_ON_POST_FAILURE,
 } from './post.types';
-import { BlobType, GenderType, IPost, PostType } from '../../types';
+import {
+  BlobType,
+  GenderType,
+  IPost,
+  IReaction,
+  PostType,
+  ReactionType,
+} from '../../types';
 import { IUser, REMOVE_PROFILE_PIC_FROM_USER } from '../user/user.types';
 import {
   REMOVE_PROFILE_PIC_FROM_PROFILE,
   REMOVE_COVER_PIC_FROM_PROFILE,
 } from '../profile/profile.types';
 import { REMOVE_PHOTO_FROM_ALBUM } from '../album/album.types';
+
+export const fetchSinglePost =
+  (postId: string) => async (dispatch: Dispatch<FetchSinglePostDispatchType>) => {
+    dispatch({
+      type: FETCH_SINGLE_POST_START,
+    });
+
+    const postRef = firestore.collection('posts').doc(postId);
+
+    try {
+      const postSnapshot = await postRef.get();
+
+      if (postSnapshot.exists) {
+        dispatch({
+          type: FETCH_SINGLE_POST_SUCCESS,
+          payload: postSnapshot.data() as IPost,
+        });
+      } else {
+        dispatch({
+          type: FETCH_SINGLE_POST_FAILURE,
+          payload: 'Post not found',
+        });
+        Alert.alert('Error fetching post', 'Post not found');
+      }
+    } catch (err) {
+      dispatch({
+        type: FETCH_SINGLE_POST_FAILURE,
+        payload: err.message,
+      });
+      Alert.alert('Error fetching post', err.message);
+    }
+  };
 
 export const fetchUserPosts =
   (userId: string) => async (dispatch: Dispatch<FetchUserPostsDispatchType>) => {
@@ -44,6 +91,7 @@ export const fetchUserPosts =
       const postsRef = firestore.collection('posts').orderBy('createdAt', 'desc');
       const postsSnapshot = await postsRef.get();
 
+      // had to create an index for this in firestore
       const userPosts = await postsSnapshot.query.where('creator.id', '==', userId).get();
 
       const postsToDispatch: IPost[] = [];
@@ -162,6 +210,7 @@ export const createPostWithPhoto =
             },
             createdAt: newDate,
             postType: 'Photo',
+            reactions: [],
           };
 
           try {
@@ -384,23 +433,167 @@ export const deletePhoto =
     }
   };
 
-// Test
-export const testAction = (userId: string) => async (dispatch: Dispatch) => {
-  try {
-    const postsRef = firestore.collection('posts2').orderBy('createdAt', 'desc');
-    const postsSnapshot = await postsRef.get();
-
-    const x = await postsSnapshot.query.where('creator.id', '==', userId).get();
-
-    console.log('=========================== dig');
-    x.docs.map(doc => {
-      console.log(doc.data());
+export const updateReactOnPost =
+  (postId: string, ownerId: string, reaction: ReactionType, reactorId: string) =>
+  async (dispatch: Dispatch<UpdateReactOnPostDispatchType>) => {
+    dispatch({
+      type: UPDATE_REACT_ON_POST_START,
     });
 
-    // postsSnapshot.docs.map(doc => {
-    //   console.log(doc.data());
-    // });
-  } catch (err) {
-    console.log('testAction error:', err.message);
-  }
-};
+    const postRef = firestore.collection('posts').doc(postId);
+    // const albumsRef = firestore.collection('albums').doc(ownerId);
+    // const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(postId);
+    // const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc(postId);
+    // const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc(postId);
+    // const timelinePicsAlbum_Ref = albumsRef.collection('timeline_pics').doc(postId);
+
+    console.log('==============================');
+
+    const newReactionObj: IReaction = {
+      reactorId,
+      reaction,
+    };
+
+    try {
+      const batch = firestore.batch();
+
+      const postSnapshot = await postRef.get();
+      const userReactionData: IReaction[] = postSnapshot.data()?.reactions;
+      // console.log('userReactionData:', userReactionData);
+
+      const userReactedObject: IReaction | undefined = userReactionData.find(
+        r => r.reactorId === reactorId,
+      );
+      // console.log('userReactedObject:', userReactedObject);
+
+      // TODO: use these
+      // const profilePicsAlbum_snapshot = await profilePicsAlbum_Ref.get();
+      // const coverPicsAlbum_snapshot = await coverPicsAlbum_Ref.get();
+      // const timelinePicsAlbum_snapshot = await timelinePicsAlbum_Ref.get();
+
+      if (postSnapshot.exists) {
+        // if there's no reaction on this post
+        if (!userReactionData.length) {
+          batch.update(postRef, {
+            reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+          });
+          // batch.update(allPicsAlbum_Ref, {
+          //   reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+          // });
+        } else {
+          // if the user has already reacted to this post
+          if (userReactedObject) {
+            // if the user wants to change (not remove) their reaction
+            if (userReactedObject.reaction !== reaction && reaction !== '') {
+              batch.update(postRef, {
+                reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+              });
+              batch.update(postRef, {
+                reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+              });
+              // batch.update(allPicsAlbum_Ref, {
+              //   reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+              // });
+              // batch.update(allPicsAlbum_Ref, {
+              //   reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+              // });
+            } else if (reaction === '') {
+              // if the user wants to remove their reaction
+              batch.update(postRef, {
+                reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+              });
+              // batch.update(allPicsAlbum_Ref, {
+              //   reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+              // });
+            }
+          } else {
+            // if the user hasn't yet reacted to this post, but reactions are not empty
+            batch.update(postRef, {
+              reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+            });
+            // batch.update(allPicsAlbum_Ref, {
+            //   reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+            // });
+          }
+        }
+
+        await batch.commit();
+
+        dispatch({
+          type: UPDATE_REACT_ON_POST_SUCCESS,
+          payload: {
+            reaction,
+            reactorId,
+            postId,
+          },
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: UPDATE_REACT_ON_POST_FAILURE,
+        payload: err.message,
+      });
+    }
+  };
+
+// export const updateReactOnPost =
+//   (postId: string, ownerId: string, reaction: ReactionType, reactorId: string) =>
+//   async (dispatch: Dispatch<UpdateReactOnPostDispatchType>) => {
+//     dispatch({
+//       type: UPDATE_REACT_ON_POST_START,
+//     });
+
+//     const postRef = firestore.collection('posts').doc(postId);
+//     const reactionPostRef = postRef.collection('reactions').doc(reactorId);
+
+//     const newReactionObj: IReaction = {
+//       reactorId,
+//       reaction,
+//     };
+
+//     try {
+//       const reactionPostSnapshot = await reactionPostRef.get();
+//       const userReactionData = reactionPostSnapshot.data();
+
+//       const batch = firestore.batch();
+
+//       if (reactionPostSnapshot.exists) {
+//         if (userReactionData) {
+//           // if the user has already reacted to this post
+//           if (
+//             userReactionData.reactorId === reactorId &&
+//             userReactionData.reaction !== reaction
+//           ) {
+//             // if the user wants to change their reaction
+//             if (reaction !== '') {
+//               batch.update(reactionPostRef, newReactionObj);
+//             } else {
+//               // if the user wants to remove their reaction
+//               batch.delete(reactionPostRef);
+//             }
+//           }
+//         }
+//       } else {
+//         // if the user has not reacted to this post yet
+//         batch.set(reactionPostRef, newReactionObj);
+//       }
+
+//       // await batch.commit();
+
+//       dispatch({
+//         type: UPDATE_REACT_ON_POST_SUCCESS,
+//         payload: {
+//           reactorId,
+//           reaction,
+//           postId,
+//         },
+//       });
+//     } catch (err) {
+//       dispatch({
+//         type: UPDATE_REACT_ON_POST_FAILURE,
+//         payload: err.message,
+//       });
+//       Alert.alert('Post react error', err.message);
+//       console.log('Post react error:', err.message);
+//     }
+//   };

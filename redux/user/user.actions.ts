@@ -252,6 +252,7 @@ export const updateProfilePic =
             },
             createdAt: newDate,
             postType: 'Profile Pic',
+            reactions: [],
           };
 
           try {

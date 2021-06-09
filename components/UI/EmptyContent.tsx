@@ -14,10 +14,10 @@ interface EmptyContentProps {
 const EmptyContent: React.FC<EmptyContentProps> = ({ emptyType }) => {
   return (
     <View style={styles.noPhoto_container}>
-      {emptyType === 'photo' ? (
+      {emptyType === 'Photo' ? (
         <Fontisto name='photograph' size={70} color={Colors.grayText} />
       ) : null}
-      {emptyType === 'album' ? (
+      {emptyType === 'Album' ? (
         <Ionicons name='albums' size={70} color={Colors.grayText} />
       ) : null}
 

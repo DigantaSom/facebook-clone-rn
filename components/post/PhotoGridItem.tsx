@@ -18,7 +18,7 @@ const PhotoGridItem: React.FC<PhotoGridItemProps> = ({ photo, navigation }) => {
     <TouchableOpacity
       style={styles.container}
       activeOpacity={0.6}
-      onPress={() => navigation.navigate('Photo', { photo })}>
+      onPress={() => navigation.navigate('Photo', { postId: photo.postId })}>
       <Image source={{ uri: photo.imageUri }} style={styles.image} />
     </TouchableOpacity>
   );

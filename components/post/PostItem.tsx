@@ -1,18 +1,21 @@
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import DayJS from 'dayjs';
-
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
-import { Text, View } from '../Themed';
-import Colors from '../../constants/Colors';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 import { IPost, MenuStackParamList, TopTabParamList } from '../../types';
 
+import { Text, View } from '../Themed';
 import DPcontainer from '../UI/DPcontainer';
 import Divider from '../UI/Divider';
 import ReactCommentShow from './ReactCommentShow';
 import PostActions from './PostActions';
+
+import Colors from '../../constants/Colors';
 
 interface PostItemProps {
   post: IPost;
@@ -25,6 +28,8 @@ const PostItem: React.FC<PostItemProps> = ({
   navigationFromHome,
   navigationFromProfile,
 }) => {
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+
   const { creator, postType, title, imageUri, createdAt } = post;
 
   return (
@@ -76,16 +81,16 @@ const PostItem: React.FC<PostItemProps> = ({
             activeOpacity={0.6}
             onPress={() => {
               navigationFromHome
-                ? navigationFromHome.navigate('Photo', { photo: post })
-                : navigationFromProfile?.navigate('Photo', { photo: post });
+                ? navigationFromHome.navigate('Photo', { postId: post.postId })
+                : navigationFromProfile?.navigate('Photo', { postId: post.postId });
             }}>
             <Image source={{ uri: imageUri }} style={styles.photo} />
           </TouchableOpacity>
         )}
       </View>
 
-      <ReactCommentShow />
-      <PostActions />
+      <ReactCommentShow reactions={post.reactions} />
+      {!currentUser ? null : <PostActions currentUser={currentUser} post={post} />}
 
       <Divider />
     </TouchableOpacity>

@@ -136,6 +136,7 @@ export const uploadCoverPic =
             },
             createdAt: newDate,
             postType: 'Cover Pic',
+            reactions: [],
           };
 
           try {

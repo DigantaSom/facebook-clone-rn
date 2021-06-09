@@ -39,7 +39,7 @@ const ProfilePicBottomDrawer: React.FC<ProfilePicBottomDrawer> = ({
   const onViewProfilePictureHandler = () => {
     if (profilePic) {
       handleCloseModal();
-      navigation.navigate('Photo', { photo: profilePic });
+      navigation.navigate('Photo', { postId: profilePic.postId });
     }
   };
 

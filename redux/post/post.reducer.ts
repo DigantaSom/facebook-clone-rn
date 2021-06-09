@@ -1,4 +1,4 @@
-import { IPost } from '../../types';
+import { IPost, IReaction } from '../../types';
 import {
   CREATE_POST_WITH_PHOTO_START,
   CREATE_POST_WITH_PHOTO_SUCCESS,
@@ -13,13 +13,21 @@ import {
   FETCH_ALL_POSTS_START,
   FETCH_ALL_POSTS_SUCCESS,
   FETCH_ALL_POSTS_FAILURE,
+  UPDATE_REACT_ON_POST_START,
+  UPDATE_REACT_ON_POST_SUCCESS,
+  UPDATE_REACT_ON_POST_FAILURE,
   UPDATE_POSTS,
+  FETCH_SINGLE_POST_START,
+  FETCH_SINGLE_POST_FAILURE,
+  FETCH_SINGLE_POST_SUCCESS,
 } from './post.types';
+import { updateReactionOnPost } from './post.utils';
 
 interface IDefaultState {
   post: IPost | null;
   posts: IPost[];
   loading: boolean;
+  reactionLoading: boolean;
   error: string;
 }
 
@@ -27,6 +35,7 @@ const defaultState: IDefaultState = {
   post: null,
   posts: [],
   loading: false,
+  reactionLoading: false,
   error: '',
 };
 
@@ -35,6 +44,26 @@ const postReducer = (
   action: PostActionType,
 ): IDefaultState => {
   switch (action.type) {
+    // Fetch a single post
+    case FETCH_SINGLE_POST_START:
+      return {
+        ...state,
+        loading: true,
+      };
+    case FETCH_SINGLE_POST_SUCCESS:
+      return {
+        ...state,
+        post: action.payload,
+        loading: false,
+        error: '',
+      };
+    case FETCH_SINGLE_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
     // Fetch all posts (News Feed)
     case FETCH_ALL_POSTS_START:
       return {
@@ -48,6 +77,7 @@ const postReducer = (
         ...state,
         posts: action.payload,
         loading: false,
+        error: '',
       };
     case FETCH_ALL_POSTS_FAILURE:
       return {
@@ -69,6 +99,7 @@ const postReducer = (
         ...state,
         posts: action.payload,
         loading: false,
+        error: '',
       };
     case FETCH_USER_POSTS_FAILURE:
       return {
@@ -89,6 +120,7 @@ const postReducer = (
         post: action.payload,
         posts: [action.payload, ...state.posts],
         loading: false,
+        error: '',
       };
     case CREATE_POST_WITH_PHOTO_FAILURE:
       return {
@@ -116,6 +148,49 @@ const postReducer = (
       return {
         ...state,
         loading: false,
+        error: action.payload,
+      };
+
+    // React/remove react on a post
+    case UPDATE_REACT_ON_POST_START:
+      return {
+        ...state,
+        reactionLoading: true,
+      };
+    case UPDATE_REACT_ON_POST_SUCCESS:
+      const newReactionObj: IReaction = {
+        reactorId: action.payload.reactorId,
+        reaction: action.payload.reaction,
+      };
+      return {
+        ...state,
+        post: state.post
+          ? {
+              ...state.post,
+              reactions: updateReactionOnPost(state.post.reactions, newReactionObj),
+            }
+          : null,
+        posts: state.posts.map(post =>
+          post.postId === action.payload.postId
+            ? {
+                ...post,
+                reactions:
+                  newReactionObj.reaction !== ''
+                    ? [newReactionObj, ...post.reactions]
+                    : post.reactions.filter(
+                        r => r.reactorId !== newReactionObj.reactorId,
+                      ),
+              }
+            : post,
+        ),
+        loading: false,
+        reactionLoading: false,
+      };
+    case UPDATE_REACT_ON_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        reactionLoading: false,
         error: action.payload,
       };
 

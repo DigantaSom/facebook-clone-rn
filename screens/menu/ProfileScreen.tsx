@@ -73,9 +73,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
       bottomSheetModalRef.current?.present();
     } else {
       if (isProfilePicPressed && profile?.profilePic) {
-        navigation.navigate('Photo', { photo: profile.profilePic });
+        navigation.navigate('Photo', { postId: profile.profilePic.postId });
       } else if (!isProfilePicPressed && profile?.coverPic) {
-        navigation.navigate('Photo', { photo: profile.coverPic });
+        navigation.navigate('Photo', { postId: profile.coverPic.postId });
       }
     }
   }, [isMyProfile, isProfilePicPressed, profile?.profilePic, profile?.coverPic]);

@@ -22,7 +22,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photoList, navigation }) => {
   if (noPhoto) {
     return (
       <Center>
-        <EmptyContent emptyType='photo' />
+        <EmptyContent emptyType='Photo' />
       </Center>
     );
   }

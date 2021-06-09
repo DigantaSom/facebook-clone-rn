@@ -11,7 +11,7 @@ import { AntDesign, MaterialIcons, Feather } from '@expo/vector-icons';
 import DayJS from 'dayjs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
 import { Text, View } from '../components/Themed';
@@ -21,33 +21,31 @@ import ReactCommentShow from '../components/post/ReactCommentShow';
 
 import { RootNavProps } from '../types';
 import useValues from '../hooks/useValues';
+import { fetchSinglePost } from '../redux/post/post.actions';
+import Spinner from '../components/UI/Spinner';
 
 type PhotoScreenProps = RootNavProps<'Photo'>;
 
 const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
-  const { photo } = route.params;
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { postId } = route.params;
   const [isMyPhoto, setIsMyPhoto] = useState(false);
   const { tabHeaderHeight } = useValues();
 
-  // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { post, loading: postLoading } = useSelector((state: RootState) => state.post);
 
-  // variables
-  const snapPoints = useMemo(() => ['40%', '40%'], []);
-
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleSheetChanges = useCallback(() => {}, []);
+  console.log('post:', post);
 
   useEffect(() => {
-    if (photo.creator.id === currentUser?.id) {
+    dispatch(fetchSinglePost(postId));
+  }, [fetchSinglePost, postId]);
+
+  useEffect(() => {
+    if (post?.creator.id === currentUser?.id) {
       setIsMyPhoto(true);
     }
-  }, [photo.creator.id, currentUser]);
+  }, [post, currentUser]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -67,7 +65,27 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
     });
   }, [isMyPhoto]);
 
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['40%', '40%'], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback(() => {}, []);
+
   const handleCloseModal = () => bottomSheetModalRef.current?.collapse();
+
+  if (postLoading) {
+    return <Spinner />;
+  }
+  if (!post) {
+    return null;
+  }
 
   return (
     <View style={[styles.container, { marginTop: -tabHeaderHeight / 2 }]}>
@@ -75,21 +93,21 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
         activeOpacity={0.9}
         onLongPress={handlePresentModalPress}
         style={styles.imageContainer}>
-        <Image source={{ uri: photo.imageUri }} style={styles.image} />
+        <Image source={{ uri: post.imageUri }} style={styles.image} />
       </TouchableOpacity>
 
       <ViewRN style={styles.info}>
         <ViewRN style={styles.titleContainer}>
-          <Text style={styles.username}>{photo.creator.displayName}</Text>
-          {photo.title ? <Text style={styles.title}>{photo.title}</Text> : null}
+          <Text style={styles.username}>{post.creator.displayName}</Text>
+          {post.title ? <Text style={styles.title}>{post.title}</Text> : null}
           <Text style={styles.date}>
-            {DayJS(photo.createdAt).format('MMM DD [at] HH:mm')}
+            {DayJS(post.createdAt).format('MMM DD [at] HH:mm')}
           </Text>
         </ViewRN>
 
-        <ReactCommentShow />
+        <ReactCommentShow reactions={post.reactions} />
 
-        <PostActions />
+        {!currentUser ? null : <PostActions currentUser={currentUser} post={post} />}
       </ViewRN>
 
       {!currentUser ? null : (
@@ -99,7 +117,7 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
           snapPoints={snapPoints}
           onChange={handleSheetChanges}>
           <PhotoBottomDrawer
-            photo={photo}
+            photo={post}
             currentUser={currentUser}
             isMyPhoto={isMyPhoto}
             navigation={navigation}

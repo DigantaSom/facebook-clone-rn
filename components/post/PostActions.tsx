@@ -1,59 +1,159 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View as ViewRN } from 'react-native';
-
 import { AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text } from '../Themed';
+
+import { useDispatch } from 'react-redux';
+import { updateReactOnPost } from '../../redux/post/post.actions';
+
+import { IPost, ReactionType } from '../../types';
+import { IUser } from '../../redux/user/user.types';
+
+import { View, Text } from '../Themed';
+import ReactionsContainer from './ReactionsContainer';
+
 import Colors from '../../constants/Colors';
 
-type LikeTextStyleType = {
-  color?: string;
-  fontWeight?: 'bold';
-};
+interface PostActionsProps {
+  currentUser: IUser;
+  post: IPost;
+}
 
-const PostActions: React.FC<{}> = ({}) => {
-  const [isLiked, setIsLiked] = useState(false);
+const PostActions: React.FC<PostActionsProps> = ({ post, currentUser }) => {
+  const [showReactionsContainer, toggleReactionsContainer] = useState<boolean>(false);
 
-  const handleLikePost = () => {
-    setIsLiked(prevState => !prevState);
+  const dispatch = useDispatch();
+
+  const isReactedByMe = post.reactions.find(r => r.reactorId === currentUser.id);
+  // console.log('isReactedByMe:', isReactedByMe);
+
+  const handleSinglePressLikeButton = () => {
+    if (isReactedByMe) {
+      dispatch(
+        updateReactOnPost(post.postId, post.creator.id, '', currentUser.id as string),
+      );
+    } else {
+      dispatch(
+        updateReactOnPost(post.postId, post.creator.id, 'Like', currentUser.id as string),
+      );
+    }
   };
-  let likeTextStyle: LikeTextStyleType = {
-    color: 'white',
+
+  const handleToggleReactionsContainer = () => {
+    toggleReactionsContainer(prevState => !prevState);
   };
-  if (isLiked) {
-    likeTextStyle = {
-      color: Colors.facebookPrimary,
-      fontWeight: 'bold',
-    };
+
+  const handleReaction = (reaction: ReactionType) => {
+    toggleReactionsContainer(false);
+    dispatch(
+      updateReactOnPost(post.postId, post.creator.id, reaction, currentUser.id as string),
+    );
+  };
+
+  let reactionText;
+
+  if (!isReactedByMe) {
+    reactionText = (
+      <>
+        <AntDesign name='like2' size={20} color='white' style={styles.actionIcon} />
+        <Text style={[styles.actionText, { color: 'white' }]}>Like</Text>
+      </>
+    );
+  } else if (isReactedByMe) {
+    if (isReactedByMe.reaction === 'Like') {
+      reactionText = (
+        <>
+          <AntDesign
+            name='like1'
+            size={20}
+            color={Colors.facebookPrimary}
+            style={styles.actionIcon}
+          />
+          <Text
+            style={[
+              styles.actionText,
+              {
+                color: Colors.facebookPrimary,
+                fontWeight: 'bold',
+              },
+            ]}>
+            Like
+          </Text>
+        </>
+      );
+    } else if (isReactedByMe.reaction === 'Love') {
+      reactionText = (
+        <Text style={[styles.actionText, { color: 'red', fontWeight: 'bold' }]}>
+          <Text style={styles.reactionIcon}>❤️</Text> Love
+        </Text>
+      );
+    } else if (isReactedByMe.reaction === 'Haha') {
+      reactionText = (
+        <Text style={[styles.actionText, { color: 'yellow', fontWeight: 'bold' }]}>
+          <Text style={styles.reactionIcon}>😆</Text> Haha
+        </Text>
+      );
+    } else if (isReactedByMe.reaction === 'Wow') {
+      reactionText = (
+        <Text style={[styles.actionText, { color: 'yellow', fontWeight: 'bold' }]}>
+          <Text style={styles.reactionIcon}>😯</Text> Wow
+        </Text>
+      );
+    } else if (isReactedByMe.reaction === 'Sad') {
+      reactionText = (
+        <Text style={[styles.actionText, { color: 'yellow', fontWeight: 'bold' }]}>
+          <Text style={styles.reactionIcon}>😢</Text> Sad
+        </Text>
+      );
+    } else if (isReactedByMe.reaction === 'Angry') {
+      reactionText = (
+        <Text style={[styles.actionText, { color: 'orange', fontWeight: 'bold' }]}>
+          <Text style={styles.reactionIcon}>😡</Text> Angry
+        </Text>
+      );
+    }
   }
 
   return (
-    <ViewRN style={styles.postActions}>
-      {/* Like post */}
-      <TouchableOpacity
-        style={styles.actionItem}
-        activeOpacity={0.4}
-        onPress={handleLikePost}>
-        <AntDesign
-          name={isLiked ? 'like1' : 'like2'}
-          size={20}
-          color={isLiked ? Colors.facebookPrimary : 'white'}
-          style={styles.actionIcon}
-        />
-        <Text style={[styles.actionText, likeTextStyle]}>Like</Text>
-      </TouchableOpacity>
+    <View>
+      {showReactionsContainer ? (
+        <ReactionsContainer handleReaction={handleReaction} />
+      ) : null}
 
-      {/* Comment on post */}
-      <TouchableOpacity style={styles.actionItem} activeOpacity={0.4} onPress={() => {}}>
-        <FontAwesome5 name='comment' size={20} color='white' style={styles.actionIcon} />
-        <Text style={styles.actionText}>Comment</Text>
-      </TouchableOpacity>
+      <ViewRN style={styles.postActions}>
+        {/* React post */}
+        <TouchableOpacity
+          style={styles.actionItem}
+          activeOpacity={0.4}
+          // onPress={isReacted && isReactedByMe ? handleRemoveReaction : handleLikePost}
+          onPress={handleSinglePressLikeButton}
+          onLongPress={handleToggleReactionsContainer}>
+          {reactionText}
+        </TouchableOpacity>
 
-      {/* Share post */}
-      <TouchableOpacity style={styles.actionItem} activeOpacity={0.4} onPress={() => {}}>
-        <MaterialCommunityIcons name='share-outline' size={24} color='white' />
-        <Text style={styles.actionText}>Share</Text>
-      </TouchableOpacity>
-    </ViewRN>
+        {/* Comment on post */}
+        <TouchableOpacity
+          style={styles.actionItem}
+          activeOpacity={0.4}
+          onPress={() => {}}>
+          <FontAwesome5
+            name='comment'
+            size={20}
+            color='white'
+            style={styles.actionIcon}
+          />
+          <Text style={styles.actionText}>Comment</Text>
+        </TouchableOpacity>
+
+        {/* Share post */}
+        <TouchableOpacity
+          style={styles.actionItem}
+          activeOpacity={0.4}
+          onPress={() => {}}>
+          <MaterialCommunityIcons name='share-outline' size={24} color='white' />
+          <Text style={styles.actionText}>Share</Text>
+        </TouchableOpacity>
+      </ViewRN>
+    </View>
   );
 };
 
@@ -83,5 +183,8 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 12,
+  },
+  reactionIcon: {
+    fontSize: 14,
   },
 });

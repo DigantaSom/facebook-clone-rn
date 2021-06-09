@@ -32,7 +32,7 @@ const CoverPicBottomDrawer: React.FC<CoverPicBottomDrawerProps> = ({
   const onViewCoverPhotoHandler = () => {
     if (coverPic) {
       handleCloseModal();
-      navigation.navigate('Photo', { photo: coverPic });
+      navigation.navigate('Photo', { postId: coverPic.postId });
     }
   };
 

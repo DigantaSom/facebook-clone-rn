@@ -34,7 +34,7 @@ const AlbumsScreen: React.FC<AlbumScreenProps> = ({ navigation, route }) => {
   if (!albumsPreview.length) {
     return (
       <Center>
-        <EmptyContent emptyType='album' />
+        <EmptyContent emptyType='Album' />
       </Center>
     );
   }

@@ -20,7 +20,8 @@ export type RootStackParamList = {
     currentUser: IUser;
     postType: PostType;
   };
-  Photo: { photo: IPost };
+  // Photo: { photo: IPost };
+  Photo: { postId: string };
   AddOrEditProfileAbout: undefined;
   AlbumsTab: {
     userId: string;
@@ -51,7 +52,8 @@ export type TopTabParamList = {
   // for navigation to other navigators' screens
   Profile: { userId: string };
   CreatePost: undefined;
-  Photo: { photo: IPost };
+  // Photo: { photo: IPost };
+  Photo: { postId: string };
 };
 export type TopTabNavProps<T extends keyof TopTabParamList> = {
   navigation: StackNavigationProp<TopTabParamList, T>;
@@ -74,7 +76,8 @@ export type MenuStackParamList = {
     currentUser: IUser;
     postType: PostType;
   };
-  Photo: { photo: IPost };
+  // Photo: { photo: IPost };
+  Photo: { postId: string };
   AddOrEditProfileAbout: {
     isEdit: boolean;
     currentUser: IUser;
@@ -103,7 +106,8 @@ export type AlbumsTabParamList = {
   Albums: {
     userId: string;
   };
-  Photo: { photo: IPost };
+  // Photo: { photo: IPost };
+  Photo: { postId: string };
   IndividualAlbum: {
     albumTitle: string;
     userId: string;
@@ -125,6 +129,11 @@ type CreatorType = {
   gender: GenderType;
 };
 
+export interface IReaction {
+  reactorId: string;
+  reaction: ReactionType;
+}
+
 export interface IPost {
   postId: string; // TODO: remove optional after testing
   imageUri?: string;
@@ -132,6 +141,7 @@ export interface IPost {
   creator: CreatorType;
   createdAt: string;
   postType: PostType;
+  reactions: IReaction[];
 }
 
 // others
@@ -140,8 +150,10 @@ export type GenderType = 'Female' | 'Male' | 'Rather not say';
 
 export type HeaderActionType = 'Save' | 'Edit' | 'Post';
 
-export type EmptyContentType = 'album' | 'photo'; // TODO: add more gradually
+export type EmptyContentType = 'Album' | 'Photo'; // TODO: add more gradually
 
 export type PostType = 'Profile Pic' | 'Cover Pic' | 'Photo';
 
 export type PostSettingsType = 'Privacy' | 'Album';
+
+export type ReactionType = 'Like' | 'Love' | 'Haha' | 'Wow' | 'Sad' | 'Angry' | '';
