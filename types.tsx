@@ -74,7 +74,6 @@ export type MenuStackParamList = {
     currentUser: IUser;
     postType: PostType;
   };
-  // Photo: { photo: IPost };
   Photo: { postId: string };
   AddOrEditProfileAbout: {
     isEdit: boolean;
