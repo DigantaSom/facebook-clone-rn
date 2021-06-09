@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { View, Text } from '../../components/Themed';
 
-import { MenuNavProps, TopTabNavProps } from '../../types';
+import { MenuNavProps } from '../../types';
 
 import { RootState } from '../../redux/store';
 import { getProfile } from '../../redux/profile/profile.actions';
+import { fetchUserPosts } from '../../redux/post/post.actions';
 
 import ProfileHeader from '../../components/profile/ProfileHeader';
 import ProfileHeaderInfo from '../../components/profile/ProfileHeaderInfo';
@@ -23,7 +24,6 @@ import PostItem from '../../components/post/PostItem';
 import ProfilePicBottomDrawer from '../../components/bottom-drawers/ProfilePicBottomDrawer';
 import CoverPicBottomDrawer from '../../components/bottom-drawers/CoverPicBottomDrawer';
 import ProfileWidgets from '../../components/profile/ProfileWidgets';
-import { fetchUserPosts } from '../../redux/post/post.actions';
 
 type ProfileScreenProps = MenuNavProps<'Profile'>;
 

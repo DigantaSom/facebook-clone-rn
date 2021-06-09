@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect } from 'react';
-import { StyleSheet } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -40,5 +39,3 @@ const IndividualAlbumScreen: React.FC<IndividualAlbumScreenProps> = ({
 };
 
 export default IndividualAlbumScreen;
-
-const styles = StyleSheet.create({});

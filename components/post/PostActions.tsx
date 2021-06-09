@@ -24,17 +24,12 @@ const PostActions: React.FC<PostActionsProps> = ({ post, currentUser }) => {
   const dispatch = useDispatch();
 
   const isReactedByMe = post.reactions.find(r => r.reactorId === currentUser.id);
-  // console.log('isReactedByMe:', isReactedByMe);
 
   const handleSinglePressLikeButton = () => {
     if (isReactedByMe) {
-      dispatch(
-        updateReactOnPost(post.postId, post.creator.id, '', currentUser.id as string),
-      );
+      dispatch(updateReactOnPost(post.postId, '', currentUser.id as string));
     } else {
-      dispatch(
-        updateReactOnPost(post.postId, post.creator.id, 'Like', currentUser.id as string),
-      );
+      dispatch(updateReactOnPost(post.postId, 'Like', currentUser.id as string));
     }
   };
 
@@ -44,9 +39,7 @@ const PostActions: React.FC<PostActionsProps> = ({ post, currentUser }) => {
 
   const handleReaction = (reaction: ReactionType) => {
     toggleReactionsContainer(false);
-    dispatch(
-      updateReactOnPost(post.postId, post.creator.id, reaction, currentUser.id as string),
-    );
+    dispatch(updateReactOnPost(post.postId, reaction, currentUser.id as string));
   };
 
   let reactionText;

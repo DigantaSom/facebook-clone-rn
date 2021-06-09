@@ -434,20 +434,13 @@ export const deletePhoto =
   };
 
 export const updateReactOnPost =
-  (postId: string, ownerId: string, reaction: ReactionType, reactorId: string) =>
+  (postId: string, reaction: ReactionType, reactorId: string) =>
   async (dispatch: Dispatch<UpdateReactOnPostDispatchType>) => {
     dispatch({
       type: UPDATE_REACT_ON_POST_START,
     });
 
     const postRef = firestore.collection('posts').doc(postId);
-    // const albumsRef = firestore.collection('albums').doc(ownerId);
-    // const allPicsAlbum_Ref = albumsRef.collection('all_pics').doc(postId);
-    // const profilePicsAlbum_Ref = albumsRef.collection('profile_pics').doc(postId);
-    // const coverPicsAlbum_Ref = albumsRef.collection('cover_pics').doc(postId);
-    // const timelinePicsAlbum_Ref = albumsRef.collection('timeline_pics').doc(postId);
-
-    console.log('==============================');
 
     const newReactionObj: IReaction = {
       reactorId,
@@ -466,20 +459,12 @@ export const updateReactOnPost =
       );
       // console.log('userReactedObject:', userReactedObject);
 
-      // TODO: use these
-      // const profilePicsAlbum_snapshot = await profilePicsAlbum_Ref.get();
-      // const coverPicsAlbum_snapshot = await coverPicsAlbum_Ref.get();
-      // const timelinePicsAlbum_snapshot = await timelinePicsAlbum_Ref.get();
-
       if (postSnapshot.exists) {
         // if there's no reaction on this post
         if (!userReactionData.length) {
           batch.update(postRef, {
             reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
           });
-          // batch.update(allPicsAlbum_Ref, {
-          //   reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
-          // });
         } else {
           // if the user has already reacted to this post
           if (userReactedObject) {
@@ -491,29 +476,17 @@ export const updateReactOnPost =
               batch.update(postRef, {
                 reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
               });
-              // batch.update(allPicsAlbum_Ref, {
-              //   reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
-              // });
-              // batch.update(allPicsAlbum_Ref, {
-              //   reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
-              // });
             } else if (reaction === '') {
               // if the user wants to remove their reaction
               batch.update(postRef, {
                 reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
               });
-              // batch.update(allPicsAlbum_Ref, {
-              //   reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
-              // });
             }
           } else {
             // if the user hasn't yet reacted to this post, but reactions are not empty
             batch.update(postRef, {
               reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
             });
-            // batch.update(allPicsAlbum_Ref, {
-            //   reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
-            // });
           }
         }
 
@@ -535,65 +508,3 @@ export const updateReactOnPost =
       });
     }
   };
-
-// export const updateReactOnPost =
-//   (postId: string, ownerId: string, reaction: ReactionType, reactorId: string) =>
-//   async (dispatch: Dispatch<UpdateReactOnPostDispatchType>) => {
-//     dispatch({
-//       type: UPDATE_REACT_ON_POST_START,
-//     });
-
-//     const postRef = firestore.collection('posts').doc(postId);
-//     const reactionPostRef = postRef.collection('reactions').doc(reactorId);
-
-//     const newReactionObj: IReaction = {
-//       reactorId,
-//       reaction,
-//     };
-
-//     try {
-//       const reactionPostSnapshot = await reactionPostRef.get();
-//       const userReactionData = reactionPostSnapshot.data();
-
-//       const batch = firestore.batch();
-
-//       if (reactionPostSnapshot.exists) {
-//         if (userReactionData) {
-//           // if the user has already reacted to this post
-//           if (
-//             userReactionData.reactorId === reactorId &&
-//             userReactionData.reaction !== reaction
-//           ) {
-//             // if the user wants to change their reaction
-//             if (reaction !== '') {
-//               batch.update(reactionPostRef, newReactionObj);
-//             } else {
-//               // if the user wants to remove their reaction
-//               batch.delete(reactionPostRef);
-//             }
-//           }
-//         }
-//       } else {
-//         // if the user has not reacted to this post yet
-//         batch.set(reactionPostRef, newReactionObj);
-//       }
-
-//       // await batch.commit();
-
-//       dispatch({
-//         type: UPDATE_REACT_ON_POST_SUCCESS,
-//         payload: {
-//           reactorId,
-//           reaction,
-//           postId,
-//         },
-//       });
-//     } catch (err) {
-//       dispatch({
-//         type: UPDATE_REACT_ON_POST_FAILURE,
-//         payload: err.message,
-//       });
-//       Alert.alert('Post react error', err.message);
-//       console.log('Post react error:', err.message);
-//     }
-//   };

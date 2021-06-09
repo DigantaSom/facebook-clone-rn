@@ -20,7 +20,6 @@ export type RootStackParamList = {
     currentUser: IUser;
     postType: PostType;
   };
-  // Photo: { photo: IPost };
   Photo: { postId: string };
   AddOrEditProfileAbout: undefined;
   AlbumsTab: {
@@ -52,7 +51,6 @@ export type TopTabParamList = {
   // for navigation to other navigators' screens
   Profile: { userId: string };
   CreatePost: undefined;
-  // Photo: { photo: IPost };
   Photo: { postId: string };
 };
 export type TopTabNavProps<T extends keyof TopTabParamList> = {
@@ -106,7 +104,6 @@ export type AlbumsTabParamList = {
   Albums: {
     userId: string;
   };
-  // Photo: { photo: IPost };
   Photo: { postId: string };
   IndividualAlbum: {
     albumTitle: string;
@@ -135,7 +132,7 @@ export interface IReaction {
 }
 
 export interface IPost {
-  postId: string; // TODO: remove optional after testing
+  postId: string;
   imageUri?: string;
   title?: string;
   creator: CreatorType;

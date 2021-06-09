@@ -13,16 +13,16 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { fetchSinglePost } from '../redux/post/post.actions';
 
 import { Text, View } from '../components/Themed';
+import Spinner from '../components/UI/Spinner';
 import PostActions from '../components/post/PostActions';
 import PhotoBottomDrawer from '../components/bottom-drawers/PhotoBottomDrawer';
 import ReactCommentShow from '../components/post/ReactCommentShow';
 
 import { RootNavProps } from '../types';
 import useValues from '../hooks/useValues';
-import { fetchSinglePost } from '../redux/post/post.actions';
-import Spinner from '../components/UI/Spinner';
 
 type PhotoScreenProps = RootNavProps<'Photo'>;
 
@@ -34,8 +34,6 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const { post, loading: postLoading } = useSelector((state: RootState) => state.post);
-
-  console.log('post:', post);
 
   useEffect(() => {
     dispatch(fetchSinglePost(postId));
