@@ -26,139 +26,149 @@ import AddOrEditProfileAboutScreen from '../screens/menu/AddOrEditProfileAboutSc
 import AlbumsTopTabNavigator from './AlbumsTopTab';
 import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
 import CreatePostScreen from '../screens/create-post/CreatePostScreen';
+import CommentsScreen from '../screens/individual-post/CommentsScreen';
+import PeopleWhoReactedScreen from '../screens/individual-post/PeopleWhoReactedScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+	const dispatch = useDispatch();
+	const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
-  useEffect(() => {
-    dispatch(checkUserSession());
-  }, [checkUserSession]);
+	useEffect(() => {
+		dispatch(checkUserSession());
+	}, [checkUserSession]);
 
-  return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {currentUser ? <RootNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
-  );
+	return (
+		<NavigationContainer
+			linking={LinkingConfiguration}
+			theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+			{currentUser ? <RootNavigator /> : <AuthNavigator />}
+		</NavigationContainer>
+	);
 }
 
 const Stack = createStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
-  return (
-    <Stack.Navigator initialRouteName='Root'>
-      <Stack.Screen
-        name='Root'
-        component={TopTabNavigator}
-        options={({ navigation }: RootNavProps<'Root'>) => ({
-          headerTitle: 'facebook',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 30,
-          },
-          headerRight: () => (
-            <View style={styles.headerRightButtons}>
-              <Ionicons
-                name='md-search'
-                size={24}
-                color='black'
-                style={styles.button}
-                onPress={() => navigation.navigate('Search')}
-              />
-              <FontAwesome5
-                name='facebook-messenger'
-                size={24}
-                color='black'
-                style={styles.button}
-              />
-            </View>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name='Search'
-        component={SearchScreen}
-        options={{
-          headerTitleContainerStyle: {
-            left: 55,
-          },
-          headerTitle: () => <SearchBar />,
-        }}
-      />
-      <Stack.Screen
-        name='Profile'
-        component={ProfileScreen}
-        options={({ navigation }: RootNavProps<'Profile'>) => ({
-          headerTitleContainerStyle: {
-            left: 55,
-          },
-          headerTitle: () => (
-            <TouchableOpacity
-              activeOpacity={0.4}
-              onPress={() => navigation.navigate('Search')}>
-              <SearchBar searchBarDisabled />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name='Photo'
-        component={PhotoScreen}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: () => null,
-        }}
-      />
-      <Stack.Screen name='Upload' component={UploadScreen} />
-      <Stack.Screen
-        name='AddOrEditProfileAbout'
-        component={AddOrEditProfileAboutScreen}
-      />
-      <Stack.Screen
-        name='AlbumsTab'
-        component={AlbumsTopTabNavigator}
-        options={({ route }: RootNavProps<'AlbumsTab'>) => ({
-          title: route.params.displayName, // route params coming from profile
-        })}
-      />
-      <Stack.Screen name='IndividualAlbum' component={IndividualAlbumScreen} />
-      <Stack.Screen
-        name='CreatePost'
-        component={CreatePostScreen}
-        options={{
-          headerTitle: 'Create Post',
-        }}
-      />
-      {/* <Stack.Screen
+	return (
+		<Stack.Navigator initialRouteName='Root'>
+			<Stack.Screen
+				name='Root'
+				component={TopTabNavigator}
+				options={({ navigation }: RootNavProps<'Root'>) => ({
+					headerTitle: 'facebook',
+					headerTitleStyle: {
+						fontWeight: 'bold',
+						fontSize: 30,
+					},
+					headerRight: () => (
+						<View style={styles.headerRightButtons}>
+							<Ionicons
+								name='md-search'
+								size={24}
+								color='black'
+								style={styles.button}
+								onPress={() => navigation.navigate('Search')}
+							/>
+							<FontAwesome5
+								name='facebook-messenger'
+								size={24}
+								color='black'
+								style={styles.button}
+							/>
+						</View>
+					),
+				})}
+			/>
+			<Stack.Screen
+				name='Search'
+				component={SearchScreen}
+				options={{
+					headerTitleContainerStyle: {
+						left: 55,
+					},
+					headerTitle: () => <SearchBar />,
+				}}
+			/>
+			<Stack.Screen
+				name='Profile'
+				component={ProfileScreen}
+				options={({ navigation }: RootNavProps<'Profile'>) => ({
+					headerTitleContainerStyle: {
+						left: 55,
+					},
+					headerTitle: () => (
+						<TouchableOpacity
+							activeOpacity={0.4}
+							onPress={() => navigation.navigate('Search')}>
+							<SearchBar searchBarDisabled />
+						</TouchableOpacity>
+					),
+				})}
+			/>
+			<Stack.Screen
+				name='Photo'
+				component={PhotoScreen}
+				options={{
+					headerBackTitleVisible: false,
+					headerTitle: () => null,
+				}}
+			/>
+			<Stack.Screen name='Upload' component={UploadScreen} />
+			<Stack.Screen
+				name='AddOrEditProfileAbout'
+				component={AddOrEditProfileAboutScreen}
+			/>
+			<Stack.Screen
+				name='AlbumsTab'
+				component={AlbumsTopTabNavigator}
+				options={({ route }: RootNavProps<'AlbumsTab'>) => ({
+					title: route.params.displayName, // route params coming from profile
+				})}
+			/>
+			<Stack.Screen name='IndividualAlbum' component={IndividualAlbumScreen} />
+			<Stack.Screen
+				name='CreatePost'
+				component={CreatePostScreen}
+				options={{
+					headerTitle: 'Create Post',
+				}}
+			/>
+			<Stack.Screen name='Comments' component={CommentsScreen} />
+			<Stack.Screen
+				name='PeopleWhoReacted'
+				component={PeopleWhoReactedScreen}
+				options={{
+					headerTitle: 'People who reacted',
+				}}
+			/>
+			{/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}
         options={{ title: 'Oops!' }}
       /> */}
-    </Stack.Navigator>
-  );
+		</Stack.Navigator>
+	);
 };
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
 const AuthNavigator = () => (
-  <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-    <AuthStack.Screen name='Login' component={LoginScreen} />
-    <AuthStack.Screen name='Register' component={RegisterScreen} />
-  </AuthStack.Navigator>
+	<AuthStack.Navigator screenOptions={{ headerShown: false }}>
+		<AuthStack.Screen name='Login' component={LoginScreen} />
+		<AuthStack.Screen name='Register' component={RegisterScreen} />
+	</AuthStack.Navigator>
 );
 
 const styles = StyleSheet.create({
-  headerRightButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: 90,
-    marginRight: 10,
-  },
-  button: {
-    padding: 5,
-    borderRadius: 20,
-    backgroundColor: '#ddd',
-  },
+	headerRightButtons: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		width: 90,
+		marginRight: 10,
+	},
+	button: {
+		padding: 5,
+		borderRadius: 20,
+		backgroundColor: '#ddd',
+	},
 });
