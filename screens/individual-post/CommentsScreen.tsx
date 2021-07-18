@@ -61,6 +61,7 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 export default CommentsScreen;
 
 const styles = StyleSheet.create({
+	// header
 	headerLeftContainer: {
 		marginLeft: 20,
 		flexDirection: 'row',
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
 	headerRightContainer: {
 		marginRight: 20,
 	},
+	// screen
 	container: {
 		margin: 20,
 	},

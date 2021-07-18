@@ -122,7 +122,7 @@ export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
 
 export type BlobType = Blob | Uint8Array | ArrayBuffer;
 
-type CreatorType = {
+export type CreatorType = {
 	id: string;
 	displayName: string;
 	profilePicUri: string;
@@ -134,6 +134,15 @@ export interface IReaction {
 	reaction: ReactionType;
 }
 
+export interface IComment {
+	commentId: string;
+	postId: string;
+	body: string;
+	creator: CreatorType;
+	createdAt: string;
+	commentReactions: IReaction[];
+}
+
 export interface IPost {
 	postId: string;
 	imageUri?: string;
@@ -142,6 +151,7 @@ export interface IPost {
 	createdAt: string;
 	postType: PostType;
 	reactions: IReaction[];
+	comments: IComment[];
 }
 
 // others
@@ -151,7 +161,7 @@ export type GenderPronounType = 'her' | 'his' | 'their';
 
 export type HeaderActionType = 'Save' | 'Edit' | 'Post';
 
-export type EmptyContentType = 'Album' | 'Photo'; // TODO: add more gradually
+export type EmptyContentType = 'Album' | 'Photo' | 'Comment'; // TODO: add more gradually
 
 export type PostType = 'Profile Pic' | 'Cover Pic' | 'Photo';
 
