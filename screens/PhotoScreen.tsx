@@ -103,7 +103,7 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
 					</Text>
 				</ViewRN>
 
-				<ReactCommentShow reactions={post.reactions} />
+				<ReactCommentShow reactions={post.reactions} comments={post.comments} />
 
 				{!currentUser ? null : (
 					<PostActions

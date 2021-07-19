@@ -35,6 +35,10 @@ import {
 	ADD_COMMENT_START,
 	ADD_COMMENT_SUCCESS,
 	ADD_COMMENT_FAILURE,
+	FetchAllCommentsDispatchType,
+	FETCH_ALL_COMMENTS_START,
+	FETCH_ALL_COMMENTS_SUCCESS,
+	FETCH_ALL_COMMENTS_FAILURE,
 } from './post.types';
 import {
 	BlobType,
@@ -511,6 +515,33 @@ export const updateReactOnPost =
 		} catch (err) {
 			dispatch({
 				type: UPDATE_REACT_ON_POST_FAILURE,
+				payload: err.message,
+			});
+		}
+	};
+
+export const fetchAllComments =
+	(postId: string) => async (dispatch: Dispatch<FetchAllCommentsDispatchType>) => {
+		dispatch({
+			type: FETCH_ALL_COMMENTS_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+
+		try {
+			const postSnapshot = await postRef.get();
+
+			if (!postSnapshot.exists || !postSnapshot.data()) {
+				return;
+			}
+
+			dispatch({
+				type: FETCH_ALL_COMMENTS_SUCCESS,
+				payload: postSnapshot.data()!.comments as IComment[],
+			});
+		} catch (err) {
+			dispatch({
+				type: FETCH_ALL_COMMENTS_FAILURE,
 				payload: err.message,
 			});
 		}

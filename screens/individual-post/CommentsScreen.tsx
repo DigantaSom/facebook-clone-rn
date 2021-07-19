@@ -1,26 +1,56 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-
-import { RootNavProps } from '../../types';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import {
+	StyleSheet,
+	TouchableOpacity,
+	TextInput,
+	Platform,
+	FlatList,
+	Keyboard,
+} from 'react-native';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { fetchSinglePost } from '../../redux/post/post.actions';
+import {
+	fetchSinglePost,
+	fetchAllComments,
+	addComment,
+} from '../../redux/post/post.actions';
+
+import { RootNavProps } from '../../types';
 
 import { Text, View } from '../../components/Themed';
+import Center from '../../components/UI/Center';
+import EmptyContent from '../../components/UI/EmptyContent';
+
 import Colors from '../../constants/Colors';
+import CommentItem from '../../components/post/CommentItem';
 
 type CommentsScreenProps = RootNavProps<'Comments'>;
 
 const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) => {
+	const [commentText, setCommentText] = useState('');
+	const flatListRef = useRef<any>(null);
+
 	const { postId } = route.params;
+
 	const dispatch = useDispatch();
-	const { post, loading: postLoading } = useSelector((state: RootState) => state.post);
+	const {
+		post,
+		loading: postLoading,
+		commentLoading,
+	} = useSelector((state: RootState) => state.post);
+	const { currentUser } = useSelector((state: RootState) => state.user);
 
 	useEffect(() => {
 		dispatch(fetchSinglePost(postId));
 	}, [fetchSinglePost, postId]);
+
+	useEffect(() => {
+		if (post) {
+			dispatch(fetchAllComments(post.postId));
+		}
+	}, [post, post?.postId, fetchAllComments]);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -51,9 +81,61 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 		});
 	}, [navigation, postLoading, post, post?.reactions]);
 
+	const handleAddComment = () => {
+		if (commentText && post && currentUser) {
+			dispatch(addComment(commentText, post.postId, currentUser));
+		}
+		setCommentText('');
+		Keyboard.dismiss();
+	};
+
+	if (!post) {
+		return null;
+	}
+
 	return (
 		<View style={styles.container}>
-			<Text>CommentsScreen</Text>
+			<View style={styles.contentContainer}>
+				{!post.comments.length ? (
+					<Center>
+						<EmptyContent emptyType='Comment' />
+					</Center>
+				) : (
+					<View style={styles.commentsContainer}>
+						<FlatList
+							data={post.comments}
+							keyExtractor={item => item.commentId}
+							renderItem={({ item }) => (
+								<CommentItem comment={item} navigation={navigation} />
+							)}
+							// for scroll to bottom, when keyboard appears
+							ref={flatListRef}
+							onContentSizeChange={() => flatListRef.current.scrollToEnd()}
+							onLayout={() => flatListRef.current.scrollToEnd()}
+						/>
+					</View>
+				)}
+			</View>
+			<View style={styles.inputContainer}>
+				<TextInput
+					value={commentText}
+					onChangeText={text => setCommentText(text)}
+					style={styles.input}
+					placeholder='Write a comment...'
+					placeholderTextColor='#b3b3b3'
+					autoFocus
+					multiline
+				/>
+				{!commentText ? null : (
+					<TouchableOpacity activeOpacity={0.6} onPress={handleAddComment}>
+						<Ionicons
+							name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
+							size={24}
+							color={Colors.facebookPrimary}
+						/>
+					</TouchableOpacity>
+				)}
+			</View>
 		</View>
 	);
 };
@@ -77,5 +159,22 @@ const styles = StyleSheet.create({
 	// screen
 	container: {
 		margin: 20,
+		flex: 1,
+	},
+	contentContainer: {
+		flex: 1,
+	},
+	commentsContainer: {},
+	inputContainer: {
+		backgroundColor: '#373737',
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingVertical: 8,
+		paddingHorizontal: 10,
+		borderRadius: 25,
+	},
+	input: {
+		color: 'white',
+		flex: 1,
 	},
 });

@@ -30,6 +30,10 @@ export const UPDATE_REACT_ON_POST_START = 'UPDATE_REACT_ON_POST_START';
 export const UPDATE_REACT_ON_POST_SUCCESS = 'UPDATE_REACT_ON_POST_SUCCESS';
 export const UPDATE_REACT_ON_POST_FAILURE = 'UPDATE_REACT_ON_POST_FAILURE';
 
+export const FETCH_ALL_COMMENTS_START = 'FETCH_ALL_COMMENTS_START';
+export const FETCH_ALL_COMMENTS_SUCCESS = 'FETCH_ALL_COMMENTS_SUCCESS';
+export const FETCH_ALL_COMMENTS_FAILURE = 'FETCH_ALL_COMMENTS_FAILURE';
+
 export const ADD_COMMENT_START = 'ADD_COMMENT_START';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
@@ -146,6 +150,23 @@ export type UpdateReactOnPostDispatchType =
 	| IUpdateReactOnPostSuccess
 	| IUpdateReactOnPostFailure;
 
+// Fetch all comments of a post
+export interface IFetchAllCommentsStart {
+	type: typeof FETCH_ALL_COMMENTS_START;
+}
+export interface IFetchAllCommentsSuccess {
+	type: typeof FETCH_ALL_COMMENTS_SUCCESS;
+	payload: IComment[];
+}
+export interface IFetchAllCommentsFailure {
+	type: typeof FETCH_ALL_COMMENTS_FAILURE;
+	payload: string;
+}
+export type FetchAllCommentsDispatchType =
+	| IFetchAllCommentsStart
+	| IFetchAllCommentsSuccess
+	| IFetchAllCommentsFailure;
+
 // Comment on a post
 export interface IAddCommentStart {
 	type: typeof ADD_COMMENT_START;
@@ -178,5 +199,6 @@ export type PostActionType =
 	| CreatePostWithPhotoDispatchType
 	| DeletePhotoDispatchType
 	| UpdateReactOnPostDispatchType
+	| FetchAllCommentsDispatchType
 	| AddCommentDispatchType
 	| IUpdatePosts;

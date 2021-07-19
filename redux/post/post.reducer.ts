@@ -23,6 +23,9 @@ import {
 	ADD_COMMENT_START,
 	ADD_COMMENT_SUCCESS,
 	ADD_COMMENT_FAILURE,
+	FETCH_ALL_COMMENTS_START,
+	FETCH_ALL_COMMENTS_SUCCESS,
+	FETCH_ALL_COMMENTS_FAILURE,
 } from './post.types';
 import { updateReactionOnPost } from './post.utils';
 
@@ -31,7 +34,7 @@ interface IDefaultState {
 	posts: IPost[];
 	loading: boolean;
 	reactionLoading: boolean;
-	commentsLoading: boolean;
+	commentLoading: boolean;
 	error: string;
 }
 
@@ -40,7 +43,7 @@ const defaultState: IDefaultState = {
 	posts: [],
 	loading: false,
 	reactionLoading: false,
-	commentsLoading: false,
+	commentLoading: false,
 	error: '',
 };
 
@@ -199,20 +202,44 @@ const postReducer = (
 				error: action.payload,
 			};
 
+		// Fetch all comments of a post
+		case FETCH_ALL_COMMENTS_START:
+			return {
+				...state,
+				commentLoading: true,
+			};
+		case FETCH_ALL_COMMENTS_SUCCESS:
+			return {
+				...state,
+				post: state.post
+					? {
+							...state.post,
+							comments: action.payload,
+					  }
+					: null,
+				commentLoading: false,
+			};
+		case FETCH_ALL_COMMENTS_FAILURE:
+			return {
+				...state,
+				commentLoading: false,
+				error: action.payload,
+			};
+
 		// Comment on a post
 		case ADD_COMMENT_START:
 			return {
 				...state,
-				commentsLoading: true,
+				commentLoading: true,
 			};
 		case ADD_COMMENT_SUCCESS:
 			return {
 				...state,
-				commentsLoading: false,
+				commentLoading: false,
 				post: state.post
 					? {
 							...state.post,
-							comments: [action.payload, ...state.post.comments],
+							comments: [...state.post.comments, action.payload],
 					  }
 					: null,
 				posts: state.posts.map(post =>
@@ -229,7 +256,7 @@ const postReducer = (
 			return {
 				...state,
 				loading: false,
-				commentsLoading: false,
+				commentLoading: false,
 				error: action.payload,
 			};
 
