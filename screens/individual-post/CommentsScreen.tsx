@@ -14,23 +14,26 @@ import { RootState } from '../../redux/store';
 import {
 	fetchSinglePost,
 	fetchAllComments,
+	updateReactOnPost,
 	addComment,
 } from '../../redux/post/post.actions';
 
-import { RootNavProps } from '../../types';
+import { ReactionType, RootNavProps } from '../../types';
 
 import { Text, View } from '../../components/Themed';
+import ReactionsContainer from '../../components/post/ReactionsContainer';
 import Center from '../../components/UI/Center';
 import EmptyContent from '../../components/UI/EmptyContent';
+import CommentItem from '../../components/post/CommentItem';
 
 import Colors from '../../constants/Colors';
-import CommentItem from '../../components/post/CommentItem';
 
 type CommentsScreenProps = RootNavProps<'Comments'>;
 
 const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) => {
-	const [commentText, setCommentText] = useState('');
 	const flatListRef = useRef<any>(null);
+	const [commentText, setCommentText] = useState<string>('');
+	const [showReactionsContainer, toggleReactionsContainer] = useState<boolean>(false);
 
 	const { postId } = route.params;
 
@@ -51,6 +54,27 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 			dispatch(fetchAllComments(post.postId));
 		}
 	}, [post, post?.postId, fetchAllComments]);
+
+	const isReactedByMe = post?.reactions.find(r => r.reactorId === currentUser?.id);
+
+	let reactionIcon = (
+		<AntDesign name='like2' size={22} color={Colors.dark.tabIconDefault} />
+	);
+	if (isReactedByMe) {
+		if (isReactedByMe.reaction === 'Like') {
+			reactionIcon = <AntDesign name='like1' size={22} color={Colors.facebookPrimary} />;
+		} else if (isReactedByMe.reaction === 'Love') {
+			reactionIcon = <Text style={styles.reactionIconStyle}>❤️</Text>;
+		} else if (isReactedByMe.reaction === 'Haha') {
+			reactionIcon = <Text style={styles.reactionIconStyle}>😆</Text>;
+		} else if (isReactedByMe.reaction === 'Wow') {
+			reactionIcon = <Text style={styles.reactionIconStyle}>😯</Text>;
+		} else if (isReactedByMe.reaction === 'Sad') {
+			reactionIcon = <Text style={styles.reactionIconStyle}>😢</Text>;
+		} else if (isReactedByMe.reaction === 'Angry') {
+			reactionIcon = <Text style={styles.reactionIconStyle}>😡</Text>;
+		}
+	}
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -74,12 +98,34 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 				<TouchableOpacity
 					style={styles.headerRightContainer}
 					activeOpacity={0.6}
-					onPress={() => {}}>
-					<AntDesign name='like2' size={22} color={Colors.dark.tabIconDefault} />
+					onPress={handleSinglePressLikeButton}
+					onLongPress={handleToggleReactionsContainer}>
+					{reactionIcon}
 				</TouchableOpacity>
 			),
 		});
 	}, [navigation, postLoading, post, post?.reactions]);
+
+	const handleSinglePressLikeButton = () => {
+		if (currentUser && post) {
+			if (isReactedByMe) {
+				dispatch(updateReactOnPost(post.postId, '', currentUser.id as string));
+			} else {
+				dispatch(updateReactOnPost(post.postId, 'Like', currentUser.id as string));
+			}
+		}
+	};
+
+	const handleToggleReactionsContainer = () => {
+		toggleReactionsContainer(prevState => !prevState);
+	};
+
+	const handleReaction = (reaction: ReactionType) => {
+		if (currentUser && post) {
+			toggleReactionsContainer(false);
+			dispatch(updateReactOnPost(post.postId, reaction, currentUser.id as string));
+		}
+	};
 
 	const handleAddComment = () => {
 		if (commentText && post && currentUser) {
@@ -95,6 +141,12 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 
 	return (
 		<View style={styles.container}>
+			{showReactionsContainer ? (
+				<View style={styles.reactionsContainerStyle}>
+					<ReactionsContainer handleReaction={handleReaction} />
+				</View>
+			) : null}
+
 			<View style={styles.contentContainer}>
 				{!post.comments.length ? (
 					<Center>
@@ -112,6 +164,8 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 							ref={flatListRef}
 							onContentSizeChange={() => flatListRef.current.scrollToEnd()}
 							onLayout={() => flatListRef.current.scrollToEnd()}
+							// optimization (TODO:)
+							initialNumToRender={7}
 						/>
 					</View>
 				)}
@@ -154,12 +208,26 @@ const styles = StyleSheet.create({
 		paddingRight: 4,
 	},
 	headerRightContainer: {
-		marginRight: 20,
+		marginRight: 10,
+		padding: 10,
+		borderWidth: 1,
+		borderColor: 'green',
+	},
+	reactionIconStyle: {
+		fontSize: 18,
 	},
 	// screen
 	container: {
 		margin: 20,
 		flex: 1,
+	},
+	reactionsContainerStyle: {
+		flex: 1,
+		position: 'absolute',
+		top: 30,
+		zIndex: 5,
+		width: '100%',
+		// TODO: add elevation
 	},
 	contentContainer: {
 		flex: 1,

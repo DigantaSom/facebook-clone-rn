@@ -17,7 +17,7 @@ const ReactCommentShow: React.FC<ReactCommentShowProps> = ({ reactions, comments
 				{reactions.length ? (
 					<Text>
 						{reactions.length}{' '}
-						{reactions.length === 1 ? <Text>React</Text> : <Text>Reacts</Text>}
+						{reactions.length === 1 ? <Text>Reaction</Text> : <Text>Reactions</Text>}
 					</Text>
 				) : null}
 			</Text>
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		marginTop: 15,
+		paddingHorizontal: 10, // same as padding of postTitle
 	},
 	reactCommentText: {
 		fontSize: 12,
