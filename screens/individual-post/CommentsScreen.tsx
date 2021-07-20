@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import {
 	StyleSheet,
 	TouchableOpacity,
@@ -106,6 +106,11 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 		});
 	}, [navigation, postLoading, post, post?.reactions]);
 
+	const renderItem = useCallback(
+		({ item }) => <CommentItem comment={item} navigation={navigation} />,
+		[],
+	);
+
 	const handleSinglePressLikeButton = () => {
 		if (currentUser && post) {
 			if (isReactedByMe) {
@@ -157,15 +162,11 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 						<FlatList
 							data={post.comments}
 							keyExtractor={item => item.commentId}
-							renderItem={({ item }) => (
-								<CommentItem comment={item} navigation={navigation} />
-							)}
+							renderItem={renderItem}
 							// for scroll to bottom, when keyboard appears
 							ref={flatListRef}
 							onContentSizeChange={() => flatListRef.current.scrollToEnd()}
 							onLayout={() => flatListRef.current.scrollToEnd()}
-							// optimization (TODO:)
-							initialNumToRender={7}
 						/>
 					</View>
 				)}
@@ -210,8 +211,6 @@ const styles = StyleSheet.create({
 	headerRightContainer: {
 		marginRight: 10,
 		padding: 10,
-		borderWidth: 1,
-		borderColor: 'green',
 	},
 	reactionIconStyle: {
 		fontSize: 18,
@@ -227,7 +226,6 @@ const styles = StyleSheet.create({
 		top: 30,
 		zIndex: 5,
 		width: '100%',
-		// TODO: add elevation
 	},
 	contentContainer: {
 		flex: 1,
