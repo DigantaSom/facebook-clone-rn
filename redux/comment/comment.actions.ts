@@ -1,0 +1,184 @@
+import { Dispatch } from 'redux';
+import { Alert } from 'react-native';
+
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
+
+import {
+	FetchAllCommentsDispatchType,
+	FETCH_ALL_COMMENTS_START,
+	FETCH_ALL_COMMENTS_SUCCESS,
+	FETCH_ALL_COMMENTS_FAILURE,
+	AddCommentDispatchType,
+	ADD_COMMENT_START,
+	ADD_COMMENT_SUCCESS,
+	ADD_COMMENT_FAILURE,
+	DeleteCommentDispatchType,
+	DELETE_COMMENT_START,
+	DELETE_COMMENT_FAILURE,
+	DELETE_COMMENT_SUCCESS,
+} from './comment.types';
+import { IUser } from '../user/user.types';
+
+import { firestore } from '../../firebase/firebase.utils';
+import { IComment, GenderType } from '../../types';
+import { updateCommentCount } from '../post/post.actions';
+
+// Fetch all comments of a post
+export const fetchAllComments =
+	(postId: string) => async (dispatch: Dispatch<FetchAllCommentsDispatchType>) => {
+		dispatch({
+			type: FETCH_ALL_COMMENTS_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentsRef = postRef.collection('comments').orderBy('createdAt');
+
+		try {
+			const commentsSnapshot = await commentsRef.get();
+
+			const commentsToDispatch: IComment[] = [];
+			commentsSnapshot.docs.map(comment => {
+				commentsToDispatch.push(comment.data() as IComment);
+			});
+
+			dispatch({
+				type: FETCH_ALL_COMMENTS_SUCCESS,
+				payload: commentsToDispatch,
+			});
+		} catch (err) {
+			dispatch({
+				type: FETCH_ALL_COMMENTS_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to load comments', err.message);
+		}
+	};
+
+// Add a comment to a post
+export const addComment =
+	(body: string, postId: string, currentUser: IUser) =>
+	async (dispatch: Dispatch<AddCommentDispatchType>) => {
+		dispatch({
+			type: ADD_COMMENT_START,
+		});
+
+		const newCommentId = uuid();
+		const newDate = new Date().toISOString();
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentsRef = postRef.collection('comments').doc(newCommentId);
+
+		try {
+			const postSnapshot = await postRef.get();
+			if (!postSnapshot.exists) {
+				dispatch({
+					type: ADD_COMMENT_FAILURE,
+					payload: 'Post not found!',
+				});
+				Alert.alert('Failed to add comment', 'Post not found!');
+				return;
+			}
+
+			const newCommentObj: IComment = {
+				postId,
+				commentId: newCommentId,
+				body,
+				creator: {
+					id: currentUser.id as string,
+					displayName: currentUser.displayName as string,
+					profilePicUri: currentUser.profilePic as string,
+					gender: currentUser.gender as GenderType,
+				},
+				createdAt: newDate,
+				commentReactions: [],
+				replies: [],
+			};
+
+			await commentsRef.set(newCommentObj);
+
+			dispatch({
+				type: ADD_COMMENT_SUCCESS,
+				payload: newCommentObj,
+			});
+			// Update comment count in post state.
+			dispatch(updateCommentCount(postId, 'add') as any);
+
+			// Alert.alert('Success!', 'Comment added.');
+		} catch (err) {
+			dispatch({
+				type: ADD_COMMENT_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to add comment', err.message);
+		}
+	};
+
+// Delete a comment
+export const deleteComment =
+	(postId: string, commentId: string, currentUser: IUser) =>
+	async (dispatch: Dispatch<DeleteCommentDispatchType>) => {
+		dispatch({
+			type: DELETE_COMMENT_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentRef = postRef.collection('comments').doc(commentId);
+
+		try {
+			const postSnapshot = await postRef.get();
+			if (!postSnapshot.exists) {
+				dispatch({
+					type: DELETE_COMMENT_FAILURE,
+					payload: 'Post not found.',
+				});
+				Alert.alert('Failed to delete comment', 'Post not found.');
+				return;
+			}
+
+			const commentsSnapshot = await commentRef.get();
+			if (!commentsSnapshot.exists) {
+				dispatch({
+					type: DELETE_COMMENT_FAILURE,
+					payload: 'Comment not found.',
+				});
+				Alert.alert('Failed to delete comment', 'Comment not found.');
+				return;
+			}
+
+			const targetComment: IComment | undefined = commentsSnapshot.data() as
+				| IComment
+				| undefined;
+
+			// only the creator of the comment should be able to delete their comment
+			if (targetComment?.creator.id !== currentUser.id) {
+				dispatch({
+					type: DELETE_COMMENT_FAILURE,
+					payload: 'You are unauthorized to delete this comment!',
+				});
+				Alert.alert(
+					'Failed to delete comment',
+					'You are unauthorized to delete this comment!',
+				);
+				return;
+			}
+
+			// All good now. Delete the comment.
+			await commentRef.delete();
+
+			dispatch({
+				type: DELETE_COMMENT_SUCCESS,
+				payload: commentId,
+			});
+			// Update comment count in post state.
+			dispatch(updateCommentCount(postId, 'delete') as any);
+
+			Alert.alert('Success!', 'Comment deleted successfully.');
+		} catch (err) {
+			dispatch({
+				type: DELETE_COMMENT_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to delete comment', err.message);
+		}
+	};

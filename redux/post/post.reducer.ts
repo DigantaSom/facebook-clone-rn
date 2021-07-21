@@ -1,5 +1,8 @@
 import { IPost, IReaction } from '../../types';
 import {
+	FETCH_SINGLE_POST_START,
+	FETCH_SINGLE_POST_FAILURE,
+	FETCH_SINGLE_POST_SUCCESS,
 	CREATE_POST_WITH_PHOTO_START,
 	CREATE_POST_WITH_PHOTO_SUCCESS,
 	CREATE_POST_WITH_PHOTO_FAILURE,
@@ -17,24 +20,17 @@ import {
 	UPDATE_REACT_ON_POST_SUCCESS,
 	UPDATE_REACT_ON_POST_FAILURE,
 	UPDATE_POSTS,
-	FETCH_SINGLE_POST_START,
-	FETCH_SINGLE_POST_FAILURE,
-	FETCH_SINGLE_POST_SUCCESS,
-	ADD_COMMENT_START,
-	ADD_COMMENT_SUCCESS,
-	ADD_COMMENT_FAILURE,
-	FETCH_ALL_COMMENTS_START,
-	FETCH_ALL_COMMENTS_SUCCESS,
-	FETCH_ALL_COMMENTS_FAILURE,
+	UPDATE_COMMENT_COUNT_START,
+	UPDATE_COMMENT_COUNT_SUCCESS,
+	UPDATE_COMMENT_COUNT_FAILURE,
 } from './post.types';
-import { updateReactionOnPost } from './post.utils';
+import { updateCommentCountOnPost, updateReactionOnPost } from './post.utils';
 
 interface IDefaultState {
 	post: IPost | null;
 	posts: IPost[];
 	loading: boolean;
 	reactionLoading: boolean;
-	commentLoading: boolean;
 	error: string;
 }
 
@@ -43,7 +39,6 @@ const defaultState: IDefaultState = {
 	posts: [],
 	loading: false,
 	reactionLoading: false,
-	commentLoading: false,
 	error: '',
 };
 
@@ -84,6 +79,7 @@ const postReducer = (
 			return {
 				...state,
 				posts: action.payload,
+				post: null,
 				loading: false,
 				error: '',
 			};
@@ -202,70 +198,39 @@ const postReducer = (
 				error: action.payload,
 			};
 
-		// Fetch all comments of a post
-		case FETCH_ALL_COMMENTS_START:
-			return {
-				...state,
-				commentLoading: true,
-			};
-		case FETCH_ALL_COMMENTS_SUCCESS:
-			return {
-				...state,
-				post: state.post
-					? {
-							...state.post,
-							comments: action.payload,
-					  }
-					: null,
-				commentLoading: false,
-			};
-		case FETCH_ALL_COMMENTS_FAILURE:
-			return {
-				...state,
-				commentLoading: false,
-				error: action.payload,
-			};
-
-		// Comment on a post
-		case ADD_COMMENT_START:
-			return {
-				...state,
-				commentLoading: true,
-			};
-		case ADD_COMMENT_SUCCESS:
-			return {
-				...state,
-				commentLoading: false,
-				post: state.post
-					? {
-							...state.post,
-							comments: [...state.post.comments, action.payload],
-					  }
-					: null,
-				posts: state.posts.map(post =>
-					post.postId === action.payload.postId
-						? {
-								...post,
-								comments: [action.payload, ...post.comments],
-						  }
-						: post,
-				),
-				loading: false,
-			};
-		case ADD_COMMENT_FAILURE:
-			return {
-				...state,
-				loading: false,
-				commentLoading: false,
-				error: action.payload,
-			};
-
 		// Update posts[] array to have the newly created profile/cover pic
 		case UPDATE_POSTS:
 			return {
 				...state,
 				posts: [action.payload, ...state.posts],
 				loading: false,
+			};
+
+		// Update 'commentCount' field on post reducer, after a comment is successfully added/deleted from comment state.
+		case UPDATE_COMMENT_COUNT_START:
+			return {
+				...state,
+				loading: true,
+			};
+		case UPDATE_COMMENT_COUNT_SUCCESS:
+			return {
+				...state,
+				post: state.post
+					? {
+							...state.post,
+							commentCount: updateCommentCountOnPost(
+								state.post.commentCount,
+								action.payload,
+							),
+					  }
+					: null,
+				loading: false,
+			};
+		case UPDATE_COMMENT_COUNT_FAILURE:
+			return {
+				...state,
+				loading: false,
+				error: action.payload,
 			};
 
 		default:

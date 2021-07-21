@@ -98,7 +98,10 @@ const PostItem: React.FC<PostItemProps> = ({
 				)}
 			</View>
 
-			<ReactCommentShow reactions={post.reactions} comments={post.comments} />
+			<ReactCommentShow
+				reactionCount={post.reactions.length}
+				commentCount={post.commentCount}
+			/>
 			{!currentUser ? null : (
 				<PostActions
 					currentUser={currentUser}

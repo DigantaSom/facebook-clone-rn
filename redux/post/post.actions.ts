@@ -31,24 +31,19 @@ import {
 	UPDATE_REACT_ON_POST_START,
 	UPDATE_REACT_ON_POST_SUCCESS,
 	UPDATE_REACT_ON_POST_FAILURE,
-	AddCommentDispatchType,
-	ADD_COMMENT_START,
-	ADD_COMMENT_SUCCESS,
-	ADD_COMMENT_FAILURE,
-	FetchAllCommentsDispatchType,
-	FETCH_ALL_COMMENTS_START,
-	FETCH_ALL_COMMENTS_SUCCESS,
-	FETCH_ALL_COMMENTS_FAILURE,
+	UpdateCommentCountDispatchType,
+	UPDATE_COMMENT_COUNT_START,
+	UPDATE_COMMENT_COUNT_SUCCESS,
+	UPDATE_COMMENT_COUNT_FAILURE,
 } from './post.types';
 import {
 	BlobType,
-	CreatorType,
 	GenderType,
-	IComment,
 	IPost,
 	IReaction,
 	PostType,
 	ReactionType,
+	AddOrDeleteType,
 } from '../../types';
 import { IUser, REMOVE_PROFILE_PIC_FROM_USER } from '../user/user.types';
 import {
@@ -76,9 +71,9 @@ export const fetchSinglePost =
 			} else {
 				dispatch({
 					type: FETCH_SINGLE_POST_FAILURE,
-					payload: 'Post not found',
+					payload: 'Post not found!',
 				});
-				Alert.alert('Error fetching post', 'Post not found');
+				Alert.alert('Error fetching post', 'Post not found!');
 			}
 		} catch (err) {
 			dispatch({
@@ -221,7 +216,7 @@ export const createPostWithPhoto =
 						createdAt: newDate,
 						postType: 'Photo',
 						reactions: [],
-						comments: [],
+						commentCount: 0,
 					};
 
 					try {
@@ -520,84 +515,37 @@ export const updateReactOnPost =
 		}
 	};
 
-export const fetchAllComments =
-	(postId: string) => async (dispatch: Dispatch<FetchAllCommentsDispatchType>) => {
+// Update 'commentCount' field on post reducer, after a comment is successfully added/deleted from comment state.
+export const updateCommentCount =
+	(postId: string, actionType: AddOrDeleteType) =>
+	async (dispatch: Dispatch<UpdateCommentCountDispatchType>) => {
 		dispatch({
-			type: FETCH_ALL_COMMENTS_START,
+			type: UPDATE_COMMENT_COUNT_START,
 		});
 
 		const postRef = firestore.collection('posts').doc(postId);
 
 		try {
-			const postSnapshot = await postRef.get();
-
-			if (!postSnapshot.exists || !postSnapshot.data()) {
-				return;
-			}
-
-			dispatch({
-				type: FETCH_ALL_COMMENTS_SUCCESS,
-				payload: postSnapshot.data()!.comments as IComment[],
-			});
-		} catch (err) {
-			dispatch({
-				type: FETCH_ALL_COMMENTS_FAILURE,
-				payload: err.message,
-			});
-		}
-	};
-
-export const addComment =
-	(body: string, postId: string, currentUser: IUser) =>
-	async (dispatch: Dispatch<AddCommentDispatchType>) => {
-		const newCommentId = uuid();
-		const newDate = new Date().toISOString();
-
-		const postRef = firestore.collection('posts').doc(postId);
-
-		dispatch({
-			type: ADD_COMMENT_START,
-		});
-
-		try {
-			const postSnapshot = await postRef.get();
-
-			if (!postSnapshot.exists) {
-				dispatch({
-					type: ADD_COMMENT_FAILURE,
-					payload: 'Post does not exist',
+			if (actionType === 'add') {
+				await postRef.update({
+					commentCount: firebase.firestore.FieldValue.increment(1),
 				});
-				Alert.alert('Post does not exist');
-				return;
+				dispatch({
+					type: UPDATE_COMMENT_COUNT_SUCCESS,
+					payload: 'add',
+				});
+			} else if (actionType === 'delete') {
+				await postRef.update({
+					commentCount: firebase.firestore.FieldValue.increment(-1),
+				});
+				dispatch({
+					type: UPDATE_COMMENT_COUNT_SUCCESS,
+					payload: 'delete',
+				});
 			}
-
-			// const comments: IComment[] = postSnapshot.data()?.comments;
-
-			const newCommentObj: IComment = {
-				commentId: newCommentId,
-				postId,
-				body,
-				creator: {
-					id: currentUser.id as string,
-					displayName: currentUser.displayName as string,
-					profilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
-					gender: currentUser.gender as GenderType,
-				},
-				createdAt: newDate,
-				commentReactions: [],
-			};
-
-			postRef.update({
-				comments: firebase.firestore.FieldValue.arrayUnion(newCommentObj),
-			});
-
-			dispatch({
-				type: ADD_COMMENT_SUCCESS,
-				payload: newCommentObj,
-			});
 		} catch (err) {
 			dispatch({
-				type: ADD_COMMENT_FAILURE,
+				type: UPDATE_COMMENT_COUNT_FAILURE,
 				payload: err.message,
 			});
 		}

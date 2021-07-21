@@ -1,4 +1,4 @@
-import { IPost, IReaction, IComment } from '../../types';
+import { IPost, IReaction, AddOrDeleteType } from '../../types';
 import { IRemoveProfilePicFromUser } from '../user/user.types';
 import {
 	IRemoveProfilePicFromProfile,
@@ -30,15 +30,11 @@ export const UPDATE_REACT_ON_POST_START = 'UPDATE_REACT_ON_POST_START';
 export const UPDATE_REACT_ON_POST_SUCCESS = 'UPDATE_REACT_ON_POST_SUCCESS';
 export const UPDATE_REACT_ON_POST_FAILURE = 'UPDATE_REACT_ON_POST_FAILURE';
 
-export const FETCH_ALL_COMMENTS_START = 'FETCH_ALL_COMMENTS_START';
-export const FETCH_ALL_COMMENTS_SUCCESS = 'FETCH_ALL_COMMENTS_SUCCESS';
-export const FETCH_ALL_COMMENTS_FAILURE = 'FETCH_ALL_COMMENTS_FAILURE';
-
-export const ADD_COMMENT_START = 'ADD_COMMENT_START';
-export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
-export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
-
 export const UPDATE_POSTS = 'UPDATE_POSTS';
+
+export const UPDATE_COMMENT_COUNT_START = 'UPDATE_COMMENT_COUNT_START';
+export const UPDATE_COMMENT_COUNT_SUCCESS = 'UPDATE_COMMENT_COUNT_SUCCESS';
+export const UPDATE_COMMENT_COUNT_FAILURE = 'UPDATE_COMMENT_COUNT_FAILURE';
 
 // Fetch a single post by it's postId
 export interface IFetchSinglePostStart {
@@ -150,45 +146,28 @@ export type UpdateReactOnPostDispatchType =
 	| IUpdateReactOnPostSuccess
 	| IUpdateReactOnPostFailure;
 
-// Fetch all comments of a post
-export interface IFetchAllCommentsStart {
-	type: typeof FETCH_ALL_COMMENTS_START;
-}
-export interface IFetchAllCommentsSuccess {
-	type: typeof FETCH_ALL_COMMENTS_SUCCESS;
-	payload: IComment[];
-}
-export interface IFetchAllCommentsFailure {
-	type: typeof FETCH_ALL_COMMENTS_FAILURE;
-	payload: string;
-}
-export type FetchAllCommentsDispatchType =
-	| IFetchAllCommentsStart
-	| IFetchAllCommentsSuccess
-	| IFetchAllCommentsFailure;
-
-// Comment on a post
-export interface IAddCommentStart {
-	type: typeof ADD_COMMENT_START;
-}
-export interface IAddCommentSuccess {
-	type: typeof ADD_COMMENT_SUCCESS;
-	payload: IComment;
-}
-export interface IAddCommentFailure {
-	type: typeof ADD_COMMENT_FAILURE;
-	payload: string;
-}
-export type AddCommentDispatchType =
-	| IAddCommentStart
-	| IAddCommentSuccess
-	| IAddCommentFailure;
-
-// Update posts[] array of posts reducer state, upon adding a new profile/cover pic. (p.s. posts[] array is update logic is already there for timeline_pics upload)
+// Update posts[] array of posts reducer state, upon adding a new profile/cover pic. (p.s. posts[] array is update logic is already there for timeline_pics upload).
 export interface IUpdatePosts {
 	type: typeof UPDATE_POSTS;
 	payload: IPost;
 }
+
+// Update 'commentCount' field on post reducer, after a comment is successfully added/deleted from comment state.
+export interface IUpdateCommentCountStart {
+	type: typeof UPDATE_COMMENT_COUNT_START;
+}
+export interface IUpdateCommentCountSuccess {
+	type: typeof UPDATE_COMMENT_COUNT_SUCCESS;
+	payload: AddOrDeleteType;
+}
+export interface IUpdateCommentCountFailure {
+	type: typeof UPDATE_COMMENT_COUNT_FAILURE;
+	payload: string;
+}
+export type UpdateCommentCountDispatchType =
+	| IUpdateCommentCountStart
+	| IUpdateCommentCountSuccess
+	| IUpdateCommentCountFailure;
 
 // Post Action type
 
@@ -199,6 +178,5 @@ export type PostActionType =
 	| CreatePostWithPhotoDispatchType
 	| DeletePhotoDispatchType
 	| UpdateReactOnPostDispatchType
-	| FetchAllCommentsDispatchType
-	| AddCommentDispatchType
-	| IUpdatePosts;
+	| IUpdatePosts
+	| UpdateCommentCountDispatchType;

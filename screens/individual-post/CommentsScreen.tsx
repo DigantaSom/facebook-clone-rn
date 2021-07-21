@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import React, {
+	useState,
+	useRef,
+	useEffect,
+	useLayoutEffect,
+	useCallback,
+	useMemo,
+} from 'react';
 import {
 	StyleSheet,
 	TouchableOpacity,
@@ -8,25 +15,24 @@ import {
 	Keyboard,
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import {
-	fetchSinglePost,
-	fetchAllComments,
-	updateReactOnPost,
-	addComment,
-} from '../../redux/post/post.actions';
+import { fetchSinglePost, updateReactOnPost } from '../../redux/post/post.actions';
+import { addComment, fetchAllComments } from '../../redux/comment/comment.actions';
 
-import { ReactionType, RootNavProps } from '../../types';
+import { IComment, ReactionType, RootNavProps } from '../../types';
 
 import { Text, View } from '../../components/Themed';
 import ReactionsContainer from '../../components/post/ReactionsContainer';
 import Center from '../../components/UI/Center';
 import EmptyContent from '../../components/UI/EmptyContent';
 import CommentItem from '../../components/post/CommentItem';
+import CommentBottomDrawer from '../../components/bottom-drawers/CommentBottomDrawer';
 
 import Colors from '../../constants/Colors';
+import Spinner from '../../components/UI/Spinner';
 
 type CommentsScreenProps = RootNavProps<'Comments'>;
 
@@ -34,26 +40,24 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 	const flatListRef = useRef<any>(null);
 	const [commentText, setCommentText] = useState<string>('');
 	const [showReactionsContainer, toggleReactionsContainer] = useState<boolean>(false);
+	const [longPressedComment, setLongPressedComment] = useState<IComment>();
 
 	const { postId } = route.params;
 
-	const dispatch = useDispatch();
-	const {
-		post,
-		loading: postLoading,
-		commentLoading,
-	} = useSelector((state: RootState) => state.post);
 	const { currentUser } = useSelector((state: RootState) => state.user);
+	const dispatch = useDispatch();
+	const { post, loading: postLoading } = useSelector((state: RootState) => state.post);
+	const { comments, loading: commentLoading } = useSelector(
+		(state: RootState) => state.comment,
+	);
 
 	useEffect(() => {
 		dispatch(fetchSinglePost(postId));
-	}, [fetchSinglePost, postId]);
+	}, [dispatch, fetchSinglePost, postId]);
 
 	useEffect(() => {
-		if (post) {
-			dispatch(fetchAllComments(post.postId));
-		}
-	}, [post, post?.postId, fetchAllComments]);
+		dispatch(fetchAllComments(postId));
+	}, [dispatch, fetchAllComments, postId]);
 
 	const isReactedByMe = post?.reactions.find(r => r.reactorId === currentUser?.id);
 
@@ -107,9 +111,30 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 	}, [navigation, postLoading, post, post?.reactions]);
 
 	const renderItem = useCallback(
-		({ item }) => <CommentItem comment={item} navigation={navigation} />,
+		({ item }) => (
+			<CommentItem
+				comment={item}
+				navigation={navigation}
+				handleCommentLongPress={handlePresentModalPress}
+			/>
+		),
 		[],
 	);
+
+	// gorhom bottom sheet
+
+	const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+	const snapPoints = useMemo(() => ['40%', '40%'], []);
+
+	const handlePresentModalPress = useCallback((comment: IComment) => {
+		bottomSheetModalRef.current?.present();
+		setLongPressedComment(comment);
+	}, []);
+
+	const handleSheetChanges = useCallback(() => {}, []);
+
+	// other functions
 
 	const handleSinglePressLikeButton = () => {
 		if (currentUser && post) {
@@ -140,8 +165,12 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 		Keyboard.dismiss();
 	};
 
-	if (!post) {
+	if (!post && !postLoading) {
 		return null;
+	}
+	// TODO: May add commentLoading too or handle it in a different way.
+	if (postLoading) {
+		return <Spinner />;
 	}
 
 	return (
@@ -153,14 +182,14 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 			) : null}
 
 			<View style={styles.contentContainer}>
-				{!post.comments.length ? (
+				{!comments.length ? (
 					<Center>
 						<EmptyContent emptyType='Comment' />
 					</Center>
 				) : (
 					<View style={styles.commentsContainer}>
 						<FlatList
-							data={post.comments}
+							data={comments}
 							keyExtractor={item => item.commentId}
 							renderItem={renderItem}
 							// for scroll to bottom, when keyboard appears
@@ -191,6 +220,16 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 					</TouchableOpacity>
 				)}
 			</View>
+
+			{!currentUser || !longPressedComment ? null : (
+				<BottomSheetModal
+					ref={bottomSheetModalRef}
+					index={1}
+					snapPoints={snapPoints}
+					onChange={handleSheetChanges}>
+					<CommentBottomDrawer comment={longPressedComment} currentUser={currentUser} />
+				</BottomSheetModal>
+			)}
 		</View>
 	);
 };

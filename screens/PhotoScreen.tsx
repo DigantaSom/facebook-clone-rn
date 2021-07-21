@@ -21,8 +21,8 @@ import PostActions from '../components/post/PostActions';
 import PhotoBottomDrawer from '../components/bottom-drawers/PhotoBottomDrawer';
 import ReactCommentShow from '../components/post/ReactCommentShow';
 
-import { RootNavProps } from '../types';
 import useValues from '../hooks/useValues';
+import { RootNavProps } from '../types';
 
 type PhotoScreenProps = RootNavProps<'Photo'>;
 
@@ -103,7 +103,10 @@ const PhotoScreen: React.FC<PhotoScreenProps> = ({ navigation, route }) => {
 					</Text>
 				</ViewRN>
 
-				<ReactCommentShow reactions={post.reactions} comments={post.comments} />
+				<ReactCommentShow
+					reactionCount={post.reactions.length}
+					commentCount={post.commentCount}
+				/>
 
 				{!currentUser ? null : (
 					<PostActions

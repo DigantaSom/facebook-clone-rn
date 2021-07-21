@@ -3,29 +3,30 @@ import { StyleSheet, View as ViewRN } from 'react-native';
 
 import { Text } from '../Themed';
 
-import { IComment, IReaction } from '../../types';
-
 interface ReactCommentShowProps {
-	reactions: IReaction[];
-	comments: IComment[];
+	reactionCount: number;
+	commentCount: number;
 }
 
-const ReactCommentShow: React.FC<ReactCommentShowProps> = ({ reactions, comments }) => {
+const ReactCommentShow: React.FC<ReactCommentShowProps> = ({
+	reactionCount,
+	commentCount,
+}) => {
 	return (
 		<ViewRN style={styles.reactCommentContainer}>
 			<Text style={styles.reactCommentText}>
-				{reactions.length ? (
+				{reactionCount > 0 ? (
 					<Text>
-						{reactions.length}{' '}
-						{reactions.length === 1 ? <Text>Reaction</Text> : <Text>Reactions</Text>}
+						{reactionCount}{' '}
+						{reactionCount === 1 ? <Text>Reaction</Text> : <Text>Reactions</Text>}
 					</Text>
 				) : null}
 			</Text>
 			<Text style={styles.reactCommentText}>
-				{comments.length ? (
+				{commentCount > 0 ? (
 					<Text>
-						{comments.length}{' '}
-						{comments.length === 1 ? <Text>Comment</Text> : <Text>Comments</Text>}
+						{commentCount}{' '}
+						{commentCount === 1 ? <Text>Comment</Text> : <Text>Comments</Text>}
 					</Text>
 				) : null}
 			</Text>

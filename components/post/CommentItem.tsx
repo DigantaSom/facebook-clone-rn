@@ -4,7 +4,6 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { IComment, RootStackParamList } from '../../types';
-import { IUser } from '../../redux/user/user.types';
 
 import { View, Text } from '../Themed';
 import DPcontainer from '../UI/DPcontainer';
@@ -14,33 +13,50 @@ import Colors from '../../constants/Colors';
 interface CommentItemProps {
 	comment: IComment;
 	navigation: StackNavigationProp<RootStackParamList, 'Comments'>;
+	handleCommentLongPress: (comment: IComment) => void;
 }
 
 const CommentItem: React.FC<CommentItemProps> = ({
-	comment: { creator, body, createdAt },
+	comment,
 	navigation,
+	handleCommentLongPress,
 }) => {
+	const onLongPress = () => {
+		handleCommentLongPress(comment);
+	};
+
 	return (
-		<View style={styles.commentItem}>
-			<DPcontainer imageUri={creator.profilePicUri} />
+		<TouchableOpacity
+			style={styles.commentItem}
+			activeOpacity={0.5}
+			onLongPress={onLongPress}>
+			<TouchableOpacity
+				activeOpacity={0.8}
+				onPress={() => navigation.navigate('Profile', { userId: comment.creator.id })}>
+				<DPcontainer imageUri={comment.creator.profilePicUri} />
+			</TouchableOpacity>
 
 			<View style={styles.commentContainer}>
 				<View style={styles.box}>
 					<TouchableOpacity
-						activeOpacity={0.5}
-						onPress={() => navigation.navigate('Profile', { userId: creator.id })}>
-						<Text style={styles.creatorName}>{creator.displayName}</Text>
+						activeOpacity={0.8}
+						onPress={() =>
+							navigation.navigate('Profile', { userId: comment.creator.id })
+						}>
+						<Text style={styles.creatorName}>{comment.creator.displayName}</Text>
 					</TouchableOpacity>
-					<Text>{body}</Text>
+					<Text>{comment.body}</Text>
 				</View>
 
 				<View style={styles.commentInfo}>
-					<Text style={styles.infoText}>{DayJS(createdAt).format("MMM DD 'YY")}</Text>
+					<Text style={styles.infoText}>
+						{DayJS(comment.createdAt).format("MMM DD 'YY")}
+					</Text>
 					<Text style={styles.infoText}>Like</Text>
 					<Text style={styles.infoText}>Reply</Text>
 				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 

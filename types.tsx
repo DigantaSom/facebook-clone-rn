@@ -134,13 +134,22 @@ export interface IReaction {
 	reaction: ReactionType;
 }
 
-export interface IComment {
-	commentId: string;
+type CommentAndReplyType = {
 	postId: string;
+	commentId: string;
 	body: string;
 	creator: CreatorType;
 	createdAt: string;
+};
+
+export interface IReply extends CommentAndReplyType {
+	replyId: string;
+	replyReactions: IReaction[];
+}
+
+export interface IComment extends CommentAndReplyType {
 	commentReactions: IReaction[];
+	replies: IReply[];
 }
 
 export interface IPost {
@@ -151,7 +160,7 @@ export interface IPost {
 	createdAt: string;
 	postType: PostType;
 	reactions: IReaction[];
-	comments: IComment[];
+	commentCount: number;
 }
 
 // others
@@ -168,3 +177,5 @@ export type PostType = 'Profile Pic' | 'Cover Pic' | 'Photo';
 export type PostSettingsType = 'Privacy' | 'Album';
 
 export type ReactionType = 'Like' | 'Love' | 'Haha' | 'Wow' | 'Sad' | 'Angry' | '';
+
+export type AddOrDeleteType = 'add' | 'delete';
