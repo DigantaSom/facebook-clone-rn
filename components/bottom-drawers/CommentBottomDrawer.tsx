@@ -8,10 +8,11 @@ import {
 	Ionicons,
 	FontAwesome5,
 } from '@expo/vector-icons';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { useDispatch } from 'react-redux';
 
-import { IComment } from '../../types';
+import { IComment, RootStackParamList } from '../../types';
 import { IUser } from '../../redux/user/user.types';
 
 import DrawerOption from './DrawerOption';
@@ -22,15 +23,16 @@ import Colors from '../../constants/Colors';
 interface CommentBottomDrawerProps {
 	comment: IComment;
 	currentUser: IUser;
+	navigation: StackNavigationProp<RootStackParamList, 'Comments'>;
+	handleCloseModal: () => void;
 }
 
 const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 	comment,
 	currentUser,
+	navigation,
+	handleCloseModal,
 }) => {
-	// console.log('============ comment ============');
-	// console.log(comment);
-
 	const isMyComment = comment.creator.id === currentUser.id;
 
 	const dispatch = useDispatch();
@@ -54,6 +56,17 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 		);
 	};
 
+	const onSelectEditComment = () => {
+		handleCloseModal();
+		if (!isMyComment) {
+			return;
+		}
+		navigation.navigate('EditComment', {
+			postId: comment.postId,
+			commentId: comment.commentId,
+		});
+	};
+
 	return (
 		<ViewRN style={styles.container}>
 			<DrawerOption
@@ -71,6 +84,7 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 					<DrawerOption
 						icon={<FontAwesome5 name='edit' size={20} color='white' />}
 						text='Edit'
+						onPressDrawerOption={onSelectEditComment}
 					/>
 				</>
 			) : (

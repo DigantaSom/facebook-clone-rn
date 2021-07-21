@@ -30,6 +30,10 @@ export type RootStackParamList = {
 	CreatePost: undefined;
 	Comments: { postId: string };
 	PeopleWhoReacted: { postId: string };
+	EditComment: {
+		postId: string;
+		commentId: string;
+	};
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
 	navigation: StackNavigationProp<RootStackParamList, T>;
@@ -140,6 +144,7 @@ type CommentAndReplyType = {
 	body: string;
 	creator: CreatorType;
 	createdAt: string;
+	modifiedAt?: string;
 };
 
 export interface IReply extends CommentAndReplyType {

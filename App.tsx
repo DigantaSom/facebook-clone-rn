@@ -13,25 +13,25 @@ import store from './redux/store';
 import Navigation from './navigation';
 
 const App = () => {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+	const isLoadingComplete = useCachedResources();
+	const colorScheme = useColorScheme();
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <ReduxProvider store={store}>
-        <PaperProvider>
-          <BottomSheetModalProvider>
-            <SafeAreaProvider>
-              <Navigation colorScheme={colorScheme} />
-              <StatusBar />
-            </SafeAreaProvider>
-          </BottomSheetModalProvider>
-        </PaperProvider>
-      </ReduxProvider>
-    );
-  }
+	if (!isLoadingComplete) {
+		return null;
+	} else {
+		return (
+			<ReduxProvider store={store}>
+				<PaperProvider>
+					<BottomSheetModalProvider>
+						<SafeAreaProvider>
+							<Navigation colorScheme={colorScheme} />
+							<StatusBar />
+						</SafeAreaProvider>
+					</BottomSheetModalProvider>
+				</PaperProvider>
+			</ReduxProvider>
+		);
+	}
 };
 
 export default App;

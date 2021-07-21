@@ -1,14 +1,20 @@
 import { Dispatch } from 'redux';
 import { Alert } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
+import { IComment, GenderType, RootStackParamList } from '../../types';
 import {
 	FetchAllCommentsDispatchType,
 	FETCH_ALL_COMMENTS_START,
 	FETCH_ALL_COMMENTS_SUCCESS,
 	FETCH_ALL_COMMENTS_FAILURE,
+	FetchSingleCommentDispatchType,
+	FETCH_SINGLE_COMMENTS_START,
+	FETCH_SINGLE_COMMENTS_SUCCESS,
+	FETCH_SINGLE_COMMENTS_FAILURE,
 	AddCommentDispatchType,
 	ADD_COMMENT_START,
 	ADD_COMMENT_SUCCESS,
@@ -17,11 +23,14 @@ import {
 	DELETE_COMMENT_START,
 	DELETE_COMMENT_FAILURE,
 	DELETE_COMMENT_SUCCESS,
+	EditCommentDispatchType,
+	EDIT_COMMENT_START,
+	EDIT_COMMENT_SUCCESS,
+	EDIT_COMMENT_FAILURE,
 } from './comment.types';
 import { IUser } from '../user/user.types';
 
 import { firestore } from '../../firebase/firebase.utils';
-import { IComment, GenderType } from '../../types';
 import { updateCommentCount } from '../post/post.actions';
 
 // Fetch all comments of a post
@@ -52,6 +61,42 @@ export const fetchAllComments =
 				payload: err.message,
 			});
 			Alert.alert('Failed to load comments', err.message);
+		}
+	};
+
+// Fetch a particular single comment
+export const fetchSingleComment =
+	(postId: string, commentId: string) =>
+	async (dispatch: Dispatch<FetchSingleCommentDispatchType>) => {
+		dispatch({
+			type: FETCH_SINGLE_COMMENTS_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentRef = postRef.collection('comments').doc(commentId);
+
+		try {
+			const commentSnapshot = await commentRef.get();
+
+			if (!commentSnapshot.exists) {
+				dispatch({
+					type: FETCH_SINGLE_COMMENTS_FAILURE,
+					payload: "Comment doesn't exist.",
+				});
+				Alert.alert('Failed to load comment', "Comment doesn't exist.");
+				return;
+			}
+
+			dispatch({
+				type: FETCH_SINGLE_COMMENTS_SUCCESS,
+				payload: commentSnapshot.data() as IComment,
+			});
+		} catch (err) {
+			dispatch({
+				type: FETCH_SINGLE_COMMENTS_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to load comment', err.message);
 		}
 	};
 
@@ -136,8 +181,8 @@ export const deleteComment =
 				return;
 			}
 
-			const commentsSnapshot = await commentRef.get();
-			if (!commentsSnapshot.exists) {
+			const commentSnapshot = await commentRef.get();
+			if (!commentSnapshot.exists) {
 				dispatch({
 					type: DELETE_COMMENT_FAILURE,
 					payload: 'Comment not found.',
@@ -146,7 +191,7 @@ export const deleteComment =
 				return;
 			}
 
-			const targetComment: IComment | undefined = commentsSnapshot.data() as
+			const targetComment: IComment | undefined = commentSnapshot.data() as
 				| IComment
 				| undefined;
 
@@ -180,5 +225,86 @@ export const deleteComment =
 				payload: err.message,
 			});
 			Alert.alert('Failed to delete comment', err.message);
+		}
+	};
+
+// Edit a particular comment
+export const editComment =
+	(
+		postId: string,
+		commentId: string,
+		body: string,
+		currentUser: IUser,
+		navigation: StackNavigationProp<RootStackParamList, 'EditComment'>,
+	) =>
+	async (dispatch: Dispatch<EditCommentDispatchType>) => {
+		const modifiedAt = new Date().toISOString();
+
+		dispatch({
+			type: EDIT_COMMENT_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentRef = postRef.collection('comments').doc(commentId);
+
+		try {
+			const postSnapshot = await postRef.get();
+			if (!postSnapshot.exists) {
+				dispatch({
+					type: EDIT_COMMENT_FAILURE,
+					payload: 'Post not found.',
+				});
+				Alert.alert('Failed to delete comment', 'Post not found.');
+				return;
+			}
+
+			const commentSnapshot = await commentRef.get();
+			if (!commentSnapshot.exists) {
+				dispatch({
+					type: EDIT_COMMENT_FAILURE,
+					payload: 'Comment not found.',
+				});
+				Alert.alert('Failed to delete comment', 'Comment not found.');
+				return;
+			}
+
+			const targetComment: IComment | undefined = commentSnapshot.data() as
+				| IComment
+				| undefined;
+
+			// only the creator of the comment should be able to edit their comment
+			if (targetComment?.creator.id !== currentUser.id) {
+				dispatch({
+					type: EDIT_COMMENT_FAILURE,
+					payload: 'You are unauthorized to edit this comment!',
+				});
+				Alert.alert(
+					'Failed to edit comment',
+					'You are unauthorized to edit this comment!',
+				);
+				return;
+			}
+
+			await commentRef.update({
+				body,
+				modifiedAt,
+			});
+
+			dispatch({
+				type: EDIT_COMMENT_SUCCESS,
+				payload: {
+					commentId,
+					body,
+					modifiedAt,
+				},
+			});
+			Alert.alert('Edit success', 'Comment edited successfully');
+			navigation.goBack();
+		} catch (err) {
+			dispatch({
+				type: EDIT_COMMENT_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to edit comment', err.message);
 		}
 	};

@@ -134,6 +134,8 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 
 	const handleSheetChanges = useCallback(() => {}, []);
 
+	const handleCloseModal = () => bottomSheetModalRef.current?.close();
+
 	// other functions
 
 	const handleSinglePressLikeButton = () => {
@@ -166,6 +168,9 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 	};
 
 	if (!post && !postLoading) {
+		return null;
+	}
+	if (!comments && !commentLoading) {
 		return null;
 	}
 	// TODO: May add commentLoading too or handle it in a different way.
@@ -227,7 +232,12 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 					index={1}
 					snapPoints={snapPoints}
 					onChange={handleSheetChanges}>
-					<CommentBottomDrawer comment={longPressedComment} currentUser={currentUser} />
+					<CommentBottomDrawer
+						comment={longPressedComment}
+						currentUser={currentUser}
+						navigation={navigation}
+						handleCloseModal={handleCloseModal}
+					/>
 				</BottomSheetModal>
 			)}
 		</View>

@@ -28,6 +28,7 @@ import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
 import CreatePostScreen from '../screens/create-post/CreatePostScreen';
 import CommentsScreen from '../screens/individual-post/CommentsScreen';
 import PeopleWhoReactedScreen from '../screens/individual-post/PeopleWhoReactedScreen';
+import EditCommentScreen from '../screens/individual-post/EditCommentScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -139,6 +140,16 @@ const RootNavigator = () => {
 				component={PeopleWhoReactedScreen}
 				options={{
 					headerTitle: 'People who reacted',
+				}}
+			/>
+			<Stack.Screen
+				name='EditComment'
+				component={EditCommentScreen}
+				options={{
+					headerTitle: 'Edit Comment',
+					headerTitleStyle: {
+						fontSize: 14,
+					},
 				}}
 			/>
 			{/* <Stack.Screen
