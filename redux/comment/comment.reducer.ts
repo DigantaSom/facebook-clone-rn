@@ -1,4 +1,5 @@
 import { IComment } from '../../types';
+import { SIGN_OUT_SUCCESS } from '../user/user.types';
 import {
 	CommentActionType,
 	FETCH_ALL_COMMENTS_FAILURE,
@@ -155,6 +156,10 @@ const commentReducer = (
 				actionLoading: false,
 				error: action.payload,
 			};
+
+		// Clear comment state after signing out
+		case SIGN_OUT_SUCCESS:
+			return defaultState;
 
 		default:
 			return state;

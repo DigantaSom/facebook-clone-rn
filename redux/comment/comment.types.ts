@@ -1,4 +1,5 @@
 import { IComment } from '../../types';
+import { ISignOutSuccess } from '../user/user.types';
 
 export const FETCH_ALL_COMMENTS_START = 'FETCH_ALL_COMMENTS_START';
 export const FETCH_ALL_COMMENTS_SUCCESS = 'FETCH_ALL_COMMENTS_SUCCESS';
@@ -115,4 +116,5 @@ export type CommentActionType =
 	| FetchSingleCommentDispatchType
 	| AddCommentDispatchType
 	| DeleteCommentDispatchType
-	| EditCommentDispatchType;
+	| EditCommentDispatchType
+	| ISignOutSuccess; // from user.types.ts

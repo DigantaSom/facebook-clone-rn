@@ -1,12 +1,13 @@
 import { IPost, IReaction } from '../../types';
+import { SIGN_OUT_SUCCESS } from '../user/user.types';
 import {
+	PostActionType,
 	FETCH_SINGLE_POST_START,
 	FETCH_SINGLE_POST_FAILURE,
 	FETCH_SINGLE_POST_SUCCESS,
 	CREATE_POST_WITH_PHOTO_START,
 	CREATE_POST_WITH_PHOTO_SUCCESS,
 	CREATE_POST_WITH_PHOTO_FAILURE,
-	PostActionType,
 	DELETE_PHOTO_START,
 	DELETE_PHOTO_SUCCESS,
 	DELETE_PHOTO_FAILURE,
@@ -232,6 +233,10 @@ const postReducer = (
 				loading: false,
 				error: action.payload,
 			};
+
+		// Clear post state after signing out
+		case SIGN_OUT_SUCCESS:
+			return defaultState;
 
 		default:
 			return state;

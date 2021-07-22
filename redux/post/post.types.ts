@@ -1,5 +1,5 @@
 import { IPost, IReaction, AddOrDeleteType } from '../../types';
-import { IRemoveProfilePicFromUser } from '../user/user.types';
+import { IRemoveProfilePicFromUser, ISignOutSuccess } from '../user/user.types';
 import {
 	IRemoveProfilePicFromProfile,
 	IRemoveCoverPicFromProfile,
@@ -179,4 +179,5 @@ export type PostActionType =
 	| DeletePhotoDispatchType
 	| UpdateReactOnPostDispatchType
 	| IUpdatePosts
-	| UpdateCommentCountDispatchType;
+	| UpdateCommentCountDispatchType
+	| ISignOutSuccess; // from user.types.ts

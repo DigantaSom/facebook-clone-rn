@@ -1,4 +1,5 @@
 import { IPost } from '../../types';
+import { ISignOutSuccess } from '../user/user.types';
 
 export const GET_ALL_PHOTOS_START = 'GET_ALL_PHOTOS_START';
 export const GET_ALL_PHOTOS_SUCCESS = 'GET_ALL_PHOTOS_SUCCESS';
@@ -15,77 +16,78 @@ export const GET_ALBUM_PICS_FAILURE = 'GET_ALBUM_PICS_FAILURE';
 export const REMOVE_PHOTO_FROM_ALBUM = 'REMOVE_PHOTO_FROM_ALBUM ';
 
 export type AlbumPreviewType = {
-  albumTitle: string;
-  lastImageUri: string;
+	albumTitle: string;
+	lastImageUri: string;
 };
 
 // Get all photos
 
 export interface IGetAllPhotosStart {
-  type: typeof GET_ALL_PHOTOS_START;
+	type: typeof GET_ALL_PHOTOS_START;
 }
 export interface IGetAllPhotosSuccess {
-  type: typeof GET_ALL_PHOTOS_SUCCESS;
-  payload: IPost[];
+	type: typeof GET_ALL_PHOTOS_SUCCESS;
+	payload: IPost[];
 }
 export interface IGetAllPhotosFailure {
-  type: typeof GET_ALL_PHOTOS_FAILURE;
-  payload: string;
+	type: typeof GET_ALL_PHOTOS_FAILURE;
+	payload: string;
 }
 
 export type GetAllPhotosDispatchType =
-  | IGetAllPhotosStart
-  | IGetAllPhotosSuccess
-  | IGetAllPhotosFailure;
+	| IGetAllPhotosStart
+	| IGetAllPhotosSuccess
+	| IGetAllPhotosFailure;
 
 // Get albums
 
 export interface IGetAlbumsStart {
-  type: typeof GET_ALBUMS_START;
+	type: typeof GET_ALBUMS_START;
 }
 export interface IGetAlbumsSuccess {
-  type: typeof GET_ALBUMS_SUCCESS;
-  payload: AlbumPreviewType[];
+	type: typeof GET_ALBUMS_SUCCESS;
+	payload: AlbumPreviewType[];
 }
 export interface IGetAlbumsFailure {
-  type: typeof GET_ALBUMS_FAILURE;
-  payload: string;
+	type: typeof GET_ALBUMS_FAILURE;
+	payload: string;
 }
 
 export type GetAlbumsDispatchType =
-  | IGetAlbumsStart
-  | IGetAlbumsSuccess
-  | IGetAlbumsFailure;
+	| IGetAlbumsStart
+	| IGetAlbumsSuccess
+	| IGetAlbumsFailure;
 
 // Get Album pics
 
 export interface IGetAlbumPicsStart {
-  type: typeof GET_ALBUM_PICS_START;
+	type: typeof GET_ALBUM_PICS_START;
 }
 export interface IGetAlbumPicsSuccess {
-  type: typeof GET_ALBUM_PICS_SUCCESS;
-  payload: IPost[];
+	type: typeof GET_ALBUM_PICS_SUCCESS;
+	payload: IPost[];
 }
 export interface IGetAlbumPicsFailure {
-  type: typeof GET_ALBUM_PICS_FAILURE;
-  payload: string;
+	type: typeof GET_ALBUM_PICS_FAILURE;
+	payload: string;
 }
 
 export type GetAlbumPicsDispatchType =
-  | IGetAlbumPicsStart
-  | IGetAlbumPicsSuccess
-  | IGetAlbumPicsFailure;
+	| IGetAlbumPicsStart
+	| IGetAlbumPicsSuccess
+	| IGetAlbumPicsFailure;
 
 // Remove photo from album state
 export interface IRemovePhotoFromAlbum {
-  type: typeof REMOVE_PHOTO_FROM_ALBUM;
-  payload: string; // postId
+	type: typeof REMOVE_PHOTO_FROM_ALBUM;
+	payload: string; // postId
 }
 
 // Album action type
 
 export type AlbumActionType =
-  | GetAllPhotosDispatchType
-  | GetAlbumsDispatchType
-  | GetAlbumPicsDispatchType
-  | IRemovePhotoFromAlbum;
+	| GetAllPhotosDispatchType
+	| GetAlbumsDispatchType
+	| GetAlbumPicsDispatchType
+	| IRemovePhotoFromAlbum
+	| ISignOutSuccess; // from user.types.ts

@@ -1,5 +1,6 @@
 import { GenderType, IPost } from '../../types';
 import { IUpdatePosts } from '../post/post.types';
+import { ISignOutSuccess } from '../user/user.types';
 
 export const GET_PROFILE_START = 'GET_PROFILE_START';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
@@ -22,139 +23,140 @@ export const REMOVE_PROFILE_PIC_FROM_PROFILE = 'REMOVE_PROFILE_PIC_FROM_PROFILE'
 export const REMOVE_COVER_PIC_FROM_PROFILE = 'REMOVE_COVER_PIC_FROM_PROFILE';
 
 export type RelationshipStatusType =
-  | 'Single'
-  | 'Commited'
-  | 'Married'
-  | "It's complicated"
-  | 'In an Open Relationship'
-  | '';
+	| 'Single'
+	| 'Commited'
+	| 'Married'
+	| "It's complicated"
+	| 'In an Open Relationship'
+	| '';
 
 export type ProfileAboutType = {
-  location?: {
-    livesIn?: string;
-    from?: string;
-  };
-  relationshipStatus?: RelationshipStatusType;
-  birthday?: string;
+	location?: {
+		livesIn?: string;
+		from?: string;
+	};
+	relationshipStatus?: RelationshipStatusType;
+	birthday?: string;
 };
 
 export interface IProfile {
-  userId: string;
-  displayName: string;
-  birthday: string;
-  gender: GenderType;
-  joined: string;
-  profilePic?: IPost;
-  coverPic?: IPost;
-  about?: ProfileAboutType;
-  // TODO: add more gradually if needed
+	userId: string;
+	displayName: string;
+	birthday: string;
+	gender: GenderType;
+	joined: string;
+	profilePic?: IPost;
+	coverPic?: IPost;
+	about?: ProfileAboutType;
+	// TODO: add more gradually if needed
 }
 
 // Get a single profile
 
 export interface IGetProfileStart {
-  type: typeof GET_PROFILE_START;
+	type: typeof GET_PROFILE_START;
 }
 
 export interface IGetProfileSuccess {
-  type: typeof GET_PROFILE_SUCCESS;
-  payload: IProfile;
+	type: typeof GET_PROFILE_SUCCESS;
+	payload: IProfile;
 }
 
 export interface IGetProfileFailure {
-  type: typeof GET_PROFILE_FAILURE;
-  payload: string; // error message
+	type: typeof GET_PROFILE_FAILURE;
+	payload: string; // error message
 }
 
 export type GetProfileDispatchType =
-  | IGetProfileStart
-  | IGetProfileSuccess
-  | IGetProfileFailure;
+	| IGetProfileStart
+	| IGetProfileSuccess
+	| IGetProfileFailure;
 
 // Upload a Cover pic
 
 export interface IUploadCoverPicStart {
-  type: typeof UPLOAD_COVER_PIC_START;
+	type: typeof UPLOAD_COVER_PIC_START;
 }
 
 export interface IUploadCoverPicSuccess {
-  type: typeof UPLOAD_COVER_PIC_SUCCESS;
-  payload: IPost;
+	type: typeof UPLOAD_COVER_PIC_SUCCESS;
+	payload: IPost;
 }
 
 export interface IUploadCoverPicFailure {
-  type: typeof UPLOAD_COVER_PIC_FAILURE;
-  payload: string;
+	type: typeof UPLOAD_COVER_PIC_FAILURE;
+	payload: string;
 }
 
 export type UploadCoverPicDispatchType =
-  | IUploadCoverPicStart
-  | IUploadCoverPicSuccess
-  | IUploadCoverPicFailure
-  | IUpdatePosts;
+	| IUploadCoverPicStart
+	| IUploadCoverPicSuccess
+	| IUploadCoverPicFailure
+	| IUpdatePosts;
 
 // Add or Edit profile about information
 
 export interface IAddOrEditProfileAboutStart {
-  type: typeof ADD_OR_EDIT_PROFILE_ABOUT_START;
+	type: typeof ADD_OR_EDIT_PROFILE_ABOUT_START;
 }
 
 export interface IAddOrEditProfileAboutSuccess {
-  type: typeof ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS;
-  payload: ProfileAboutType;
+	type: typeof ADD_OR_EDIT_PROFILE_ABOUT_SUCCESS;
+	payload: ProfileAboutType;
 }
 
 export interface IAddOrEditProfileAboutFailure {
-  type: typeof ADD_OR_EDIT_PROFILE_ABOUT_FAILURE;
-  payload: string;
+	type: typeof ADD_OR_EDIT_PROFILE_ABOUT_FAILURE;
+	payload: string;
 }
 
 export type AddOrEditProfileAboutDispatchType =
-  | IAddOrEditProfileAboutStart
-  | IAddOrEditProfileAboutSuccess
-  | IAddOrEditProfileAboutFailure;
+	| IAddOrEditProfileAboutStart
+	| IAddOrEditProfileAboutSuccess
+	| IAddOrEditProfileAboutFailure;
 
 // Search profile(s)
 
 export interface ISearchProfilesStart {
-  type: typeof SEARCH_PROFILES_START;
+	type: typeof SEARCH_PROFILES_START;
 }
 export interface ISearchProfilesSuccess {
-  type: typeof SEARCH_PROFILES_SUCCESS;
-  payload: IProfile[];
+	type: typeof SEARCH_PROFILES_SUCCESS;
+	payload: IProfile[];
 }
 export interface ISearchProfilesFailure {
-  type: typeof SEARCH_PROFILES_FAILURE;
-  payload: string;
+	type: typeof SEARCH_PROFILES_FAILURE;
+	payload: string;
 }
 
 export type SearchProfilesDispatchType =
-  | ISearchProfilesStart
-  | ISearchProfilesSuccess
-  | ISearchProfilesFailure;
+	| ISearchProfilesStart
+	| ISearchProfilesSuccess
+	| ISearchProfilesFailure;
 
 // Upload a profile picture (just update the profile state)
 export interface IUpdateProfilePicInProfile {
-  type: typeof UPDATE_PROFILE_PIC_IN_PROFILE;
-  payload: IPost;
+	type: typeof UPDATE_PROFILE_PIC_IN_PROFILE;
+	payload: IPost;
 }
 
 // Remove profilePic from profile state
 export interface IRemoveProfilePicFromProfile {
-  type: typeof REMOVE_PROFILE_PIC_FROM_PROFILE;
+	type: typeof REMOVE_PROFILE_PIC_FROM_PROFILE;
 }
 // Remove coverPic from profile state
 export interface IRemoveCoverPicFromProfile {
-  type: typeof REMOVE_COVER_PIC_FROM_PROFILE;
+	type: typeof REMOVE_COVER_PIC_FROM_PROFILE;
 }
 
 // Profile Action Type
 
 export type ProfileActionType =
-  | GetProfileDispatchType
-  | IUpdateProfilePicInProfile
-  | UploadCoverPicDispatchType
-  | AddOrEditProfileAboutDispatchType
-  | SearchProfilesDispatchType
-  | IRemoveProfilePicFromProfile
-  | IRemoveCoverPicFromProfile;
+	| GetProfileDispatchType
+	| IUpdateProfilePicInProfile
+	| UploadCoverPicDispatchType
+	| AddOrEditProfileAboutDispatchType
+	| SearchProfilesDispatchType
+	| IRemoveProfilePicFromProfile
+	| IRemoveCoverPicFromProfile
+	| ISignOutSuccess; // from user.types.ts
