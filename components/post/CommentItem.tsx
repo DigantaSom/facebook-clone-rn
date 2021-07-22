@@ -49,9 +49,18 @@ const CommentItem: React.FC<CommentItemProps> = ({
 				</View>
 
 				<View style={styles.commentInfo}>
-					<Text style={styles.infoText}>
-						{DayJS(comment.createdAt).format("MMM DD 'YY")}
-					</Text>
+					{comment.modifiedAt ? (
+						<>
+							<Text style={styles.infoText}>
+								{DayJS(comment.modifiedAt).format("MMM DD 'YY")}
+							</Text>
+							<Text style={styles.infoText}>Edited</Text>
+						</>
+					) : (
+						<Text style={styles.infoText}>
+							{DayJS(comment.createdAt).format("MMM DD 'YY")}
+						</Text>
+					)}
 					<Text style={styles.infoText}>Like</Text>
 					<Text style={styles.infoText}>Reply</Text>
 				</View>

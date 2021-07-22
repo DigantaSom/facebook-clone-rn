@@ -7,12 +7,16 @@ import Colors from '../../constants/Colors';
 
 interface SpinnerProps {
 	size?: 'large' | 'small';
+	color?: string;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ size }) => {
+const Spinner: React.FC<SpinnerProps> = ({ size, color }) => {
 	return (
 		<Center style={{ backgroundColor: 'transparent' }}>
-			<ActivityIndicator color={Colors.facebookPrimary} size={size ? size : 'large'} />
+			<ActivityIndicator
+				color={color ? color : Colors.facebookPrimary}
+				size={size ? size : 'large'}
+			/>
 		</Center>
 	);
 };

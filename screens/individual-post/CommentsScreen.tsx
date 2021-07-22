@@ -129,7 +129,10 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 
 	const handlePresentModalPress = useCallback((comment: IComment) => {
 		bottomSheetModalRef.current?.present();
-		setLongPressedComment(comment);
+
+		if (comment) {
+			setLongPressedComment(comment);
+		}
 	}, []);
 
 	const handleSheetChanges = useCallback(() => {}, []);

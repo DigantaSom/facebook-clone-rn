@@ -64,7 +64,7 @@ const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route
 	};
 
 	const onUpdate = () => {
-		if (!isMyComment || updatedBody === '') {
+		if (!isMyComment || updatedBody === '' || actionLoading) {
 			return;
 		}
 		if (currentUser) {
@@ -101,13 +101,15 @@ const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route
 					<Text>Cancel</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
-					activeOpacity={isUpdateButtonDisabled ? 1 : 0.7}
+					activeOpacity={isUpdateButtonDisabled || actionLoading ? 1 : 0.7}
 					style={[
 						styles.button,
 						isUpdateButtonDisabled ? styles.updateButton_disabled : styles.updateButton,
 					]}
 					onPress={onUpdate}>
-					<Text style={isUpdateButtonDisabled ? styles.text_disabled : null}>Update</Text>
+					<Text style={isUpdateButtonDisabled ? styles.text_disabled : null}>
+						{actionLoading ? <Spinner size='small' color='white' /> : <Text>Update</Text>}
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</View>
