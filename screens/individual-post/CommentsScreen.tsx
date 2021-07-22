@@ -20,7 +20,11 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { fetchSinglePost, updateReactOnPost } from '../../redux/post/post.actions';
-import { addComment, fetchAllComments } from '../../redux/comment/comment.actions';
+import {
+	addComment,
+	fetchAllComments,
+	updateReactOnComment,
+} from '../../redux/comment/comment.actions';
 
 import { IComment, ReactionType, RootNavProps } from '../../types';
 
@@ -114,6 +118,7 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 		({ item }) => (
 			<CommentItem
 				comment={item}
+				currentUser={currentUser!}
 				navigation={navigation}
 				handleCommentLongPress={handlePresentModalPress}
 			/>
@@ -155,10 +160,23 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 		toggleReactionsContainer(prevState => !prevState);
 	};
 
-	const handleReaction = (reaction: ReactionType) => {
+	const handleReaction_on_Post = (reaction: ReactionType) => {
 		if (currentUser && post) {
 			toggleReactionsContainer(false);
 			dispatch(updateReactOnPost(post.postId, reaction, currentUser.id as string));
+		}
+	};
+
+	const handleReaction_on_Comment = (reaction: ReactionType, targetCommentId: string) => {
+		if (currentUser && post) {
+			dispatch(
+				updateReactOnComment(
+					post.postId,
+					targetCommentId,
+					reaction,
+					currentUser.id as string,
+				),
+			);
 		}
 	};
 
@@ -185,7 +203,7 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 		<View style={styles.container}>
 			{showReactionsContainer ? (
 				<View style={styles.reactionsContainerStyle}>
-					<ReactionsContainer handleReaction={handleReaction} />
+					<ReactionsContainer handleReaction={handleReaction_on_Post} />
 				</View>
 			) : null}
 
@@ -239,6 +257,7 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 						comment={longPressedComment}
 						currentUser={currentUser}
 						navigation={navigation}
+						handleReaction_on_Comment={handleReaction_on_Comment}
 						handleCloseModal={handleCloseModal}
 					/>
 				</BottomSheetModal>

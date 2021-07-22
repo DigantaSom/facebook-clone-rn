@@ -1,5 +1,6 @@
 import { IReaction, AddOrDeleteType } from '../../types';
 
+// update reaction on 'post' property of 'post' state.
 export const updateReactionOnPost = (
 	reactions: IReaction[],
 	newReactionObj: IReaction,

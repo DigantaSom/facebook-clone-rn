@@ -154,7 +154,6 @@ export interface IReply extends CommentAndReplyType {
 
 export interface IComment extends CommentAndReplyType {
 	commentReactions: IReaction[];
-	replies: IReply[];
 }
 
 export interface IPost {

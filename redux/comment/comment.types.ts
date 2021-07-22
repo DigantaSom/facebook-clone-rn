@@ -1,4 +1,4 @@
-import { IComment } from '../../types';
+import { IComment, IReaction } from '../../types';
 import { ISignOutSuccess } from '../user/user.types';
 
 export const FETCH_ALL_COMMENTS_START = 'FETCH_ALL_COMMENTS_START';
@@ -20,6 +20,10 @@ export const DELETE_COMMENT_FAILURE = 'DELETE_COMMENT_FAILURE';
 export const EDIT_COMMENT_START = 'EDIT_COMMENT_START';
 export const EDIT_COMMENT_SUCCESS = 'EDIT_COMMENT_SUCCESS';
 export const EDIT_COMMENT_FAILURE = 'EDIT_COMMENT_FAILURE';
+
+export const UPDATE_REACT_ON_COMMENT_START = 'UPDATE_REACT_ON_COMMENT_START';
+export const UPDATE_REACT_ON_COMMENT_SUCCESS = 'UPDATE_REACT_ON_COMMENT_SUCCESS';
+export const UPDATE_REACT_ON_COMMENT_FAILURE = 'UPDATE_REACT_ON_COMMENT_FAILURE';
 
 // Fetch all comments of a post
 export interface IFetchAllCommentsStart {
@@ -110,6 +114,23 @@ export type EditCommentDispatchType =
 	| IEditCommentSuccess
 	| IEditCommentFailure;
 
+// React/update react on a comment
+export interface IUpdateReactOnCommentStart {
+	type: typeof UPDATE_REACT_ON_COMMENT_START;
+}
+export interface IUpdateReactOnCommentSuccess {
+	type: typeof UPDATE_REACT_ON_COMMENT_SUCCESS;
+	payload: IReaction & { commentId: string };
+}
+export interface IUpdateReactOnCommentFailure {
+	type: typeof UPDATE_REACT_ON_COMMENT_FAILURE;
+	payload: string;
+}
+export type UpdateReactOnCommentDispatchType =
+	| IUpdateReactOnCommentStart
+	| IUpdateReactOnCommentSuccess
+	| IUpdateReactOnCommentFailure;
+
 // Comment Action Type
 export type CommentActionType =
 	| FetchAllCommentsDispatchType
@@ -117,4 +138,5 @@ export type CommentActionType =
 	| AddCommentDispatchType
 	| DeleteCommentDispatchType
 	| EditCommentDispatchType
+	| UpdateReactOnCommentDispatchType
 	| ISignOutSuccess; // from user.types.ts

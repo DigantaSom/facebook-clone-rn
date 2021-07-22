@@ -466,7 +466,7 @@ export const updateReactOnPost =
 			// console.log('userReactedObject:', userReactedObject);
 
 			if (postSnapshot.exists) {
-				// if there's no reaction on this post
+				// if there's no reaction on this post yet
 				if (!userReactionData.length) {
 					batch.update(postRef, {
 						reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
@@ -483,13 +483,13 @@ export const updateReactOnPost =
 								reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
 							});
 						} else if (reaction === '') {
-							// if the user wants to remove their reaction
+							// else if the user wants to remove their reaction
 							batch.update(postRef, {
 								reactions: firebase.firestore.FieldValue.arrayRemove(userReactedObject),
 							});
 						}
 					} else {
-						// if the user hasn't yet reacted to this post, but reactions are not empty
+						// else if the user hasn't yet reacted to this post, but reactions are not empty
 						batch.update(postRef, {
 							reactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
 						});

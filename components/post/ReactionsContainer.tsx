@@ -44,7 +44,7 @@ export default ReactionsContainer;
 const styles = StyleSheet.create({
 	container: {
 		position: 'absolute',
-		zIndex: 1,
+		zIndex: 2,
 		top: -40,
 	},
 	reactionEmojies: {

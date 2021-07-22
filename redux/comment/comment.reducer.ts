@@ -1,4 +1,4 @@
-import { IComment } from '../../types';
+import { IComment, IReaction } from '../../types';
 import { SIGN_OUT_SUCCESS } from '../user/user.types';
 import {
 	CommentActionType,
@@ -17,7 +17,12 @@ import {
 	EDIT_COMMENT_START,
 	EDIT_COMMENT_SUCCESS,
 	EDIT_COMMENT_FAILURE,
+	UPDATE_REACT_ON_COMMENT_START,
+	UPDATE_REACT_ON_COMMENT_SUCCESS,
+	UPDATE_REACT_ON_COMMENT_FAILURE,
 } from './comment.types';
+
+import { updateReactionOnComment } from './comment.utils';
 
 interface IDefaultState {
 	comment: IComment | null;
@@ -151,6 +156,50 @@ const commentReducer = (
 				error: '',
 			};
 		case EDIT_COMMENT_FAILURE:
+			return {
+				...state,
+				actionLoading: false,
+				error: action.payload,
+			};
+
+		// React/update react on a comment
+		case UPDATE_REACT_ON_COMMENT_START:
+			return {
+				...state,
+				actionLoading: true,
+			};
+		case UPDATE_REACT_ON_COMMENT_SUCCESS:
+			const newReactionObj: IReaction = {
+				reactorId: action.payload.reactorId,
+				reaction: action.payload.reaction,
+			};
+			return {
+				...state,
+				comment: state.comment
+					? {
+							...state.comment,
+							commentReactions: updateReactionOnComment(
+								state.comment.commentReactions,
+								newReactionObj,
+							),
+					  }
+					: null,
+				comments: state.comments.map(comment =>
+					comment.commentId === action.payload.commentId
+						? {
+								...comment,
+								commentReactions:
+									newReactionObj.reaction !== ''
+										? [newReactionObj, ...comment.commentReactions]
+										: comment.commentReactions.filter(
+												r => r.reactorId !== newReactionObj.reactorId,
+										  ),
+						  }
+						: comment,
+				),
+				actionLoading: false,
+			};
+		case UPDATE_REACT_ON_COMMENT_FAILURE:
 			return {
 				...state,
 				actionLoading: false,

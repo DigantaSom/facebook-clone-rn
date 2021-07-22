@@ -25,7 +25,8 @@ import {
 	UPDATE_COMMENT_COUNT_SUCCESS,
 	UPDATE_COMMENT_COUNT_FAILURE,
 } from './post.types';
-import { updateCommentCountOnPost, updateReactionOnPost } from './post.utils';
+
+import { updateReactionOnPost, updateCommentCountOnPost } from './post.utils';
 
 interface IDefaultState {
 	post: IPost | null;

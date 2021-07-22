@@ -1,5 +1,5 @@
 import React from 'react';
-import { View as ViewRN, Alert, StyleSheet } from 'react-native';
+import { View as ViewRN, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import {
 	MaterialCommunityIcons,
 	Fontisto,
@@ -11,12 +11,13 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { useDispatch } from 'react-redux';
+import { deleteComment } from '../../redux/comment/comment.actions';
 
-import { IComment, RootStackParamList } from '../../types';
+import { RootStackParamList, IComment, ReactionType } from '../../types';
 import { IUser } from '../../redux/user/user.types';
 
+import { Text } from '../Themed';
 import DrawerOption from './DrawerOption';
-import { deleteComment } from '../../redux/comment/comment.actions';
 
 import Colors from '../../constants/Colors';
 
@@ -24,6 +25,7 @@ interface CommentBottomDrawerProps {
 	comment: IComment;
 	currentUser: IUser;
 	navigation: StackNavigationProp<RootStackParamList, 'Comments'>;
+	handleReaction_on_Comment: (reactionType: ReactionType, commentId: string) => void;
 	handleCloseModal: () => void;
 }
 
@@ -31,6 +33,7 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 	comment,
 	currentUser,
 	navigation,
+	handleReaction_on_Comment,
 	handleCloseModal,
 }) => {
 	const isMyComment = comment.creator.id === currentUser.id;
@@ -57,7 +60,6 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 	};
 
 	const onSelectEditComment = () => {
-		handleCloseModal();
 		if (!isMyComment) {
 			return;
 		}
@@ -65,10 +67,41 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 			postId: comment.postId,
 			commentId: comment.commentId,
 		});
+		handleCloseModal();
+	};
+
+	const onCommentReact = (reactionType: ReactionType) => {
+		console.log('comment reaction type:', reactionType);
+
+		handleReaction_on_Comment(reactionType, comment.commentId);
+		handleCloseModal();
 	};
 
 	return (
 		<ViewRN style={styles.container}>
+			<ViewRN style={styles.reactionsContainer}>
+				<ViewRN style={styles.reactionEmojies}>
+					<TouchableOpacity activeOpacity={0.4} onPress={() => onCommentReact('Like')}>
+						<Text style={styles.reaction}>👍🏻</Text>
+					</TouchableOpacity>
+					<TouchableOpacity activeOpacity={0.4} onPress={() => Alert.alert('love react')}>
+						<Text style={styles.reaction}>❤️ 2</Text>
+					</TouchableOpacity>
+					<TouchableOpacity activeOpacity={0.4} onPress={() => onCommentReact('Haha')}>
+						<Text style={styles.reaction}>😆</Text>
+					</TouchableOpacity>
+					<TouchableOpacity activeOpacity={0.4} onPress={() => onCommentReact('Wow')}>
+						<Text style={styles.reaction}>😯</Text>
+					</TouchableOpacity>
+					<TouchableOpacity activeOpacity={0.4} onPress={() => onCommentReact('Sad')}>
+						<Text style={styles.reaction}>😢</Text>
+					</TouchableOpacity>
+					<TouchableOpacity activeOpacity={0.4} onPress={() => onCommentReact('Angry')}>
+						<Text style={styles.reaction}>😡</Text>
+					</TouchableOpacity>
+				</ViewRN>
+			</ViewRN>
+
 			<DrawerOption
 				icon={<MaterialCommunityIcons name='comment-outline' size={20} color='white' />}
 				text='Reply'
@@ -111,5 +144,22 @@ const styles = StyleSheet.create({
 		height: '100%',
 		paddingHorizontal: 20,
 		paddingVertical: 15,
+	},
+	reactionsContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingVertical: 5,
+	},
+	reactionEmojies: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: Colors.dark.cardBackground,
+		paddingVertical: 10,
+		paddingHorizontal: 15,
+		borderRadius: 25,
+	},
+	reaction: {
+		fontSize: 25,
+		paddingHorizontal: 10,
 	},
 });

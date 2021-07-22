@@ -5,7 +5,13 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
-import { IComment, GenderType, RootStackParamList } from '../../types';
+import {
+	RootStackParamList,
+	IComment,
+	GenderType,
+	IReaction,
+	ReactionType,
+} from '../../types';
 import {
 	FetchAllCommentsDispatchType,
 	FETCH_ALL_COMMENTS_START,
@@ -27,10 +33,14 @@ import {
 	EDIT_COMMENT_START,
 	EDIT_COMMENT_SUCCESS,
 	EDIT_COMMENT_FAILURE,
+	UpdateReactOnCommentDispatchType,
+	UPDATE_REACT_ON_COMMENT_START,
+	UPDATE_REACT_ON_COMMENT_FAILURE,
+	UPDATE_REACT_ON_COMMENT_SUCCESS,
 } from './comment.types';
 import { IUser } from '../user/user.types';
 
-import { firestore } from '../../firebase/firebase.utils';
+import firebase, { firestore } from '../../firebase/firebase.utils';
 import { updateCommentCount } from '../post/post.actions';
 
 // Fetch all comments of a post
@@ -137,7 +147,6 @@ export const addComment =
 				},
 				createdAt: newDate,
 				commentReactions: [],
-				replies: [],
 			};
 
 			await commentsRef.set(newCommentObj);
@@ -306,5 +315,89 @@ export const editComment =
 				payload: err.message,
 			});
 			Alert.alert('Failed to edit comment', err.message);
+		}
+	};
+
+// React/update react on a comment
+export const updateReactOnComment =
+	(postId: string, commentId: string, reaction: ReactionType, reactorId: string) =>
+	async (dispatch: Dispatch<UpdateReactOnCommentDispatchType>) => {
+		dispatch({
+			type: UPDATE_REACT_ON_COMMENT_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentRef = postRef.collection('comments').doc(commentId);
+
+		const newReactionObj: IReaction = {
+			reactorId,
+			reaction,
+		};
+
+		try {
+			const batch = firestore.batch();
+
+			const commentSnapshot = await commentRef.get();
+			if (!commentSnapshot.exists) {
+				dispatch({
+					type: UPDATE_REACT_ON_COMMENT_FAILURE,
+					payload: 'Comment does not exist.',
+				});
+				Alert.alert('Failed to react on comment', 'Comment does not exist.');
+			}
+
+			const userReactionData: IReaction[] = commentSnapshot.data()?.commentReactions;
+
+			const userReactedObject: IReaction | undefined = userReactionData.find(
+				r => r.reactorId === reactorId,
+			);
+
+			// if there's no reaction on this comment yet
+			if (!userReactionData.length) {
+				batch.update(commentRef, {
+					commentReactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+				});
+			} else {
+				// if the user has already reacted to this comment
+				if (userReactedObject) {
+					// if the user wants to change (not remove) their reaction
+					if (userReactedObject.reaction !== reaction && reaction !== '') {
+						batch.update(commentRef, {
+							commentReactions:
+								firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+						});
+						batch.update(commentRef, {
+							commentReactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+						});
+					} else if (reaction === '') {
+						// else if the user wants to remove their reaction
+						batch.update(commentRef, {
+							commentReactions:
+								firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+						});
+					}
+				} else {
+					// else if the user hasn't yet reacted to this post, but commentReactions are not empty
+					batch.update(commentRef, {
+						commentReactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+					});
+				}
+			}
+
+			await batch.commit();
+
+			dispatch({
+				type: UPDATE_REACT_ON_COMMENT_SUCCESS,
+				payload: {
+					commentId,
+					reaction,
+					reactorId,
+				},
+			});
+		} catch (err) {
+			dispatch({
+				type: UPDATE_REACT_ON_COMMENT_FAILURE,
+				payload: err.message,
+			});
 		}
 	};
