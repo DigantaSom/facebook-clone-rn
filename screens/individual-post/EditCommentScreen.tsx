@@ -68,7 +68,6 @@ const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route
 		return <Spinner />;
 	}
 	if (!comment) {
-		navigation.goBack();
 		return null;
 	}
 

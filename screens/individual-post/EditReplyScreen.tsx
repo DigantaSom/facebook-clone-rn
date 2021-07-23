@@ -7,7 +7,7 @@ import { fetchSingleReply, editReply } from '../../redux/reply/reply.actions';
 
 import { RootNavProps } from '../../types';
 
-import { Text, View } from '../../components/Themed';
+import { View, Text } from '../../components/Themed';
 import Spinner from '../../components/UI/Spinner';
 import DPcontainer from '../../components/UI/DPcontainer';
 
@@ -70,7 +70,6 @@ const EditReplyScreen: React.FC<EditReplyScreenProps> = ({ navigation, route }) 
 		return <Spinner />;
 	}
 	if (!reply) {
-		navigation.goBack();
 		return null;
 	}
 
