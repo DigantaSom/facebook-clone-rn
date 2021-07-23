@@ -29,6 +29,10 @@ export type RootStackParamList = {
 	IndividualAlbum: undefined;
 	CreatePost: undefined;
 	Comments: { postId: string };
+	Replies: {
+		postId: string;
+		commentId: string;
+	};
 	PeopleWhoReacted: { postId: string };
 	EditComment: {
 		postId: string;
@@ -92,6 +96,10 @@ export type MenuStackParamList = {
 		displayName: string;
 	};
 	Comments: { postId: string };
+	Replies: {
+		postId: string;
+		commentId: string;
+	};
 };
 export type MenuNavProps<T extends keyof MenuStackParamList> = {
 	navigation: StackNavigationProp<MenuStackParamList, T>;
@@ -154,6 +162,7 @@ export interface IReply extends CommentAndReplyType {
 
 export interface IComment extends CommentAndReplyType {
 	commentReactions: IReaction[];
+	replyCount: number;
 }
 
 export interface IPost {
@@ -172,9 +181,11 @@ export interface IPost {
 export type GenderType = 'Female' | 'Male' | 'Rather not say';
 export type GenderPronounType = 'her' | 'his' | 'their';
 
+export type SizeType = 'small' | 'large';
+
 export type HeaderActionType = 'Save' | 'Edit' | 'Post';
 
-export type EmptyContentType = 'Album' | 'Photo' | 'Comment'; // TODO: add more gradually
+export type EmptyContentType = 'Album' | 'Photo' | 'Comment' | 'Reply'; // TODO: add more gradually
 
 export type PostType = 'Profile Pic' | 'Cover Pic' | 'Photo';
 

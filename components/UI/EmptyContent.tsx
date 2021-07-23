@@ -13,7 +13,11 @@ interface EmptyContentProps {
 
 const EmptyContent: React.FC<EmptyContentProps> = ({ emptyType }) => {
 	return (
-		<View style={styles.noContent_container}>
+		<View
+			style={[
+				styles.noContent_container,
+				emptyType === 'Reply' ? { marginLeft: -52 } : null,
+			]}>
 			{emptyType === 'Photo' ? (
 				<Fontisto name='photograph' size={70} color={Colors.grayText} />
 			) : null}
@@ -22,13 +26,20 @@ const EmptyContent: React.FC<EmptyContentProps> = ({ emptyType }) => {
 				<Ionicons name='albums' size={70} color={Colors.grayText} />
 			) : null}
 
-			{emptyType === 'Comment' ? (
+			{emptyType === 'Comment' || emptyType === 'Reply' ? (
 				<FontAwesome name='comments' size={70} color={Colors.grayText} />
 			) : null}
 
-			<Text style={[styles.noContentText, { fontWeight: 'bold' }]}>
-				No {emptyType}s to show
-			</Text>
+			{emptyType === 'Reply' ? (
+				<Text style={[styles.noContentText, { fontWeight: 'bold' }]}>
+					No Replies to show
+				</Text>
+			) : (
+				<Text style={[styles.noContentText, { fontWeight: 'bold' }]}>
+					No {emptyType}s to show
+				</Text>
+			)}
+
 			{emptyType === 'Comment' ? (
 				<Text style={[styles.noContentText, { fontSize: 15 }]}>
 					Be the first to comment

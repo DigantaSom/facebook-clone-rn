@@ -18,16 +18,18 @@ import Colors from '../../constants/Colors';
 
 interface CommentItemProps {
 	comment: IComment;
+	commentIndex: number;
 	currentUser: IUser;
-	navigation: StackNavigationProp<RootStackParamList, 'Comments'>;
-	handleCommentLongPress: (comment: IComment) => void;
+	navigation?: StackNavigationProp<RootStackParamList, 'Comments'>;
+	handleCommentSelect: (comment: IComment) => void;
 }
 
 const CommentItem: React.FC<CommentItemProps> = ({
 	comment,
+	commentIndex,
 	currentUser,
 	navigation,
-	handleCommentLongPress,
+	handleCommentSelect,
 }) => {
 	const [showReactionsContainer, toggleReactionsContainer] = useState<boolean>(false);
 
@@ -38,7 +40,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 	);
 
 	const handleSelectComment = () => {
-		handleCommentLongPress(comment);
+		handleCommentSelect(comment);
 	};
 
 	const handleSinglePressLikeButton = () => {
@@ -141,7 +143,10 @@ const CommentItem: React.FC<CommentItemProps> = ({
 	return (
 		<View>
 			{showReactionsContainer ? (
-				<ReactionsContainer handleReaction={handleReaction} />
+				<ReactionsContainer
+					handleReaction={handleReaction}
+					topMargin={commentIndex === 0 ? 5 : null}
+				/>
 			) : null}
 
 			<TouchableOpacity
@@ -150,7 +155,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 				onPress={handleSelectComment}>
 				<TouchableOpacity
 					activeOpacity={0.8}
-					onPress={() => navigation.navigate('Profile', { userId: comment.creator.id })}>
+					onPress={() => navigation?.navigate('Profile', { userId: comment.creator.id })}>
 					<DPcontainer imageUri={comment.creator.profilePicUri} />
 				</TouchableOpacity>
 
@@ -159,7 +164,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 						<TouchableOpacity
 							activeOpacity={0.8}
 							onPress={() =>
-								navigation.navigate('Profile', { userId: comment.creator.id })
+								navigation?.navigate('Profile', { userId: comment.creator.id })
 							}>
 							<Text style={styles.creatorName}>{comment.creator.displayName}</Text>
 						</TouchableOpacity>
@@ -186,7 +191,16 @@ const CommentItem: React.FC<CommentItemProps> = ({
 							onLongPress={handleToggleReactionsContainer}>
 							{reactionText}
 						</TouchableOpacity>
-						<Text style={styles.infoText}>Reply</Text>
+						<TouchableOpacity
+							activeOpacity={0.6}
+							onPress={() => {
+								navigation?.navigate('Replies', {
+									postId: comment.postId,
+									commentId: comment.commentId,
+								});
+							}}>
+							<Text style={styles.infoText}>Reply</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</TouchableOpacity>

@@ -108,7 +108,11 @@ const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route
 					]}
 					onPress={onUpdate}>
 					<Text style={isUpdateButtonDisabled ? styles.text_disabled : null}>
-						{actionLoading ? <Spinner size='small' color='white' /> : <Text>Update</Text>}
+						{!isUpdateButtonDisabled && actionLoading ? (
+							<Spinner size='small' color='white' />
+						) : (
+							<Text>Update</Text>
+						)}
 					</Text>
 				</TouchableOpacity>
 			</View>

@@ -1,12 +1,14 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 
+import { SizeType } from '../../types';
+
 import Center from './Center';
 
 import Colors from '../../constants/Colors';
 
 interface SpinnerProps {
-	size?: 'large' | 'small';
+	size?: SizeType;
 	color?: string;
 }
 

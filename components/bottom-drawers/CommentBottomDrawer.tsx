@@ -1,4 +1,5 @@
 import React from 'react';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { View as ViewRN, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import {
 	MaterialCommunityIcons,
@@ -8,7 +9,6 @@ import {
 	Ionicons,
 	FontAwesome5,
 } from '@expo/vector-icons';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import { useDispatch } from 'react-redux';
 import { deleteComment } from '../../redux/comment/comment.actions';
@@ -39,6 +39,14 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 	const isMyComment = comment.creator.id === currentUser.id;
 
 	const dispatch = useDispatch();
+
+	const handleNavigateToReplyScreen = () => {
+		handleCloseModal();
+		navigation.navigate('Replies', {
+			postId: comment.postId,
+			commentId: comment.commentId,
+		});
+	};
 
 	const handleDeleteComment = () => {
 		if (!isMyComment) {
@@ -85,7 +93,7 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 						<Text style={styles.reaction}>👍🏻</Text>
 					</TouchableOpacity>
 					<TouchableOpacity activeOpacity={0.4} onPress={() => Alert.alert('love react')}>
-						<Text style={styles.reaction}>❤️ 2</Text>
+						<Text style={styles.reaction}>❤️</Text>
 					</TouchableOpacity>
 					<TouchableOpacity activeOpacity={0.4} onPress={() => onCommentReact('Haha')}>
 						<Text style={styles.reaction}>😆</Text>
@@ -105,6 +113,7 @@ const CommentBottomDrawer: React.FC<CommentBottomDrawerProps> = ({
 			<DrawerOption
 				icon={<MaterialCommunityIcons name='comment-outline' size={20} color='white' />}
 				text='Reply'
+				onPressDrawerOption={handleNavigateToReplyScreen}
 			/>
 			<DrawerOption icon={<Fontisto name='copy' size={20} color='white' />} text='Copy' />
 			{isMyComment ? (

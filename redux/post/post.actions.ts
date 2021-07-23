@@ -515,7 +515,7 @@ export const updateReactOnPost =
 		}
 	};
 
-// Update 'commentCount' field on post reducer, after a comment is successfully added/deleted from comment state.
+// Update 'commentCount' field on post reducer, after a comment is successfully added/deleted to/from comment state.
 export const updateCommentCount =
 	(postId: string, actionType: AddOrDeleteType) =>
 	async (dispatch: Dispatch<UpdateCommentCountDispatchType>) => {

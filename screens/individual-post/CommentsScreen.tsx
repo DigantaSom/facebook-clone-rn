@@ -65,22 +65,24 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 
 	const isReactedByMe = post?.reactions.find(r => r.reactorId === currentUser?.id);
 
-	let reactionIcon = (
+	let reactionIconOnHeader = (
 		<AntDesign name='like2' size={22} color={Colors.dark.tabIconDefault} />
 	);
 	if (isReactedByMe) {
 		if (isReactedByMe.reaction === 'Like') {
-			reactionIcon = <AntDesign name='like1' size={22} color={Colors.facebookPrimary} />;
+			reactionIconOnHeader = (
+				<AntDesign name='like1' size={22} color={Colors.facebookPrimary} />
+			);
 		} else if (isReactedByMe.reaction === 'Love') {
-			reactionIcon = <Text style={styles.reactionIconStyle}>❤️</Text>;
+			reactionIconOnHeader = <Text style={styles.reactionIconOnHeaderStyle}>❤️</Text>;
 		} else if (isReactedByMe.reaction === 'Haha') {
-			reactionIcon = <Text style={styles.reactionIconStyle}>😆</Text>;
+			reactionIconOnHeader = <Text style={styles.reactionIconOnHeaderStyle}>😆</Text>;
 		} else if (isReactedByMe.reaction === 'Wow') {
-			reactionIcon = <Text style={styles.reactionIconStyle}>😯</Text>;
+			reactionIconOnHeader = <Text style={styles.reactionIconOnHeaderStyle}>😯</Text>;
 		} else if (isReactedByMe.reaction === 'Sad') {
-			reactionIcon = <Text style={styles.reactionIconStyle}>😢</Text>;
+			reactionIconOnHeader = <Text style={styles.reactionIconOnHeaderStyle}>😢</Text>;
 		} else if (isReactedByMe.reaction === 'Angry') {
-			reactionIcon = <Text style={styles.reactionIconStyle}>😡</Text>;
+			reactionIconOnHeader = <Text style={styles.reactionIconOnHeaderStyle}>😡</Text>;
 		}
 	}
 
@@ -108,19 +110,20 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 					activeOpacity={0.6}
 					onPress={handleSinglePressLikeButton}
 					onLongPress={handleToggleReactionsContainer}>
-					{reactionIcon}
+					{reactionIconOnHeader}
 				</TouchableOpacity>
 			),
 		});
 	}, [navigation, postLoading, post, post?.reactions]);
 
 	const renderItem = useCallback(
-		({ item }) => (
+		({ item, index }) => (
 			<CommentItem
 				comment={item}
+				commentIndex={index}
 				currentUser={currentUser!}
 				navigation={navigation}
-				handleCommentLongPress={handlePresentModalPress}
+				handleCommentSelect={handlePresentModalPress}
 			/>
 		),
 		[],
@@ -207,23 +210,21 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 				</View>
 			) : null}
 
-			<View style={styles.contentContainer}>
+			<View style={styles.commentsContainer}>
 				{!comments.length ? (
 					<Center>
 						<EmptyContent emptyType='Comment' />
 					</Center>
 				) : (
-					<View style={styles.commentsContainer}>
-						<FlatList
-							data={comments}
-							keyExtractor={item => item.commentId}
-							renderItem={renderItem}
-							// for scroll to bottom, when keyboard appears
-							ref={flatListRef}
-							onContentSizeChange={() => flatListRef.current.scrollToEnd()}
-							onLayout={() => flatListRef.current.scrollToEnd()}
-						/>
-					</View>
+					<FlatList
+						data={comments}
+						keyExtractor={item => item.commentId}
+						renderItem={renderItem}
+						// for scroll to bottom, when keyboard appears
+						ref={flatListRef}
+						onContentSizeChange={() => flatListRef.current.scrollToEnd()}
+						onLayout={() => flatListRef.current.scrollToEnd()}
+					/>
 				)}
 			</View>
 			<View style={styles.inputContainer}>
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
 		marginRight: 10,
 		padding: 10,
 	},
-	reactionIconStyle: {
+	reactionIconOnHeaderStyle: {
 		fontSize: 18,
 	},
 	// screen
@@ -298,10 +299,9 @@ const styles = StyleSheet.create({
 		zIndex: 5,
 		width: '100%',
 	},
-	contentContainer: {
+	commentsContainer: {
 		flex: 1,
 	},
-	commentsContainer: {},
 	inputContainer: {
 		backgroundColor: '#373737',
 		flexDirection: 'row',

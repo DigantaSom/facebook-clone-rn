@@ -27,6 +27,7 @@ import AlbumsTopTabNavigator from './AlbumsTopTab';
 import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
 import CreatePostScreen from '../screens/create-post/CreatePostScreen';
 import CommentsScreen from '../screens/individual-post/CommentsScreen';
+import RepliesScreen from '../screens/individual-post/RepliesScreen';
 import PeopleWhoReactedScreen from '../screens/individual-post/PeopleWhoReactedScreen';
 import EditCommentScreen from '../screens/individual-post/EditCommentScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
@@ -135,6 +136,7 @@ const RootNavigator = () => {
 				}}
 			/>
 			<Stack.Screen name='Comments' component={CommentsScreen} />
+			<Stack.Screen name='Replies' component={RepliesScreen} />
 			<Stack.Screen
 				name='PeopleWhoReacted'
 				component={PeopleWhoReactedScreen}

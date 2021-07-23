@@ -1,4 +1,4 @@
-import { IComment, IReaction } from '../../types';
+import { IComment, IReaction, AddOrDeleteType } from '../../types';
 import { ISignOutSuccess } from '../user/user.types';
 
 export const FETCH_ALL_COMMENTS_START = 'FETCH_ALL_COMMENTS_START';
@@ -24,6 +24,10 @@ export const EDIT_COMMENT_FAILURE = 'EDIT_COMMENT_FAILURE';
 export const UPDATE_REACT_ON_COMMENT_START = 'UPDATE_REACT_ON_COMMENT_START';
 export const UPDATE_REACT_ON_COMMENT_SUCCESS = 'UPDATE_REACT_ON_COMMENT_SUCCESS';
 export const UPDATE_REACT_ON_COMMENT_FAILURE = 'UPDATE_REACT_ON_COMMENT_FAILURE';
+
+export const UPDATE_REPLY_COUNT_START = 'UPDATE_REPLY_COUNT_START';
+export const UPDATE_REPLY_COUNT_SUCCESS = 'UPDATE_REPLY_COUNT_SUCCESS';
+export const UPDATE_REPLY_COUNT_FAILURE = 'UPDATE_REPLY_COUNT_FAILURE';
 
 // Fetch all comments of a post
 export interface IFetchAllCommentsStart {
@@ -131,6 +135,23 @@ export type UpdateReactOnCommentDispatchType =
 	| IUpdateReactOnCommentSuccess
 	| IUpdateReactOnCommentFailure;
 
+// Update 'commentCount' field on post reducer, after a comment is successfully added/deleted from comment state.
+export interface IUpdateReplyCountStart {
+	type: typeof UPDATE_REPLY_COUNT_START;
+}
+export interface IUpdateReplyCountSuccess {
+	type: typeof UPDATE_REPLY_COUNT_SUCCESS;
+	payload: AddOrDeleteType;
+}
+export interface IUpdateReplyCountFailure {
+	type: typeof UPDATE_REPLY_COUNT_FAILURE;
+	payload: string;
+}
+export type UpdateReplyCountDispatchType =
+	| IUpdateReplyCountStart
+	| IUpdateReplyCountSuccess
+	| IUpdateReplyCountFailure;
+
 // Comment Action Type
 export type CommentActionType =
 	| FetchAllCommentsDispatchType
@@ -139,4 +160,5 @@ export type CommentActionType =
 	| DeleteCommentDispatchType
 	| EditCommentDispatchType
 	| UpdateReactOnCommentDispatchType
+	| UpdateReplyCountDispatchType
 	| ISignOutSuccess; // from user.types.ts

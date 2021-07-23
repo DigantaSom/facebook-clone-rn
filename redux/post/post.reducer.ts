@@ -212,7 +212,7 @@ const postReducer = (
 		case UPDATE_COMMENT_COUNT_START:
 			return {
 				...state,
-				loading: true,
+				// loading: true,
 			};
 		case UPDATE_COMMENT_COUNT_SUCCESS:
 			return {
@@ -226,12 +226,12 @@ const postReducer = (
 							),
 					  }
 					: null,
-				loading: false,
+				// loading: false,
 			};
 		case UPDATE_COMMENT_COUNT_FAILURE:
 			return {
 				...state,
-				loading: false,
+				// loading: false,
 				error: action.payload,
 			};
 

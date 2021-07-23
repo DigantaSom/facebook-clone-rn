@@ -2,27 +2,30 @@ import { IComment, IReaction } from '../../types';
 import { SIGN_OUT_SUCCESS } from '../user/user.types';
 import {
 	CommentActionType,
-	FETCH_ALL_COMMENTS_FAILURE,
 	FETCH_ALL_COMMENTS_START,
 	FETCH_ALL_COMMENTS_SUCCESS,
+	FETCH_ALL_COMMENTS_FAILURE,
 	FETCH_SINGLE_COMMENTS_START,
 	FETCH_SINGLE_COMMENTS_SUCCESS,
 	FETCH_SINGLE_COMMENTS_FAILURE,
-	ADD_COMMENT_FAILURE,
 	ADD_COMMENT_START,
 	ADD_COMMENT_SUCCESS,
-	DELETE_COMMENT_FAILURE,
+	ADD_COMMENT_FAILURE,
 	DELETE_COMMENT_START,
 	DELETE_COMMENT_SUCCESS,
+	DELETE_COMMENT_FAILURE,
 	EDIT_COMMENT_START,
 	EDIT_COMMENT_SUCCESS,
 	EDIT_COMMENT_FAILURE,
 	UPDATE_REACT_ON_COMMENT_START,
 	UPDATE_REACT_ON_COMMENT_SUCCESS,
 	UPDATE_REACT_ON_COMMENT_FAILURE,
+	UPDATE_REPLY_COUNT_START,
+	UPDATE_REPLY_COUNT_SUCCESS,
+	UPDATE_REPLY_COUNT_FAILURE,
 } from './comment.types';
 
-import { updateReactionOnComment } from './comment.utils';
+import { updateReactionOnComment, updateReplyCountOnComment } from './comment.utils';
 
 interface IDefaultState {
 	comment: IComment | null;
@@ -203,6 +206,33 @@ const commentReducer = (
 			return {
 				...state,
 				actionLoading: false,
+				error: action.payload,
+			};
+
+		// Update 'replyCount' field on comment reducer, after a reply is successfully added/deleted to/from reply state.
+		case UPDATE_REPLY_COUNT_START:
+			return {
+				...state,
+				// actionLoading: true,
+			};
+		case UPDATE_REPLY_COUNT_SUCCESS:
+			return {
+				...state,
+				comment: state.comment
+					? {
+							...state.comment,
+							replyCount: updateReplyCountOnComment(
+								state.comment.replyCount,
+								action.payload,
+							),
+					  }
+					: null,
+				// actionLoading: false,
+			};
+		case UPDATE_REPLY_COUNT_FAILURE:
+			return {
+				...state,
+				// actionLoading: false,
 				error: action.payload,
 			};
 

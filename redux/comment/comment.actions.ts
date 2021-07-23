@@ -11,6 +11,7 @@ import {
 	GenderType,
 	IReaction,
 	ReactionType,
+	AddOrDeleteType,
 } from '../../types';
 import {
 	FetchAllCommentsDispatchType,
@@ -37,6 +38,10 @@ import {
 	UPDATE_REACT_ON_COMMENT_START,
 	UPDATE_REACT_ON_COMMENT_FAILURE,
 	UPDATE_REACT_ON_COMMENT_SUCCESS,
+	UpdateReplyCountDispatchType,
+	UPDATE_REPLY_COUNT_START,
+	UPDATE_REPLY_COUNT_SUCCESS,
+	UPDATE_REPLY_COUNT_FAILURE,
 } from './comment.types';
 import { IUser } from '../user/user.types';
 
@@ -122,7 +127,7 @@ export const addComment =
 		const newDate = new Date().toISOString();
 
 		const postRef = firestore.collection('posts').doc(postId);
-		const commentsRef = postRef.collection('comments').doc(newCommentId);
+		const commentRef = postRef.collection('comments').doc(newCommentId);
 
 		try {
 			const postSnapshot = await postRef.get();
@@ -142,20 +147,21 @@ export const addComment =
 				creator: {
 					id: currentUser.id as string,
 					displayName: currentUser.displayName as string,
-					profilePicUri: currentUser.profilePic as string,
+					profilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
 					gender: currentUser.gender as GenderType,
 				},
 				createdAt: newDate,
 				commentReactions: [],
+				replyCount: 0,
 			};
 
-			await commentsRef.set(newCommentObj);
+			await commentRef.set(newCommentObj);
 
 			dispatch({
 				type: ADD_COMMENT_SUCCESS,
 				payload: newCommentObj,
 			});
-			// Update comment count in post state.
+			// Update comment-count in post state.
 			dispatch(updateCommentCount(postId, 'add') as any);
 
 			// Alert.alert('Success!', 'Comment added.');
@@ -220,12 +226,13 @@ export const deleteComment =
 			// All good now. Delete the comment.
 			await commentRef.delete();
 
+			// Update comment count in post state.
+			dispatch(updateCommentCount(postId, 'delete') as any);
+
 			dispatch({
 				type: DELETE_COMMENT_SUCCESS,
 				payload: commentId,
 			});
-			// Update comment count in post state.
-			dispatch(updateCommentCount(postId, 'delete') as any);
 
 			Alert.alert('Success!', 'Comment deleted successfully.');
 		} catch (err) {
@@ -397,6 +404,43 @@ export const updateReactOnComment =
 		} catch (err) {
 			dispatch({
 				type: UPDATE_REACT_ON_COMMENT_FAILURE,
+				payload: err.message,
+			});
+		}
+	};
+
+// Update 'replyCount' field on comment reducer, after a reply is successfully added/deleted to/from reply state.
+export const updateReplyCount =
+	(postId: string, commentId: string, actionType: AddOrDeleteType) =>
+	async (dispatch: Dispatch<UpdateReplyCountDispatchType>) => {
+		dispatch({
+			type: UPDATE_REPLY_COUNT_START,
+		});
+
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentRef = postRef.collection('comments').doc(commentId);
+
+		try {
+			if (actionType === 'add') {
+				await commentRef.update({
+					replyCount: firebase.firestore.FieldValue.increment(1),
+				});
+				dispatch({
+					type: UPDATE_REPLY_COUNT_SUCCESS,
+					payload: 'add',
+				});
+			} else if (actionType === 'delete') {
+				await commentRef.update({
+					replyCount: firebase.firestore.FieldValue.increment(-1),
+				});
+				dispatch({
+					type: UPDATE_REPLY_COUNT_SUCCESS,
+					payload: 'delete',
+				});
+			}
+		} catch (err) {
+			dispatch({
+				type: UPDATE_REPLY_COUNT_FAILURE,
 				payload: err.message,
 			});
 		}

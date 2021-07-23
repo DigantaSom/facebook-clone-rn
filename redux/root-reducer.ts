@@ -5,6 +5,7 @@ import profileReducer from './profile/profile.reducer';
 import albumReducer from './album/album.reducer';
 import postReducer from './post/post.reducer';
 import commentReducer from './comment/comment.reducer';
+import replyReducer from './reply/reply.reducer';
 
 export default combineReducers({
 	user: userReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
 	album: albumReducer,
 	post: postReducer,
 	comment: commentReducer,
+	reply: replyReducer,
 });

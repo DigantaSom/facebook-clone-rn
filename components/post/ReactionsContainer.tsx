@@ -10,11 +10,15 @@ import Colors from '../../constants/Colors';
 
 interface ReactionsContainerProps {
 	handleReaction: (reactionType: ReactionType) => void;
+	topMargin?: number | null;
 }
 
-const ReactionsContainer: React.FC<ReactionsContainerProps> = ({ handleReaction }) => {
+const ReactionsContainer: React.FC<ReactionsContainerProps> = ({
+	handleReaction,
+	topMargin,
+}) => {
 	return (
-		<ViewRN style={styles.container}>
+		<ViewRN style={[styles.container, topMargin ? { top: topMargin } : { top: -40 }]}>
 			<ViewRN style={styles.reactionEmojies}>
 				<TouchableOpacity activeOpacity={0.4} onPress={() => handleReaction('Like')}>
 					<Text style={styles.reaction}>👍🏻</Text>
@@ -45,7 +49,6 @@ const styles = StyleSheet.create({
 	container: {
 		position: 'absolute',
 		zIndex: 2,
-		top: -40,
 	},
 	reactionEmojies: {
 		flexDirection: 'row',
