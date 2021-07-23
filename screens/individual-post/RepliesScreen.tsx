@@ -55,9 +55,10 @@ const RepliesScreen: React.FC<RepliesScreenProps> = ({ navigation, route }) => {
 	}, [dispatch, fetchAllReplies, postId, commentId]);
 
 	const renderReply = useCallback(
-		({ item }) => (
+		({ item, index }) => (
 			<ReplyItem
 				reply={item}
+				replyIndex={index}
 				currentUser={currentUser!}
 				navigation={navigation}
 				handleReplySelect={handlePresentModalPress}

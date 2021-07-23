@@ -152,7 +152,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 			<TouchableOpacity
 				style={styles.commentItem}
 				activeOpacity={0.5}
-				onPress={handleSelectComment}>
+				onLongPress={handleSelectComment}>
 				<TouchableOpacity
 					activeOpacity={0.8}
 					onPress={() => navigation?.navigate('Profile', { userId: comment.creator.id })}>

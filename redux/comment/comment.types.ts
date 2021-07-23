@@ -118,7 +118,7 @@ export type EditCommentDispatchType =
 	| IEditCommentSuccess
 	| IEditCommentFailure;
 
-// React/update react on a comment
+// React/update reaction on a comment
 export interface IUpdateReactOnCommentStart {
 	type: typeof UPDATE_REACT_ON_COMMENT_START;
 }

@@ -1,4 +1,4 @@
-import { IReply } from '../../types';
+import { IReaction, IReply } from '../../types';
 import { ISignOutSuccess } from '../user/user.types';
 
 export const FETCH_ALL_REPLIES_START = 'FETCH_ALL_REPLIES_START';
@@ -20,6 +20,10 @@ export const DELETE_REPLY_FAILURE = 'DELETE_REPLY_FAILURE';
 export const EDIT_REPLY_START = 'EDIT_REPLY_START';
 export const EDIT_REPLY_SUCCESS = 'EDIT_REPLY_SUCCESS';
 export const EDIT_REPLY_FAILURE = 'EDIT_REPLY_FAILURE';
+
+export const UPDATE_REACT_ON_REPLY_START = 'UPDATE_REACT_ON_REPLY_START';
+export const UPDATE_REACT_ON_REPLY_SUCCESS = 'UPDATE_REACT_ON_REPLY_SUCCESS';
+export const UPDATE_REACT_ON_REPLY_FAILURE = 'UPDATE_REACT_ON_REPLY_FAILURE';
 
 // Fetch all replies of a comment of a post
 export interface IFetchAllRepliesStart {
@@ -107,6 +111,23 @@ export type EditReplyDispatchType =
 	| IEditReplySuccess
 	| IEditReplyFailure;
 
+// React/update reaction on a reply
+export interface IUpdateReactOnReplyStart {
+	type: typeof UPDATE_REACT_ON_REPLY_START;
+}
+export interface IUpdateReactOnReplySuccess {
+	type: typeof UPDATE_REACT_ON_REPLY_SUCCESS;
+	payload: IReaction & { replyId: string };
+}
+export interface IUpdateReactOnReplyFailure {
+	type: typeof UPDATE_REACT_ON_REPLY_FAILURE;
+	payload: string;
+}
+export type UpdateReactOnReplyDispatchType =
+	| IUpdateReactOnReplyStart
+	| IUpdateReactOnReplySuccess
+	| IUpdateReactOnReplyFailure;
+
 // Reply Action Type
 export type ReplyActionType =
 	| FetchAllRepliesDispatchType
@@ -114,4 +135,5 @@ export type ReplyActionType =
 	| AddReplyDispatchType
 	| DeleteReplyDispatchType
 	| EditReplyDispatchType
+	| UpdateReactOnReplyDispatchType
 	| ISignOutSuccess; // from user.types.ts

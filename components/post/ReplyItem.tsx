@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DayJS from 'dayjs';
-import { TouchableOpacity, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 
-import { IReply, RootStackParamList } from '../../types';
+import { useDispatch } from 'react-redux';
+import { updateReactOnReply } from '../../redux/reply/reply.actions';
+
+import { IReply, ReactionType, RootStackParamList } from '../../types';
 import { IUser } from '../../redux/user/user.types';
 
 import { Text, View } from '../Themed';
 import DPcontainer from '../UI/DPcontainer';
+import ReactionsContainer from './ReactionsContainer';
 
 import Colors from '../../constants/Colors';
-import { AntDesign } from '@expo/vector-icons';
 
 interface ReplyItemProps {
 	reply: IReply;
+	replyIndex: number;
 	currentUser: IUser;
 	navigation: StackNavigationProp<RootStackParamList, 'Replies'>;
 	handleReplySelect: (reply: IReply) => void;
@@ -21,19 +26,62 @@ interface ReplyItemProps {
 
 const ReplyItem: React.FC<ReplyItemProps> = ({
 	reply,
+	replyIndex,
 	currentUser,
 	navigation,
 	handleReplySelect,
 }) => {
+	const [showReactionsContainer, toggleReactionsContainer] = useState<boolean>(false);
+
+	const dispatch = useDispatch();
+
 	const isReactedByMe = reply.replyReactions.find(r => r.reactorId === currentUser.id);
 
 	const handleSelectReply = () => {
 		handleReplySelect(reply);
 	};
 
-	const handleSinglePressLikeButton = () => {};
+	const handleSinglePressLikeButton = () => {
+		if (isReactedByMe) {
+			dispatch(
+				updateReactOnReply(
+					reply.postId,
+					reply.commentId,
+					reply.replyId,
+					'',
+					currentUser.id as string,
+				),
+			);
+		} else {
+			dispatch(
+				updateReactOnReply(
+					reply.postId,
+					reply.commentId,
+					reply.replyId,
+					'Like',
+					currentUser.id as string,
+				),
+			);
+		}
+	};
 
-	const handleToggleReactionsContainer = () => {};
+	const handleToggleReactionsContainer = () => {
+		toggleReactionsContainer(prevState => !prevState);
+	};
+
+	const handleReaction = (reaction: ReactionType) => {
+		toggleReactionsContainer(false);
+
+		dispatch(
+			updateReactOnReply(
+				reply.postId,
+				reply.commentId,
+				reply.replyId,
+				reaction,
+				currentUser.id as string,
+			),
+		);
+	};
 
 	let reactionText;
 
@@ -95,52 +143,63 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
 	}
 
 	return (
-		<TouchableOpacity
-			style={styles.replyItem}
-			activeOpacity={0.5}
-			onPress={handleSelectReply}>
+		<View>
+			{showReactionsContainer ? (
+				<ReactionsContainer
+					handleReaction={handleReaction}
+					topMargin={replyIndex === 0 ? 5 : null}
+				/>
+			) : null}
+
 			<TouchableOpacity
-				activeOpacity={0.8}
-				onPress={() => navigation?.navigate('Profile', { userId: reply.creator.id })}>
-				<DPcontainer imageUri={reply.creator.profilePicUri} size='small' />
-			</TouchableOpacity>
+				style={styles.replyItem}
+				activeOpacity={0.5}
+				onLongPress={handleSelectReply}>
+				<TouchableOpacity
+					activeOpacity={0.8}
+					onPress={() => navigation?.navigate('Profile', { userId: reply.creator.id })}>
+					<DPcontainer imageUri={reply.creator.profilePicUri} size='small' />
+				</TouchableOpacity>
 
-			<View style={styles.replyContainer}>
-				<View style={styles.box}>
-					<TouchableOpacity
-						activeOpacity={0.8}
-						onPress={() => navigation?.navigate('Profile', { userId: reply.creator.id })}>
-						<Text style={styles.creatorName}>{reply.creator.displayName}</Text>
-					</TouchableOpacity>
-					<Text>{reply.body}</Text>
-				</View>
+				<View style={styles.replyContainer}>
+					<View style={styles.box}>
+						<TouchableOpacity
+							activeOpacity={0.8}
+							onPress={() =>
+								navigation?.navigate('Profile', { userId: reply.creator.id })
+							}>
+							<Text style={styles.creatorName}>{reply.creator.displayName}</Text>
+						</TouchableOpacity>
+						<Text>{reply.body}</Text>
+					</View>
 
-				<View style={styles.replyInfo}>
-					{reply.modifiedAt ? (
-						<>
+					<View style={styles.replyInfo}>
+						{reply.modifiedAt ? (
+							<>
+								<Text style={styles.infoText}>
+									{DayJS(reply.modifiedAt).format("MMM DD 'YY")}
+								</Text>
+								<Text style={styles.infoText}>Edited</Text>
+							</>
+						) : (
 							<Text style={styles.infoText}>
-								{DayJS(reply.modifiedAt).format("MMM DD 'YY")}
+								{DayJS(reply.createdAt).format("MMM DD 'YY")}
 							</Text>
-							<Text style={styles.infoText}>Edited</Text>
-						</>
-					) : (
-						<Text style={styles.infoText}>
-							{DayJS(reply.createdAt).format("MMM DD 'YY")}
-						</Text>
-					)}
-					<TouchableOpacity
-						style={styles.infoText}
-						activeOpacity={0.6}
-						onPress={handleSinglePressLikeButton}
-						onLongPress={handleToggleReactionsContainer}>
-						{reactionText}
-					</TouchableOpacity>
-					<TouchableOpacity activeOpacity={0.6} onPress={() => {}}>
-						<Text style={styles.infoText}>Reply</Text>
-					</TouchableOpacity>
+						)}
+						<TouchableOpacity
+							style={styles.infoText}
+							activeOpacity={0.6}
+							onPress={handleSinglePressLikeButton}
+							onLongPress={handleToggleReactionsContainer}>
+							{reactionText}
+						</TouchableOpacity>
+						<TouchableOpacity activeOpacity={0.6} onPress={() => {}}>
+							<Text style={styles.infoText}>Reply</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</View>
-		</TouchableOpacity>
+			</TouchableOpacity>
+		</View>
 	);
 };
 

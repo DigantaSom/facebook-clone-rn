@@ -1,4 +1,4 @@
-import { IReply } from '../../types';
+import { IReaction, IReply } from '../../types';
 import { SIGN_OUT_SUCCESS } from '../user/user.types';
 import {
 	ReplyActionType,
@@ -17,7 +17,12 @@ import {
 	EDIT_REPLY_START,
 	EDIT_REPLY_SUCCESS,
 	EDIT_REPLY_FAILURE,
+	UPDATE_REACT_ON_REPLY_START,
+	UPDATE_REACT_ON_REPLY_SUCCESS,
+	UPDATE_REACT_ON_REPLY_FAILURE,
 } from './reply.types';
+
+import { updateReactionOnReply } from './reply.utils';
 
 interface IDefaultState {
 	reply: IReply | null;
@@ -149,6 +154,50 @@ const replyReducer = (
 				error: '',
 			};
 		case EDIT_REPLY_FAILURE:
+			return {
+				...state,
+				actionLoading: false,
+				error: action.payload,
+			};
+
+		// React/update reaction on a reply
+		case UPDATE_REACT_ON_REPLY_START:
+			return {
+				...state,
+				actionLoading: true,
+			};
+		case UPDATE_REACT_ON_REPLY_SUCCESS:
+			const newReactionObj: IReaction = {
+				reactorId: action.payload.reactorId,
+				reaction: action.payload.reaction,
+			};
+			return {
+				...state,
+				reply: state.reply
+					? {
+							...state.reply,
+							replyReactions: updateReactionOnReply(
+								state.reply.replyReactions,
+								newReactionObj,
+							),
+					  }
+					: null,
+				replies: state.replies.map(reply =>
+					reply.replyId === action.payload.replyId
+						? {
+								...reply,
+								replyReactions:
+									newReactionObj.reaction !== ''
+										? [newReactionObj, ...reply.replyReactions]
+										: reply.replyReactions.filter(
+												r => r.reactorId !== newReactionObj.reactorId,
+										  ),
+						  }
+						: reply,
+				),
+				actionLoading: false,
+			};
+		case UPDATE_REACT_ON_REPLY_FAILURE:
 			return {
 				...state,
 				actionLoading: false,

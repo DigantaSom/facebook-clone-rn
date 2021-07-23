@@ -5,7 +5,13 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
-import { IReply, GenderType, RootStackParamList } from '../../types';
+import {
+	IReply,
+	GenderType,
+	RootStackParamList,
+	ReactionType,
+	IReaction,
+} from '../../types';
 import {
 	FetchAllRepliesDispatchType,
 	FETCH_ALL_REPLIES_START,
@@ -27,10 +33,14 @@ import {
 	EDIT_REPLY_START,
 	EDIT_REPLY_SUCCESS,
 	EDIT_REPLY_FAILURE,
+	UpdateReactOnReplyDispatchType,
+	UPDATE_REACT_ON_REPLY_START,
+	UPDATE_REACT_ON_REPLY_SUCCESS,
+	UPDATE_REACT_ON_REPLY_FAILURE,
 } from './reply.types';
 import { IUser } from '../user/user.types';
 
-import { firestore } from '../../firebase/firebase.utils';
+import firebase, { firestore } from '../../firebase/firebase.utils';
 import { updateReplyCount } from '../comment/comment.actions';
 
 // Fetch all replies of a comment of a post
@@ -289,5 +299,98 @@ export const editReply =
 				payload: err.message,
 			});
 			Alert.alert('Failed to edit reply', err.message);
+		}
+	};
+
+// React/update reaction on a reply
+export const updateReactOnReply =
+	(
+		postId: string,
+		commentId: string,
+		replyId: string,
+		reaction: ReactionType,
+		reactorId: string,
+	) =>
+	async (dispatch: Dispatch<UpdateReactOnReplyDispatchType>) => {
+		const replyRef = firestore.doc(
+			`posts/${postId}/comments/${commentId}/replies/${replyId}`,
+		);
+
+		dispatch({
+			type: UPDATE_REACT_ON_REPLY_START,
+		});
+
+		const newReactionObj: IReaction = {
+			reactorId,
+			reaction,
+		};
+
+		try {
+			const batch = firestore.batch();
+
+			const replySnapshot = await replyRef.get();
+
+			if (!replySnapshot.exists) {
+				dispatch({
+					type: UPDATE_REACT_ON_REPLY_FAILURE,
+					payload: 'Reply does not exist.',
+				});
+				Alert.alert('Failed to react on reply', 'Reply does not exist.');
+				return;
+			}
+
+			const userReactionData: IReaction[] = replySnapshot.data()?.replyReactions;
+
+			const userReactedObject: IReaction | undefined = userReactionData.find(
+				r => r.reactorId === reactorId,
+			);
+
+			// if there's no reaction on this reply yet
+			if (!userReactionData.length) {
+				batch.update(replyRef, {
+					replyReactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+				});
+			} else {
+				// if the user has already reacted to this reply
+				if (userReactedObject) {
+					// if the user wants to change (not remove) their reaction
+					if (userReactedObject.reaction !== reaction && reaction !== '') {
+						batch.update(replyRef, {
+							replyReactions:
+								firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+						});
+						batch.update(replyRef, {
+							replyReactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+						});
+					} else if (reaction === '') {
+						// else if the user wants to remove their reaction
+						batch.update(replyRef, {
+							replyReactions:
+								firebase.firestore.FieldValue.arrayRemove(userReactedObject),
+						});
+					}
+				} else {
+					// else if the user hasn't yet reacted to this post, but replyReactions are not empty
+					batch.update(replyRef, {
+						replyReactions: firebase.firestore.FieldValue.arrayUnion(newReactionObj),
+					});
+				}
+			}
+
+			await batch.commit();
+
+			dispatch({
+				type: UPDATE_REACT_ON_REPLY_SUCCESS,
+				payload: {
+					replyId,
+					reaction,
+					reactorId,
+				},
+			});
+		} catch (err) {
+			dispatch({
+				type: UPDATE_REACT_ON_REPLY_FAILURE,
+				payload: err.message,
+			});
 		}
 	};
