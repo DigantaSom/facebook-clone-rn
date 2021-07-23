@@ -68,10 +68,17 @@ const ReplyBottomDrawer: React.FC<ReplyBottomDrawerProps> = ({
 	};
 
 	const onSelectEditReply = () => {
+		handleCloseModal();
+
 		if (!isMyReply) {
 			return;
 		}
-		// TODO: navigate to edit reply screen
+
+		navigation.navigate('EditReply', {
+			postId: reply.postId,
+			commentId: reply.commentId,
+			replyId: reply.replyId,
+		});
 	};
 
 	return (

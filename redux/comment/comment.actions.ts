@@ -19,9 +19,9 @@ import {
 	FETCH_ALL_COMMENTS_SUCCESS,
 	FETCH_ALL_COMMENTS_FAILURE,
 	FetchSingleCommentDispatchType,
-	FETCH_SINGLE_COMMENTS_START,
-	FETCH_SINGLE_COMMENTS_SUCCESS,
-	FETCH_SINGLE_COMMENTS_FAILURE,
+	FETCH_SINGLE_COMMENT_START,
+	FETCH_SINGLE_COMMENT_SUCCESS,
+	FETCH_SINGLE_COMMENT_FAILURE,
 	AddCommentDispatchType,
 	ADD_COMMENT_START,
 	ADD_COMMENT_SUCCESS,
@@ -84,7 +84,7 @@ export const fetchSingleComment =
 	(postId: string, commentId: string) =>
 	async (dispatch: Dispatch<FetchSingleCommentDispatchType>) => {
 		dispatch({
-			type: FETCH_SINGLE_COMMENTS_START,
+			type: FETCH_SINGLE_COMMENT_START,
 		});
 
 		const postRef = firestore.collection('posts').doc(postId);
@@ -95,7 +95,7 @@ export const fetchSingleComment =
 
 			if (!commentSnapshot.exists) {
 				dispatch({
-					type: FETCH_SINGLE_COMMENTS_FAILURE,
+					type: FETCH_SINGLE_COMMENT_FAILURE,
 					payload: "Comment doesn't exist.",
 				});
 				Alert.alert('Failed to load comment', "Comment doesn't exist.");
@@ -103,12 +103,12 @@ export const fetchSingleComment =
 			}
 
 			dispatch({
-				type: FETCH_SINGLE_COMMENTS_SUCCESS,
+				type: FETCH_SINGLE_COMMENT_SUCCESS,
 				payload: commentSnapshot.data() as IComment,
 			});
 		} catch (err) {
 			dispatch({
-				type: FETCH_SINGLE_COMMENTS_FAILURE,
+				type: FETCH_SINGLE_COMMENT_FAILURE,
 				payload: err.message,
 			});
 			Alert.alert('Failed to load comment', err.message);
@@ -254,14 +254,14 @@ export const editComment =
 		navigation: StackNavigationProp<RootStackParamList, 'EditComment'>,
 	) =>
 	async (dispatch: Dispatch<EditCommentDispatchType>) => {
+		const postRef = firestore.collection('posts').doc(postId);
+		const commentRef = postRef.collection('comments').doc(commentId);
+
 		const modifiedAt = new Date().toISOString();
 
 		dispatch({
 			type: EDIT_COMMENT_START,
 		});
-
-		const postRef = firestore.collection('posts').doc(postId);
-		const commentRef = postRef.collection('comments').doc(commentId);
 
 		try {
 			const postSnapshot = await postRef.get();
@@ -301,6 +301,7 @@ export const editComment =
 				return;
 			}
 
+			// All good. Now edit the comment.
 			await commentRef.update({
 				body,
 				modifiedAt,

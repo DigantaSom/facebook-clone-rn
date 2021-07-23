@@ -5,9 +5,9 @@ import {
 	FETCH_ALL_COMMENTS_START,
 	FETCH_ALL_COMMENTS_SUCCESS,
 	FETCH_ALL_COMMENTS_FAILURE,
-	FETCH_SINGLE_COMMENTS_START,
-	FETCH_SINGLE_COMMENTS_SUCCESS,
-	FETCH_SINGLE_COMMENTS_FAILURE,
+	FETCH_SINGLE_COMMENT_START,
+	FETCH_SINGLE_COMMENT_SUCCESS,
+	FETCH_SINGLE_COMMENT_FAILURE,
 	ADD_COMMENT_START,
 	ADD_COMMENT_SUCCESS,
 	ADD_COMMENT_FAILURE,
@@ -71,19 +71,19 @@ const commentReducer = (
 			};
 
 		// Fetch a particular single comment
-		case FETCH_SINGLE_COMMENTS_START:
+		case FETCH_SINGLE_COMMENT_START:
 			return {
 				...state,
 				loading: true,
 			};
-		case FETCH_SINGLE_COMMENTS_SUCCESS:
+		case FETCH_SINGLE_COMMENT_SUCCESS:
 			return {
 				...state,
 				comment: action.payload,
 				loading: false,
 				error: '',
 			};
-		case FETCH_SINGLE_COMMENTS_FAILURE:
+		case FETCH_SINGLE_COMMENT_FAILURE:
 			return {
 				...state,
 				comment: null,

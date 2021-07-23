@@ -30,6 +30,7 @@ import CommentsScreen from '../screens/individual-post/CommentsScreen';
 import RepliesScreen from '../screens/individual-post/RepliesScreen';
 import PeopleWhoReactedScreen from '../screens/individual-post/PeopleWhoReactedScreen';
 import EditCommentScreen from '../screens/individual-post/EditCommentScreen';
+import EditReplyScreen from '../screens/individual-post/EditReplyScreen';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -149,6 +150,16 @@ const RootNavigator = () => {
 				component={EditCommentScreen}
 				options={{
 					headerTitle: 'Edit Comment',
+					headerTitleStyle: {
+						fontSize: 14,
+					},
+				}}
+			/>
+			<Stack.Screen
+				name='EditReply'
+				component={EditReplyScreen}
+				options={{
+					headerTitle: 'Edit Reply',
 					headerTitleStyle: {
 						fontSize: 14,
 					},

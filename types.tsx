@@ -38,6 +38,11 @@ export type RootStackParamList = {
 		postId: string;
 		commentId: string;
 	};
+	EditReply: {
+		postId: string;
+		commentId: string;
+		replyId: string;
+	};
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
 	navigation: StackNavigationProp<RootStackParamList, T>;

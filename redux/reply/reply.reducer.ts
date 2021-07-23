@@ -1,16 +1,22 @@
 import { IReply } from '../../types';
 import { SIGN_OUT_SUCCESS } from '../user/user.types';
 import {
+	ReplyActionType,
 	FETCH_ALL_REPLIES_START,
 	FETCH_ALL_REPLIES_SUCCESS,
 	FETCH_ALL_REPLIES_FAILURE,
-	ReplyActionType,
+	FETCH_SINGLE_REPLY_START,
+	FETCH_SINGLE_REPLY_SUCCESS,
+	FETCH_SINGLE_REPLY_FAILURE,
 	ADD_REPLY_START,
 	ADD_REPLY_SUCCESS,
 	ADD_REPLY_FAILURE,
 	DELETE_REPLY_START,
 	DELETE_REPLY_SUCCESS,
 	DELETE_REPLY_FAILURE,
+	EDIT_REPLY_START,
+	EDIT_REPLY_SUCCESS,
+	EDIT_REPLY_FAILURE,
 } from './reply.types';
 
 interface IDefaultState {
@@ -54,6 +60,27 @@ const replyReducer = (
 				error: action.payload,
 			};
 
+		// Fetch a single reply
+		case FETCH_SINGLE_REPLY_START:
+			return {
+				...state,
+				loading: true,
+			};
+		case FETCH_SINGLE_REPLY_SUCCESS:
+			return {
+				...state,
+				reply: action.payload,
+				loading: false,
+				error: '',
+			};
+		case FETCH_SINGLE_REPLY_FAILURE:
+			return {
+				...state,
+				reply: null,
+				loading: false,
+				error: action.payload,
+			};
+
 		// Reply on a comment of a post
 		case ADD_REPLY_START:
 			return {
@@ -89,6 +116,39 @@ const replyReducer = (
 				error: '',
 			};
 		case DELETE_REPLY_FAILURE:
+			return {
+				...state,
+				actionLoading: false,
+				error: action.payload,
+			};
+
+		// Edit a particular reply
+		case EDIT_REPLY_START:
+			return {
+				...state,
+				actionLoading: true,
+			};
+		case EDIT_REPLY_SUCCESS:
+			return {
+				...state,
+				reply: state.reply
+					? {
+							...state.reply,
+							...action.payload,
+					  }
+					: null,
+				replies: state.replies.map(reply =>
+					reply.replyId === action.payload.replyId
+						? {
+								...reply,
+								...action.payload,
+						  }
+						: reply,
+				),
+				actionLoading: false,
+				error: '',
+			};
+		case EDIT_REPLY_FAILURE:
 			return {
 				...state,
 				actionLoading: false,

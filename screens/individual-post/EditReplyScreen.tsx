@@ -3,7 +3,7 @@ import { TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { editComment, fetchSingleComment } from '../../redux/comment/comment.actions';
+import { fetchSingleReply, editReply } from '../../redux/reply/reply.actions';
 
 import { RootNavProps } from '../../types';
 
@@ -13,61 +13,63 @@ import DPcontainer from '../../components/UI/DPcontainer';
 
 import Colors from '../../constants/Colors';
 
-type EditCommentScreenProps = RootNavProps<'EditComment'>;
+type EditReplyScreenProps = RootNavProps<'EditReply'>;
 
-const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route }) => {
-	const { postId, commentId } = route.params;
+const EditReplyScreen: React.FC<EditReplyScreenProps> = ({ navigation, route }) => {
+	const { postId, commentId, replyId } = route.params;
 
 	const [updatedBody, setUpdatedBody] = useState<string>('');
 	const [isUpdateButtonDisabled, setIsUpdateButtonDisabled] = useState<boolean>(true);
 
 	const dispatch = useDispatch();
-	const { comment, loading, actionLoading } = useSelector(
-		(state: RootState) => state.comment,
+	const { reply, loading, actionLoading } = useSelector(
+		(state: RootState) => state.reply,
 	);
 	const { currentUser } = useSelector((state: RootState) => state.user);
 
-	const isMyComment = comment?.creator.id === currentUser?.id;
+	const isMyReply = reply?.creator.id === currentUser?.id;
 
 	useEffect(() => {
-		dispatch(fetchSingleComment(postId, commentId));
-	}, [dispatch, fetchSingleComment, postId, commentId]);
+		dispatch(fetchSingleReply(postId, commentId, replyId));
+	}, [dispatch, fetchSingleReply, postId, commentId, replyId]);
 
 	useEffect(() => {
-		if (comment) {
-			if (loading || !comment.body) {
+		if (reply) {
+			if (loading || !reply.body) {
 				setUpdatedBody('');
 			} else {
-				setUpdatedBody(comment.body);
+				setUpdatedBody(reply.body);
 			}
 		}
-	}, [comment, loading, comment?.body]);
+	}, [reply, loading, reply?.body]);
 
 	useEffect(() => {
-		if (comment?.body === updatedBody) {
+		if (reply?.body === updatedBody) {
 			setIsUpdateButtonDisabled(true);
 		} else {
 			setIsUpdateButtonDisabled(false);
 		}
-	}, [comment?.body, updatedBody]);
+	}, [reply?.body, updatedBody]);
 
 	const onCancel = () => {
 		navigation.goBack();
 	};
 
 	const onUpdate = () => {
-		if (!isMyComment || updatedBody === '' || actionLoading) {
+		if (!isMyReply || updatedBody === '' || actionLoading) {
 			return;
 		}
 		if (currentUser) {
-			dispatch(editComment(postId, commentId, updatedBody, currentUser, navigation));
+			dispatch(
+				editReply(postId, commentId, replyId, updatedBody, currentUser, navigation),
+			);
 		}
 	};
 
 	if (loading) {
 		return <Spinner />;
 	}
-	if (!comment) {
+	if (!reply) {
 		navigation.goBack();
 		return null;
 	}
@@ -77,11 +79,11 @@ const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route
 			<View style={styles.content}>
 				<TouchableOpacity
 					activeOpacity={0.8}
-					onPress={() => navigation.navigate('Profile', { userId: comment.creator.id })}>
-					<DPcontainer imageUri={comment.creator.profilePicUri} />
+					onPress={() => navigation.navigate('Profile', { userId: reply.creator.id })}>
+					<DPcontainer imageUri={reply.creator.profilePicUri} />
 				</TouchableOpacity>
 
-				<View style={styles.commentContainer}>
+				<View style={styles.replyContainer}>
 					<View style={styles.box}>
 						<TextInput
 							style={styles.input}
@@ -120,7 +122,7 @@ const EditCommentScreen: React.FC<EditCommentScreenProps> = ({ navigation, route
 	);
 };
 
-export default EditCommentScreen;
+export default EditReplyScreen;
 
 const styles = StyleSheet.create({
 	container: {
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
 	content: {
 		flexDirection: 'row',
 	},
-	commentContainer: {
+	replyContainer: {
 		marginLeft: 10,
 	},
 	box: {

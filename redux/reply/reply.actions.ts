@@ -1,15 +1,20 @@
 import { Dispatch } from 'redux';
 import { Alert } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
-import { IReply, GenderType } from '../../types';
+import { IReply, GenderType, RootStackParamList } from '../../types';
 import {
 	FetchAllRepliesDispatchType,
 	FETCH_ALL_REPLIES_START,
 	FETCH_ALL_REPLIES_SUCCESS,
 	FETCH_ALL_REPLIES_FAILURE,
+	FetchSingleReplyDispatchType,
+	FETCH_SINGLE_REPLY_START,
+	FETCH_SINGLE_REPLY_SUCCESS,
+	FETCH_SINGLE_REPLY_FAILURE,
 	AddReplyDispatchType,
 	ADD_REPLY_START,
 	ADD_REPLY_SUCCESS,
@@ -18,6 +23,10 @@ import {
 	DELETE_REPLY_START,
 	DELETE_REPLY_SUCCESS,
 	DELETE_REPLY_FAILURE,
+	EditReplyDispatchType,
+	EDIT_REPLY_START,
+	EDIT_REPLY_SUCCESS,
+	EDIT_REPLY_FAILURE,
 } from './reply.types';
 import { IUser } from '../user/user.types';
 
@@ -54,6 +63,43 @@ export const fetchAllReplies =
 				payload: err.message,
 			});
 			Alert.alert('Failed to load replies', err.message);
+		}
+	};
+
+// Fetch a single reply
+export const fetchSingleReply =
+	(postId: string, commentId: string, replyId: string) =>
+	async (dispatch: Dispatch<FetchSingleReplyDispatchType>) => {
+		const replyRef = firestore.doc(
+			`posts/${postId}/comments/${commentId}/replies/${replyId}`,
+		);
+
+		dispatch({
+			type: FETCH_SINGLE_REPLY_START,
+		});
+
+		try {
+			const replySnapshot = await replyRef.get();
+
+			if (!replySnapshot.exists) {
+				dispatch({
+					type: FETCH_SINGLE_REPLY_FAILURE,
+					payload: 'Reply does not exist.',
+				});
+				Alert.alert('Failed to load reply', 'Reply does not exist.');
+				return;
+			}
+
+			dispatch({
+				type: FETCH_SINGLE_REPLY_SUCCESS,
+				payload: replySnapshot.data() as IReply,
+			});
+		} catch (err) {
+			dispatch({
+				type: FETCH_SINGLE_REPLY_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to load reply', err.message);
 		}
 	};
 
@@ -173,5 +219,75 @@ export const deleteReply =
 				payload: err.message,
 			});
 			Alert.alert('Failed to delete reply', err.message);
+		}
+	};
+
+// Edit a particular reply
+export const editReply =
+	(
+		postId: string,
+		commentId: string,
+		replyId: string,
+		body: string,
+		currentUser: IUser,
+		navigation: StackNavigationProp<RootStackParamList, 'EditReply'>,
+	) =>
+	async (dispatch: Dispatch<EditReplyDispatchType>) => {
+		const replyRef = firestore.doc(
+			`posts/${postId}/comments/${commentId}/replies/${replyId}`,
+		);
+
+		const modifiedAt = new Date().toISOString();
+
+		dispatch({
+			type: EDIT_REPLY_START,
+		});
+
+		try {
+			const replySnapshot = await replyRef.get();
+
+			if (!replySnapshot.exists) {
+				dispatch({
+					type: EDIT_REPLY_FAILURE,
+					payload: 'Reply does not exist.',
+				});
+				Alert.alert('Failed to edit reply', 'Reply does not exist.');
+				return;
+			}
+
+			const targetReply: IReply | undefined = replySnapshot.data() as IReply | undefined;
+
+			// only the creator of the reply should be able to edit their reply
+			if (targetReply?.creator.id !== currentUser.id) {
+				dispatch({
+					type: EDIT_REPLY_FAILURE,
+					payload: 'You are unauthorized to edit this reply!',
+				});
+				Alert.alert('Failed to edit reply', 'You are unauthorized to edit this reply!');
+				return;
+			}
+
+			// All good. Now edit the reply
+			await replyRef.update({
+				body,
+				modifiedAt,
+			});
+
+			dispatch({
+				type: EDIT_REPLY_SUCCESS,
+				payload: {
+					replyId,
+					body,
+					modifiedAt,
+				},
+			});
+			Alert.alert('Edit success', 'Comment edited successfully');
+			navigation.goBack();
+		} catch (err) {
+			dispatch({
+				type: EDIT_REPLY_FAILURE,
+				payload: err.message,
+			});
+			Alert.alert('Failed to edit reply', err.message);
 		}
 	};

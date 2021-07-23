@@ -5,9 +5,9 @@ export const FETCH_ALL_COMMENTS_START = 'FETCH_ALL_COMMENTS_START';
 export const FETCH_ALL_COMMENTS_SUCCESS = 'FETCH_ALL_COMMENTS_SUCCESS';
 export const FETCH_ALL_COMMENTS_FAILURE = 'FETCH_ALL_COMMENTS_FAILURE';
 
-export const FETCH_SINGLE_COMMENTS_START = 'FETCH_SINGLE_COMMENTS_START';
-export const FETCH_SINGLE_COMMENTS_SUCCESS = 'FETCH_SINGLE_COMMENTS_SUCCESS';
-export const FETCH_SINGLE_COMMENTS_FAILURE = 'FETCH_SINGLE_COMMENTS_FAILURE';
+export const FETCH_SINGLE_COMMENT_START = 'FETCH_SINGLE_COMMENT_START';
+export const FETCH_SINGLE_COMMENT_SUCCESS = 'FETCH_SINGLE_COMMENT_SUCCESS';
+export const FETCH_SINGLE_COMMENT_FAILURE = 'FETCH_SINGLE_COMMENT_FAILURE';
 
 export const ADD_COMMENT_START = 'ADD_COMMENT_START';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
@@ -48,14 +48,14 @@ export type FetchAllCommentsDispatchType =
 
 // Fetch a single comment
 export interface IFetchSingleCommentStart {
-	type: typeof FETCH_SINGLE_COMMENTS_START;
+	type: typeof FETCH_SINGLE_COMMENT_START;
 }
 export interface IFetchSingleCommentSuccess {
-	type: typeof FETCH_SINGLE_COMMENTS_SUCCESS;
+	type: typeof FETCH_SINGLE_COMMENT_SUCCESS;
 	payload: IComment;
 }
 export interface IFetchSingleCommentFailure {
-	type: typeof FETCH_SINGLE_COMMENTS_FAILURE;
+	type: typeof FETCH_SINGLE_COMMENT_FAILURE;
 	payload: string;
 }
 export type FetchSingleCommentDispatchType =
