@@ -173,8 +173,10 @@ const commentReducer = (
 			};
 		case UPDATE_REACT_ON_COMMENT_SUCCESS:
 			const newReactionObj: IReaction = {
-				reactorId: action.payload.reactorId,
 				reaction: action.payload.reaction,
+				reactorId: action.payload.reactorId,
+				reactorDisplayName: action.payload.reactorDisplayName,
+				reactorProfilePicUri: action.payload.reactorProfilePicUri,
 			};
 			return {
 				...state,

@@ -9,6 +9,7 @@ import {
 	RootStackParamList,
 	IComment,
 	GenderType,
+	ReactorType,
 	IReaction,
 	ReactionType,
 	AddOrDeleteType,
@@ -328,7 +329,7 @@ export const editComment =
 
 // React/update react on a comment
 export const updateReactOnComment =
-	(postId: string, commentId: string, reaction: ReactionType, reactorId: string) =>
+	(postId: string, commentId: string, reaction: ReactionType, currentUser: IUser) =>
 	async (dispatch: Dispatch<UpdateReactOnCommentDispatchType>) => {
 		dispatch({
 			type: UPDATE_REACT_ON_COMMENT_START,
@@ -337,9 +338,15 @@ export const updateReactOnComment =
 		const postRef = firestore.collection('posts').doc(postId);
 		const commentRef = postRef.collection('comments').doc(commentId);
 
+		const newReactor: ReactorType = {
+			reactorId: currentUser.id as string,
+			reactorDisplayName: currentUser.displayName as string,
+			reactorProfilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
+		};
+
 		const newReactionObj: IReaction = {
-			reactorId,
 			reaction,
+			...newReactor,
 		};
 
 		try {
@@ -357,7 +364,7 @@ export const updateReactOnComment =
 			const userReactionData: IReaction[] = commentSnapshot.data()?.commentReactions;
 
 			const userReactedObject: IReaction | undefined = userReactionData.find(
-				r => r.reactorId === reactorId,
+				r => r.reactorId === currentUser.id,
 			);
 
 			// if there's no reaction on this comment yet
@@ -399,7 +406,7 @@ export const updateReactOnComment =
 				payload: {
 					commentId,
 					reaction,
-					reactorId,
+					...newReactor,
 				},
 			});
 		} catch (err) {

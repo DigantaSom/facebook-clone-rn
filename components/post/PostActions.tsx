@@ -16,7 +16,7 @@ import {
 import { IUser } from '../../redux/user/user.types';
 
 import { View, Text } from '../Themed';
-import ReactionsContainer from './ReactionsContainer';
+import ReactionsContainer from '../reactions/ReactionsContainer';
 
 import Colors from '../../constants/Colors';
 
@@ -43,9 +43,9 @@ const PostActions: React.FC<PostActionsProps> = ({
 
 	const handleSinglePressLikeButton = () => {
 		if (isReactedByMe) {
-			dispatch(updateReactOnPost(post.postId, '', currentUser.id as string));
+			dispatch(updateReactOnPost(post.postId, '', currentUser));
 		} else {
-			dispatch(updateReactOnPost(post.postId, 'Like', currentUser.id as string));
+			dispatch(updateReactOnPost(post.postId, 'Like', currentUser));
 		}
 	};
 
@@ -55,7 +55,7 @@ const PostActions: React.FC<PostActionsProps> = ({
 
 	const handleReaction = (reaction: ReactionType) => {
 		toggleReactionsContainer(false);
-		dispatch(updateReactOnPost(post.postId, reaction, currentUser.id as string));
+		dispatch(updateReactOnPost(post.postId, reaction, currentUser));
 	};
 
 	let reactionText;

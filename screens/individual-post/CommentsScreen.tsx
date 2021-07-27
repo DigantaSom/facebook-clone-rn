@@ -29,7 +29,7 @@ import {
 import { IComment, ReactionType, RootNavProps } from '../../types';
 
 import { Text, View } from '../../components/Themed';
-import ReactionsContainer from '../../components/post/ReactionsContainer';
+import ReactionsContainer from '../../components/reactions/ReactionsContainer';
 import Center from '../../components/UI/Center';
 import EmptyContent from '../../components/UI/EmptyContent';
 import CommentItem from '../../components/post/CommentItem';
@@ -94,12 +94,29 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 						style={styles.headerLeftContainer}
 						activeOpacity={0.6}
 						onPress={() => {
-							navigation.navigate('PeopleWhoReacted', { postId });
+							// navigation.navigate('ReactionsTopTab', {
+							// 	contentType: 'Post',
+							// 	postId,
+							// 	commentId: 'not comment',
+							// 	replyId: 'not reply',
+							// });
+							navigation.navigate('ReactionsTopTab', { contentType: 'Post', postId });
 						}}>
 						{post?.reactions.length ? (
-							<Text style={styles.headerLeftText}>{post.reactions.length} reactions</Text>
-						) : null}
-						<AntDesign name='right' size={20} color={Colors.grayText} />
+							<>
+								<Text style={styles.headerLeftText}>
+									{post.reactions.length}{' '}
+									{post.reactions.length > 1 ? (
+										<Text>reactions</Text>
+									) : (
+										<Text>reaction</Text>
+									)}
+								</Text>
+								<AntDesign name='right' size={20} color={Colors.grayText} />
+							</>
+						) : (
+							<Text style={{ fontWeight: 'bold', fontSize: 20 }}>Comments</Text>
+						)}
 					</TouchableOpacity>
 				),
 			headerBackTitleVisible: false,
@@ -152,9 +169,9 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 	const handleSinglePressLikeButton = () => {
 		if (currentUser && post) {
 			if (isReactedByMe) {
-				dispatch(updateReactOnPost(post.postId, '', currentUser.id as string));
+				dispatch(updateReactOnPost(post.postId, '', currentUser));
 			} else {
-				dispatch(updateReactOnPost(post.postId, 'Like', currentUser.id as string));
+				dispatch(updateReactOnPost(post.postId, 'Like', currentUser));
 			}
 		}
 	};
@@ -166,20 +183,13 @@ const CommentsScreen: React.FC<CommentsScreenProps> = ({ navigation, route }) =>
 	const handleReaction_on_Post = (reaction: ReactionType) => {
 		if (currentUser && post) {
 			toggleReactionsContainer(false);
-			dispatch(updateReactOnPost(post.postId, reaction, currentUser.id as string));
+			dispatch(updateReactOnPost(post.postId, reaction, currentUser));
 		}
 	};
 
 	const handleReaction_on_Comment = (reaction: ReactionType, targetCommentId: string) => {
 		if (currentUser && post) {
-			dispatch(
-				updateReactOnComment(
-					post.postId,
-					targetCommentId,
-					reaction,
-					currentUser.id as string,
-				),
-			);
+			dispatch(updateReactOnComment(post.postId, targetCommentId, reaction, currentUser));
 		}
 	};
 

@@ -10,6 +10,7 @@ import {
 	GenderType,
 	RootStackParamList,
 	ReactionType,
+	ReactorType,
 	IReaction,
 } from '../../types';
 import {
@@ -309,7 +310,7 @@ export const updateReactOnReply =
 		commentId: string,
 		replyId: string,
 		reaction: ReactionType,
-		reactorId: string,
+		currentUser: IUser,
 	) =>
 	async (dispatch: Dispatch<UpdateReactOnReplyDispatchType>) => {
 		const replyRef = firestore.doc(
@@ -320,9 +321,15 @@ export const updateReactOnReply =
 			type: UPDATE_REACT_ON_REPLY_START,
 		});
 
+		const newReactor: ReactorType = {
+			reactorId: currentUser.id as string,
+			reactorDisplayName: currentUser.displayName as string,
+			reactorProfilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
+		};
+
 		const newReactionObj: IReaction = {
-			reactorId,
 			reaction,
+			...newReactor,
 		};
 
 		try {
@@ -342,7 +349,7 @@ export const updateReactOnReply =
 			const userReactionData: IReaction[] = replySnapshot.data()?.replyReactions;
 
 			const userReactedObject: IReaction | undefined = userReactionData.find(
-				r => r.reactorId === reactorId,
+				r => r.reactorId === currentUser.id,
 			);
 
 			// if there's no reaction on this reply yet
@@ -384,7 +391,7 @@ export const updateReactOnReply =
 				payload: {
 					replyId,
 					reaction,
-					reactorId,
+					...newReactor,
 				},
 			});
 		} catch (err) {

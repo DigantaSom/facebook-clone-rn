@@ -12,7 +12,7 @@ import { IUser } from '../../redux/user/user.types';
 
 import { View, Text } from '../Themed';
 import DPcontainer from '../UI/DPcontainer';
-import ReactionsContainer from './ReactionsContainer';
+import ReactionsContainer from '../reactions/ReactionsContainer';
 
 import Colors from '../../constants/Colors';
 
@@ -45,22 +45,10 @@ const CommentItem: React.FC<CommentItemProps> = ({
 
 	const handleSinglePressLikeButton = () => {
 		if (isReactedByMe) {
-			dispatch(
-				updateReactOnComment(
-					comment.postId,
-					comment.commentId,
-					'',
-					currentUser.id as string,
-				),
-			);
+			dispatch(updateReactOnComment(comment.postId, comment.commentId, '', currentUser));
 		} else {
 			dispatch(
-				updateReactOnComment(
-					comment.postId,
-					comment.commentId,
-					'Like',
-					currentUser.id as string,
-				),
+				updateReactOnComment(comment.postId, comment.commentId, 'Like', currentUser),
 			);
 		}
 	};
@@ -72,12 +60,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 	const handleReaction = (reaction: ReactionType) => {
 		toggleReactionsContainer(false);
 		dispatch(
-			updateReactOnComment(
-				comment.postId,
-				comment.commentId,
-				reaction,
-				currentUser.id as string,
-			),
+			updateReactOnComment(comment.postId, comment.commentId, reaction, currentUser),
 		);
 	};
 
@@ -191,6 +174,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 							onLongPress={handleToggleReactionsContainer}>
 							{reactionText}
 						</TouchableOpacity>
+
 						<TouchableOpacity
 							activeOpacity={0.6}
 							onPress={() => {
@@ -201,6 +185,22 @@ const CommentItem: React.FC<CommentItemProps> = ({
 							}}>
 							<Text style={styles.infoText}>Reply</Text>
 						</TouchableOpacity>
+
+						{!comment.commentReactions.length ? null : (
+							<TouchableOpacity
+								activeOpacity={0.6}
+								onPress={() => {
+									navigation?.navigate('ReactionsTopTab', {
+										contentType: 'Comment',
+										postId: comment.postId,
+										commentId: comment.commentId,
+									});
+								}}>
+								<Text style={[styles.infoText, { fontSize: 12 }]}>
+									{comment.commentReactions.length} Reactions
+								</Text>
+							</TouchableOpacity>
+						)}
 					</View>
 				</View>
 			</TouchableOpacity>

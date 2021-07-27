@@ -19,7 +19,7 @@ import { Text, View } from '../components/Themed';
 import Spinner from '../components/UI/Spinner';
 import PostActions from '../components/post/PostActions';
 import PhotoBottomDrawer from '../components/bottom-drawers/PhotoBottomDrawer';
-import ReactCommentShow from '../components/post/ReactCommentShow';
+import ReactCommentShow from '../components/reactions/ReactCommentShow';
 
 import useValues from '../hooks/useValues';
 import { RootNavProps } from '../types';

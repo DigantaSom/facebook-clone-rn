@@ -44,6 +44,7 @@ import {
 	PostType,
 	ReactionType,
 	AddOrDeleteType,
+	ReactorType,
 } from '../../types';
 import { IUser, REMOVE_PROFILE_PIC_FROM_USER } from '../user/user.types';
 import {
@@ -440,7 +441,7 @@ export const deletePhoto =
 	};
 
 export const updateReactOnPost =
-	(postId: string, reaction: ReactionType, reactorId: string) =>
+	(postId: string, reaction: ReactionType, currentUser: IUser) =>
 	async (dispatch: Dispatch<UpdateReactOnPostDispatchType>) => {
 		dispatch({
 			type: UPDATE_REACT_ON_POST_START,
@@ -448,9 +449,15 @@ export const updateReactOnPost =
 
 		const postRef = firestore.collection('posts').doc(postId);
 
+		const newReactor: ReactorType = {
+			reactorId: currentUser.id as string,
+			reactorDisplayName: currentUser.displayName as string,
+			reactorProfilePicUri: currentUser.profilePic ? currentUser.profilePic : '',
+		};
+
 		const newReactionObj: IReaction = {
-			reactorId,
 			reaction,
+			...newReactor,
 		};
 
 		try {
@@ -461,7 +468,7 @@ export const updateReactOnPost =
 			// console.log('userReactionData:', userReactionData);
 
 			const userReactedObject: IReaction | undefined = userReactionData.find(
-				r => r.reactorId === reactorId,
+				r => r.reactorId === currentUser.id,
 			);
 			// console.log('userReactedObject:', userReactedObject);
 
@@ -501,9 +508,9 @@ export const updateReactOnPost =
 				dispatch({
 					type: UPDATE_REACT_ON_POST_SUCCESS,
 					payload: {
-						reaction,
-						reactorId,
 						postId,
+						reaction,
+						...newReactor,
 					},
 				});
 			}

@@ -11,6 +11,13 @@ import { ProfileAboutType } from './redux/profile/profile.types';
 
 // Navigation
 
+export type ReactionsNavigationScreensTypes = {
+	contentType: ContentType;
+	postId: string;
+	commentId?: string;
+	replyId?: string;
+};
+
 export type RootStackParamList = {
 	Root: undefined;
 	Search: undefined;
@@ -33,7 +40,6 @@ export type RootStackParamList = {
 		postId: string;
 		commentId: string;
 	};
-	PeopleWhoReacted: { postId: string };
 	EditComment: {
 		postId: string;
 		commentId: string;
@@ -43,6 +49,7 @@ export type RootStackParamList = {
 		commentId: string;
 		replyId: string;
 	};
+	ReactionsTopTab: ReactionsNavigationScreensTypes;
 };
 export type RootNavProps<T extends keyof RootStackParamList> = {
 	navigation: StackNavigationProp<RootStackParamList, T>;
@@ -81,6 +88,7 @@ export type NotificationsStackParamList = {
 	Notifications: undefined;
 };
 
+// Menu
 export type MenuStackParamList = {
 	Menu: undefined;
 	// for navigation to other navigators' screens
@@ -111,6 +119,7 @@ export type MenuNavProps<T extends keyof MenuStackParamList> = {
 	route: RouteProp<MenuStackParamList, T>;
 };
 
+// Albums Top Tab
 export type AlbumsTabParamList = {
 	Saved: {
 		userId: string;
@@ -135,6 +144,19 @@ export type AlbumsTabNavProps<T extends keyof AlbumsTabParamList> = {
 	route: RouteProp<AlbumsTabParamList, T>;
 };
 
+// Reactions Top Tab
+export type ReactionsTabParamList = {
+	AllReactions: {
+		postId: string;
+		commentId?: string;
+		replyId?: string;
+	};
+};
+export type ReactionsTabNavProps<T extends keyof ReactionsTabParamList> = {
+	navigation: StackNavigationProp<ReactionsTabParamList, T>;
+	route: RouteProp<ReactionsTabParamList, T>;
+};
+
 // Post
 
 export type BlobType = Blob | Uint8Array | ArrayBuffer;
@@ -146,8 +168,13 @@ export type CreatorType = {
 	gender: GenderType;
 };
 
-export interface IReaction {
+export type ReactorType = {
 	reactorId: string;
+	reactorDisplayName: string;
+	reactorProfilePicUri: string;
+};
+
+export interface IReaction extends ReactorType {
 	reaction: ReactionType;
 }
 
@@ -199,3 +226,5 @@ export type PostSettingsType = 'Privacy' | 'Album';
 export type ReactionType = 'Like' | 'Love' | 'Haha' | 'Wow' | 'Sad' | 'Angry' | '';
 
 export type AddOrDeleteType = 'add' | 'delete';
+
+export type ContentType = 'Post' | 'Comment' | 'Reply';

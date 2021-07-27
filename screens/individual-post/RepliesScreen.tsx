@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, {
+	useState,
+	useRef,
+	useEffect,
+	useMemo,
+	useCallback,
+	useLayoutEffect,
+} from 'react';
 import {
 	FlatList,
 	TextInput,
@@ -7,7 +14,7 @@ import {
 	Keyboard,
 	StyleSheet,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +24,7 @@ import { addReply, fetchAllReplies } from '../../redux/reply/reply.actions';
 
 import { RootNavProps, IReply, ReactionType } from '../../types';
 
-import { View } from '../../components/Themed';
+import { View, Text } from '../../components/Themed';
 import Spinner from '../../components/UI/Spinner';
 import Center from '../../components/UI/Center';
 import EmptyContent from '../../components/UI/EmptyContent';
@@ -53,6 +60,48 @@ const RepliesScreen: React.FC<RepliesScreenProps> = ({ navigation, route }) => {
 	useEffect(() => {
 		dispatch(fetchAllReplies(postId, commentId));
 	}, [dispatch, fetchAllReplies, postId, commentId]);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerLeft: () =>
+				commentLoading || !comment ? null : (
+					<TouchableOpacity
+						style={styles.headerLeftContainer}
+						activeOpacity={0.6}
+						onPress={() => {
+							// navigation.navigate('ReactionsTopTab', {
+							// 	contentType: 'Comment',
+							// 	postId,
+							// 	commentId,
+							// 	replyId: 'not reply',
+							// });
+							navigation.navigate('ReactionsTopTab', {
+								contentType: 'Comment',
+								postId,
+								commentId: comment.commentId,
+							});
+						}}>
+						{comment.commentReactions.length ? (
+							<>
+								<Text style={styles.headerLeftText}>
+									{comment.commentReactions.length}{' '}
+									{comment.commentReactions.length > 1 ? (
+										<Text>reactions</Text>
+									) : (
+										<Text>reaction</Text>
+									)}
+								</Text>
+								<AntDesign name='right' size={20} color={Colors.grayText} />
+							</>
+						) : (
+							<Text style={{ fontWeight: 'bold', fontSize: 20 }}>Replies</Text>
+						)}
+					</TouchableOpacity>
+				),
+			headerBackTitleVisible: false,
+			headerTitle: () => null,
+		});
+	}, [navigation, commentLoading, comment, comment?.commentReactions]);
 
 	const renderReply = useCallback(
 		({ item, index }) => (
@@ -175,6 +224,21 @@ const RepliesScreen: React.FC<RepliesScreenProps> = ({ navigation, route }) => {
 export default RepliesScreen;
 
 const styles = StyleSheet.create({
+	// header
+	headerLeftContainer: {
+		marginLeft: 20,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	headerLeftText: {
+		fontSize: 16,
+		paddingRight: 4,
+	},
+	headerRightContainer: {
+		marginRight: 10,
+		padding: 10,
+	},
+	// screen
 	container: {
 		margin: 20,
 		flex: 1,

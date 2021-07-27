@@ -12,7 +12,7 @@ import { IPost, MenuStackParamList, TopTabParamList } from '../../types';
 import { Text, View } from '../Themed';
 import DPcontainer from '../UI/DPcontainer';
 import Divider from '../UI/Divider';
-import ReactCommentShow from './ReactCommentShow';
+import ReactCommentShow from '../reactions/ReactCommentShow';
 import PostActions from './PostActions';
 
 import Colors from '../../constants/Colors';

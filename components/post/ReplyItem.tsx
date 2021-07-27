@@ -12,7 +12,7 @@ import { IUser } from '../../redux/user/user.types';
 
 import { Text, View } from '../Themed';
 import DPcontainer from '../UI/DPcontainer';
-import ReactionsContainer from './ReactionsContainer';
+import ReactionsContainer from '../reactions/ReactionsContainer';
 
 import Colors from '../../constants/Colors';
 
@@ -44,13 +44,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
 	const handleSinglePressLikeButton = () => {
 		if (isReactedByMe) {
 			dispatch(
-				updateReactOnReply(
-					reply.postId,
-					reply.commentId,
-					reply.replyId,
-					'',
-					currentUser.id as string,
-				),
+				updateReactOnReply(reply.postId, reply.commentId, reply.replyId, '', currentUser),
 			);
 		} else {
 			dispatch(
@@ -59,7 +53,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
 					reply.commentId,
 					reply.replyId,
 					'Like',
-					currentUser.id as string,
+					currentUser,
 				),
 			);
 		}
@@ -78,7 +72,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
 				reply.commentId,
 				reply.replyId,
 				reaction,
-				currentUser.id as string,
+				currentUser,
 			),
 		);
 	};

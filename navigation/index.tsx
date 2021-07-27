@@ -28,9 +28,9 @@ import IndividualAlbumScreen from '../screens/albums/IndividualAlbumScreen';
 import CreatePostScreen from '../screens/create-post/CreatePostScreen';
 import CommentsScreen from '../screens/individual-post/CommentsScreen';
 import RepliesScreen from '../screens/individual-post/RepliesScreen';
-import PeopleWhoReactedScreen from '../screens/individual-post/PeopleWhoReactedScreen';
 import EditCommentScreen from '../screens/individual-post/EditCommentScreen';
 import EditReplyScreen from '../screens/individual-post/EditReplyScreen';
+import ReactionsTopTabNavigator from './ReactionsTopTab';
 // import NotFoundScreen from '../screens/NotFoundScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -139,13 +139,6 @@ const RootNavigator = () => {
 			<Stack.Screen name='Comments' component={CommentsScreen} />
 			<Stack.Screen name='Replies' component={RepliesScreen} />
 			<Stack.Screen
-				name='PeopleWhoReacted'
-				component={PeopleWhoReactedScreen}
-				options={{
-					headerTitle: 'People who reacted',
-				}}
-			/>
-			<Stack.Screen
 				name='EditComment'
 				component={EditCommentScreen}
 				options={{
@@ -165,6 +158,7 @@ const RootNavigator = () => {
 					},
 				}}
 			/>
+			<Stack.Screen name='ReactionsTopTab' component={ReactionsTopTabNavigator} />
 			{/* <Stack.Screen
         name='NotFound'
         component={NotFoundScreen}

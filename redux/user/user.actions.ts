@@ -5,6 +5,7 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
 import {
+	IUser,
 	CheckUserSessionDispatchType,
 	CHECK_USER_SESSION,
 	EmailSignInDispatchType,
@@ -19,7 +20,6 @@ import {
 	SIGN_OUT_START,
 	SIGN_OUT_SUCCESS,
 	SIGN_OUT_FAILURE,
-	IUser,
 	UpdateProfilePictureDispatchType,
 	UPDATE_PROFILE_PIC_START,
 	UPDATE_PROFILE_PIC_FAILURE,

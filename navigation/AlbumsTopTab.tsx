@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
 
 import { Feather } from '@expo/vector-icons';
 
@@ -22,62 +21,63 @@ import getFirstName from '../utils/getFirstName';
 const AlbumsTopTab = createMaterialTopTabNavigator<AlbumsTabParamList>();
 
 const AlbumsTopTabNavigator = ({ route }: RootNavProps<'AlbumsTab'>) => {
-  const colorScheme = useColorScheme();
-  const { userId, displayName } = route.params; // from profile
-  const currentUserId = useSelector((state: RootState) => state.user.currentUser?.id);
+	const { userId, displayName } = route.params; // from profile
 
-  const isMyProfile = currentUserId === userId;
+	const colorScheme = useColorScheme();
+	const currentUserId = useSelector((state: RootState) => state.user.currentUser?.id);
 
-  return (
-    <AlbumsTopTab.Navigator
-      initialRouteName='Albums'
-      tabBarOptions={{
-        activeTintColor: Colors[colorScheme].tint,
-        labelStyle: {
-          fontSize: 12,
-        },
-        tabStyle: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          width: 'auto',
-        },
-        scrollEnabled: true,
-        showIcon: true,
-      }}>
-      <AlbumsTopTab.Screen
-        name='Saved'
-        component={SavedScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Feather
-              name='lock'
-              size={20}
-              color={focused ? Colors.facebookPrimary : '#AAA'}
-            />
-          ),
-        }}
-      />
-      <AlbumsTopTab.Screen
-        name='PhotosOfYou'
-        component={PhotosOfYouScreen}
-        options={{
-          title: `Photos of ${isMyProfile ? 'You' : getFirstName(displayName)}`,
-        }}
-      />
-      <AlbumsTopTab.Screen
-        name='AllPhotos'
-        component={AllPhotosScreen}
-        initialParams={{ userId }}
-        options={{ title: 'All Photos' }}
-      />
-      <AlbumsTopTab.Screen
-        name='Albums'
-        component={AlbumsScreen}
-        initialParams={{ userId }}
-        options={{ title: 'Albums' }}
-      />
-    </AlbumsTopTab.Navigator>
-  );
+	const isMyProfile = currentUserId === userId;
+
+	return (
+		<AlbumsTopTab.Navigator
+			initialRouteName='Albums'
+			tabBarOptions={{
+				activeTintColor: Colors[colorScheme].tint,
+				labelStyle: {
+					fontSize: 12,
+				},
+				tabStyle: {
+					flexDirection: 'row',
+					alignItems: 'center',
+					width: 'auto',
+				},
+				scrollEnabled: true,
+				showIcon: true,
+			}}>
+			<AlbumsTopTab.Screen
+				name='Saved'
+				component={SavedScreen}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<Feather
+							name='lock'
+							size={20}
+							color={focused ? Colors.facebookPrimary : '#AAA'}
+						/>
+					),
+				}}
+			/>
+			<AlbumsTopTab.Screen
+				name='PhotosOfYou'
+				component={PhotosOfYouScreen}
+				options={{
+					title: `Photos of ${isMyProfile ? 'You' : getFirstName(displayName)}`,
+				}}
+			/>
+			<AlbumsTopTab.Screen
+				name='AllPhotos'
+				component={AllPhotosScreen}
+				initialParams={{ userId }}
+				options={{ title: 'All Photos' }}
+			/>
+			<AlbumsTopTab.Screen
+				name='Albums'
+				component={AlbumsScreen}
+				initialParams={{ userId }}
+				options={{ title: 'Albums' }}
+			/>
+		</AlbumsTopTab.Navigator>
+	);
 };
 
 export default AlbumsTopTabNavigator;

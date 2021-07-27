@@ -21,28 +21,29 @@ export const UPDATE_PROFILE_PIC_SUCCESS = 'UPDATE_PROFILE_PIC_SUCCESS';
 export const UPDATE_PROFILE_PIC_FAILURE = 'UPDATE_PROFILE_PIC_FAILURE';
 
 export const REMOVE_PROFILE_PIC_FROM_USER = 'REMOVE_PROFILE_PIC_FROM_USER';
+
 export interface IUser {
-  id?: string;
-  displayName?: string;
-  email?: string;
-  gender?: GenderType;
-  profilePic?: string;
-  createdAt?: Date;
+	id?: string;
+	displayName?: string;
+	email?: string;
+	gender?: GenderType;
+	profilePic?: string;
+	createdAt?: Date;
 }
 
 // Sign up
 export interface ISignUpStart {
-  type: typeof SIGN_UP_START;
+	type: typeof SIGN_UP_START;
 }
 
 export interface ISignUpSuccess {
-  type: typeof SIGN_UP_SUCCESS;
-  payload: IUser;
+	type: typeof SIGN_UP_SUCCESS;
+	payload: IUser;
 }
 
 export interface ISignUpFailure {
-  type: typeof SIGN_UP_FAILURE;
-  payload: string; // error message
+	type: typeof SIGN_UP_FAILURE;
+	payload: string; // error message
 }
 
 export type SignUpDispatchType = ISignUpStart | ISignUpSuccess | ISignUpFailure;
@@ -50,84 +51,84 @@ export type SignUpDispatchType = ISignUpStart | ISignUpSuccess | ISignUpFailure;
 // Email sign in
 
 export interface IEmailSignInStart {
-  type: typeof EMAIL_SIGN_IN_START;
+	type: typeof EMAIL_SIGN_IN_START;
 }
 
 export interface IEmailSignInSuccess {
-  type: typeof EMAIL_SIGN_IN_SUCCESS;
-  payload: IUser;
+	type: typeof EMAIL_SIGN_IN_SUCCESS;
+	payload: IUser;
 }
 
 export interface IEmailSignInFailure {
-  type: typeof EMAIL_SIGN_IN_FAILURE;
-  payload: string; // error message
+	type: typeof EMAIL_SIGN_IN_FAILURE;
+	payload: string; // error message
 }
 
 export type EmailSignInDispatchType =
-  | IEmailSignInStart
-  | IEmailSignInSuccess
-  | IEmailSignInFailure;
+	| IEmailSignInStart
+	| IEmailSignInSuccess
+	| IEmailSignInFailure;
 
 // Check user session
 
 export interface ICheckUserSession {
-  type: typeof CHECK_USER_SESSION;
+	type: typeof CHECK_USER_SESSION;
 }
 
 export type CheckUserSessionDispatchType =
-  | ICheckUserSession
-  | IEmailSignInSuccess
-  | IEmailSignInFailure;
+	| ICheckUserSession
+	| IEmailSignInSuccess
+	| IEmailSignInFailure;
 
 // Sign out
 
 export interface ISignOutStart {
-  type: typeof SIGN_OUT_START;
+	type: typeof SIGN_OUT_START;
 }
 
 export interface ISignOutSuccess {
-  type: typeof SIGN_OUT_SUCCESS;
+	type: typeof SIGN_OUT_SUCCESS;
 }
 
 export interface ISignOutFailure {
-  type: typeof SIGN_OUT_FAILURE;
-  payload: string; // error message
+	type: typeof SIGN_OUT_FAILURE;
+	payload: string; // error message
 }
 
 export type SignOutDispatchType = ISignOutStart | ISignOutSuccess | ISignOutFailure;
 
 // Add or Update profile picture
 export interface IUpdateProfilePicStart {
-  type: typeof UPDATE_PROFILE_PIC_START;
+	type: typeof UPDATE_PROFILE_PIC_START;
 }
 
 export interface IUpdateProfilePicSuccess {
-  type: typeof UPDATE_PROFILE_PIC_SUCCESS;
-  payload: string;
+	type: typeof UPDATE_PROFILE_PIC_SUCCESS;
+	payload: string;
 }
 export interface IUpdateProfilePicFailure {
-  type: typeof UPDATE_PROFILE_PIC_FAILURE;
-  payload: string; // error message
+	type: typeof UPDATE_PROFILE_PIC_FAILURE;
+	payload: string; // error message
 }
 
 export type UpdateProfilePictureDispatchType =
-  | IUpdateProfilePicStart
-  | IUpdateProfilePicSuccess
-  | IUpdateProfilePicFailure
-  | IUpdateProfilePicInProfile // from profile.types
-  | IUpdatePosts; // from post.types
+	| IUpdateProfilePicStart
+	| IUpdateProfilePicSuccess
+	| IUpdateProfilePicFailure
+	| IUpdateProfilePicInProfile // from profile.types
+	| IUpdatePosts; // from post.types
 
 // Remove profilePic from user state
 export interface IRemoveProfilePicFromUser {
-  type: typeof REMOVE_PROFILE_PIC_FROM_USER;
+	type: typeof REMOVE_PROFILE_PIC_FROM_USER;
 }
 
 // User Action Type
 
 export type UserActionType =
-  | ICheckUserSession
-  | SignUpDispatchType
-  | EmailSignInDispatchType
-  | SignOutDispatchType
-  | UpdateProfilePictureDispatchType
-  | IRemoveProfilePicFromUser;
+	| ICheckUserSession
+	| SignUpDispatchType
+	| EmailSignInDispatchType
+	| SignOutDispatchType
+	| UpdateProfilePictureDispatchType
+	| IRemoveProfilePicFromUser;
